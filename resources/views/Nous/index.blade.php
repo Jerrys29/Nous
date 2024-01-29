@@ -298,7 +298,7 @@
       <div class="col-lg-5 col-md-6 footer-newsletter">
         
         <div>
-          <a href="{{('/offre')}}" class="btn-get-started scrollto">ESPACE KARAOKE</a>
+          <a href="{{('/karaoke')}}" class="btn-get-started scrollto">ESPACE KARAOKE</a>
       </div>
       </div>
 

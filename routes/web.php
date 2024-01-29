@@ -34,13 +34,13 @@ Route::get('terms', function () {
 
 
 Route::get('karaoke', function () {
-    return view('Karaoke/profils');
+    return view('Karaoke/index');
 });
 Route::get('detailprofil', function () {
     return view('Karaoke/detail');
 });
 Route::get('inscription', function () {
-    return view('Karaoke/register');
+    return view('Karaoke/InscriKaraoke');
 });
 Route::get('formulaire', function () {
     return view('Karaoke/formulaire');
