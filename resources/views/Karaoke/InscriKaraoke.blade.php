@@ -41,24 +41,29 @@
                     </div>
                 </div>
                 <div class="booking-form">
-                    <form id="booking-form">
+                    <form action="{{ route('filleinscrip') }}" method="POST" id="booking-form">
                         <!-- Première étape -->
-                       
+                        @csrf
                         <div class="form-step" id="step-1">
                             <h2>INSCRIVEZ-VOUS MAINTENANT</h2>
                             <div class="form-group form-input">
                                 <input type="text" name="name" id="first_name" class="input-text" placeholder="Nom & Prénom" required>
                             </div>
-                            
+                            @if(session('error'))
+                                <div id="alert-message" class="alert alert-success">
+                                    {{ error('error') }}
+                                </div>
+                            @endif
+
     
                             <div class="form-group form-input">
-                                <input type="tel" name="phone_number" id="phone_number" class="input-text" placeholder="Numéro de téléphone" required>
+                                <input type="tel" name="numero" id="phone_number" class="input-text" placeholder="Numéro de téléphone whatsapp" required>
                             </div>
-
+                           
                             <div class="form-group form-input">
-                            <input type="password" name="mdp" id="mdp" class="input-text" placeholder="Mot de passe" required>
+                            <input type="password" name="password" id="mdp" class="input-text" placeholder="Mot de passe" required>
                             </div>
-
+                
                             <div class="form-group">
                                 <button type="button" class="btn btn-primary" onclick="nextStep(1, 2)">Suivant</button>
                             </div>
@@ -71,7 +76,7 @@
                             <div class="form-group form-input">
                                 <input type="text" name="pseudo" id="first_name" class="input-text" placeholder="Pseudo" required>
                             </div><br>
-
+        
                             <div class="form-group">
                                 <input type="date" name="birthdate" class="birthdate" id="birthdate" placeholder="Date de Naissance" required>
                             </div><br>
@@ -101,6 +106,8 @@
                                     <i class="zmdi zmdi-chevron-down"></i>
                                 </span>
                             </div>
+                            <div class="form-group" id="error-message-step-2"></div>
+
                             <div class="form-group onsubmit="showCongratulationsPopup();>
                                 <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Précédent</button>
                                 
@@ -129,6 +136,38 @@
             $('#step-' + step).hide();
             $('#step-' + (step - 1)).show();
         }
+
+        function validateAndSubmit() {
+    // Récupérez les champs d'entrée de l'étape 2
+    var inputs = $('#step-2 input[required], #step-2 select[required]');
+
+    // Vérifiez si tous les champs sont remplis
+    var fieldsAreFilled = true;
+    inputs.each(function () {
+        if ($(this).val() === '') {
+            fieldsAreFilled = false;
+            // Affichez un message d'erreur pour le champ actuel
+            var fieldName = $(this).attr('placeholder') || $(this).attr('name');
+            $('#error-message-step-2').html('<div class="alert alert-danger">Veuillez remplir tous les champs.</div>');
+            return false; // Sortez de la boucle si un champ est vide
+        }
+    });
+
+    // Si des champs sont vides, ne continuez pas
+    if (!fieldsAreFilled) {
+        return;
+    }
+
+    // Cachez tout message d'erreur précédent et procédez à l'enregistrement
+    $('#error-message-step-2').text('');  // Utilisez la méthode text ici
+    // Continuez avec la logique d'enregistrement ou l'action de formulaire ici
+    showCongratulationsPopup();
+}
+ //Mon code JavaScript pour masquer le message après 15 secondes
+ setTimeout(function(){
+        document.getElementById('alert-message').style.display = 'none';
+    }, 9000);
+
     </script>
 
     <script>

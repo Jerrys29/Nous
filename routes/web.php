@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,15 +37,40 @@ Route::get('terms', function () {
 Route::get('karaoke', function () {
     return view('Karaoke/index');
 });
-Route::get('detailprofil', function () {
-    return view('Karaoke/detail');
+Route::get('profil', function () {
+    return view('Karaoke/profilperso');
 });
 Route::get('inscription', function () {
     return view('Karaoke/InscriKaraoke');
 });
+Route::get('connection', function () {
+    return view('Karaoke/login')->name('connection');;
+});
 Route::get('formulaire', function () {
     return view('Karaoke/formulaire');
 });
+Route::get('/inscription', 'App\Http\Controllers\karaokeController@showRegistration')->name('inscription');
+// web.php
+
+Route::middleware(['auth'])->group(function () {
+   //route vers le profilperso
+Route::get('/profil', 'App\Http\Controllers\karaokeController@showprofil')->name('profil');
+});
+
+//route vers mise à jour du profil
+Route::post('/update-profile', 'App\Http\Controllers\karaokeController@updateProfile')->name('update-profile');
+
+
+
+
+
+Route::post('InscriKaraoke/','App\Http\Controllers\karaokeController@register')->name('filleinscrip');
+Route::get('login/', 'App\Http\Controllers\karaokeController@show')->name('login');
+Route::get('/check-phone-number/{phoneNumber}', 'KaraokeController@checkPhoneNumber');
+
+//auth
+Route::post('/login', 'App\Http\Controllers\karaokeController@loginUser')->name('login');
+
 
 
 /* A D M I N */
