@@ -6,15 +6,14 @@
         <div class="row">
 
           <div class="col-lg-4 col-md-6 footer-contact">
-            <h3><img src="assets/img/NOUS LOGO 1_Plan de travail 1.png" alt="" style="width: 100px;height: 100px;"></h3>
+            <h3><img src="{{asset('assets/img/NOUS LOGO 1_Plan de travail 1.png')}}" alt="" style="width: 100px;height: 100px;"></h3>
           </div>
 
           <div class="col-lg-3 col-md-6 footer-links">
             <h4>Liens importants</h4>
             <ul>
-              <li><i class="bx bx-chevron-right"></i> <a href="persospace.html">Trouver un partenaire</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="terms.html">Termes et Conditions</a></li>
-
+              <li><i class="bx bx-chevron-right"></i> <a href="{{('/profils')}}">Trouver un partenaire</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="{{('/terms')}}">Termes et Conditions</a></li>
             </ul>
           </div>
 
