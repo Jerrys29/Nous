@@ -55,20 +55,13 @@
                                 <div class="col-md-6">
                                   <div class="text-white mt-4">
                                     <div class="mt-2"> <span class="intro-2">Veuillez payer votre abonnement mensuel pour communiquer avec votre potentiel partenaire.</span> </div>
-                                    <!-- Votre Vue Laravel -->
-
-                                    <!-- Votre Vue Laravel -->
-
-                                    <!-- Votre Vue Laravel -->
-
-                                    <!-- Script Kkiapay -->
+                            
                                     <script amount="981" callback="{{ url('/mettre-a-jour-paiement') }}" data="" position="right" theme="red" sandbox="false" key="de9c4e671f1c676a8613e0a567252e182c8fc52c" src="https://cdn.kkiapay.me/k.js"></script>
 
                                     <div class="mt-4 mb-5">
                                       <a id="lienWhatsApp" href="#" class="kkiapay-button btn btn-primary">Payer mon abonnement <i class="fa fa-cloud-download"></i></a>
                                     </div>
 
-                                    <!-- Script JavaScript pour détecter la redirection et mettre à jour le champ "paiement" -->
                                     <script>
                                       document.getElementById('lienWhatsApp').addEventListener('click', function(event) {
                                         // Empêcher la redirection immédiate
@@ -84,21 +77,17 @@
                                           if (xhr.readyState === XMLHttpRequest.DONE) {
                                             if (xhr.status === 200) {
                                               console.log('Paiement Kkiapay effectué avec succès.');
-
-                                              // Retirez l'indication de la redirection terminée du stockage local
                                               localStorage.removeItem('redirectionInProgress');
-
-                                              // Créer un lien avec le numéro de téléphone pour WhatsApp
                                               var numeroWhatsApp = '{{ $user->numero }}';
                                               var urlWhatsApp = 'https://wa.me/' + numeroWhatsApp;
-                                              console.log('URL WhatsApp:', urlWhatsApp); // Ajouter un journal ici
+                                              console.log('URL WhatsApp:', urlWhatsApp);
 
                                               // Simuler un clic sur le lien créé
                                               var lienWhatsApp = document.getElementById('lienWhatsApp');
                                               lienWhatsApp.href = urlWhatsApp;
                                               lienWhatsApp.click();
                                             } else {
-                                              console.error('Échec du paiement Kkiapay. Status:', xhr.status); // Ajouter un journal ici
+                                              console.error('Échec du paiement Kkiapay. Status:', xhr.status);
                                             }
                                           }
                                         };

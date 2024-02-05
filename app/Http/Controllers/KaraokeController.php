@@ -196,14 +196,14 @@ public function showprofil()
     }
     
         // KaraokeController.php
-        public function showKaraokeProfile($userId)
+public function showKaraokeProfile($userId)
 {
     $user = User::findOrFail($userId);
 
-    // Vérifie si toutes les colonnes de photos sont égales à null
+// Vérifie si toutes les colonnes de photos sont égales à null
     if ($user->photo1 !== null || $user->photo2 !== null || $user->photo3 !== null || $user->photo4 !== null || $user->photo5 !== null) {
-        return view('karaoke/profilevue', ['user' => $user]);
-    } 
+    return view('karaoke/profilevue', ['user' => $user]);
+}
 }
 
         

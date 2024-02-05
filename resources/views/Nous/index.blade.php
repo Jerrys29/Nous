@@ -1,58 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('templates.app')
 
-<head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title></title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
-  <!-- Favicons -->
-  <link rel="icon" href="{{asset('assets/img/nous_logo.png')}}">
-  <link rel="apple-touch-icon" href="{{asset('assets/img/nous_logo.png')}}">
-  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-  <!-- Vendor CSS Files -->
-  <link href="{{asset('assets/vendor/aos/aos.css')}}" rel="stylesheet">
-  <link href="{{asset('assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
-  <link href="{{asset('assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
-  <link href="{{asset('assets/vendor/boxicons/css/boxicons.min.css')}}" rel="stylesheet">
-  <link href="{{asset('assets/vendor/glightbox/css/glightbox.min.css')}}" rel="stylesheet">
-  <link href="{{asset('assets/vendor/remixicon/remixicon.css')}}" rel="stylesheet">
-  <link href="{{asset('assets/vendor/swiper/swiper-bundle.min.css')}}" rel="stylesheet">
-  <link rel="stylesheet" href="{{asset('assets/css/style.css')}}">
-
-</head>
-
-<body>
-
+@section('document')
   <!-- ======= Hero Section ======= -->
   <section id="hero" class="d-flex align-items-center">
     <!-- ======= Header ======= -->
-    <header id="header" class="fixed-top d-flex align-items-center">
-      <div class="container d-flex align-items-center">
-        <h1 class="logo me-auto"><img src="assets/img/nous_logo.png" alt=""></h1>
-        <!-- Uncomment below if you prefer to use an image logo -->
-        <!-- <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt=""></a>-->
-
-        <nav id="navbar" class="navbar order-last order-lg-0">
-          <ul>
-            <li><a class="nav-link scrollto active" href="{{('/profils')}}">Trouver votre partenaire</a></li>
-            <li class="dropdown"><a href="#"><span>Langues</span> <i class="bi bi-chevron-down"></i></a>
-              <ul>
-                <button class="lang-switch" data-lang="fr">Français</button>
-                <button class="lang-switch" data-lang="en">English</button>
-               
-              </ul>
-            </li>
-          </ul>
-          <i class="bi bi-list mobile-nav-toggle"></i>
-        </nav><!-- .navbar -->
-
-        <a href="{{('/register')}}" class="get-started-btn scrollto">Inscription</a>
-      </div>
-    </header><!-- End Header -->
+ 
     <div class="container" data-aos="zoom-out" data-aos-delay="100">
       <div class="row">
         <div class="col-xl-6">
@@ -177,7 +129,7 @@
 
       </div>
     </section><!-- End Testimonials Section -->
-    <section class="chatbox">
+    <!-- <section class="chatbox">
       <section class="chat-window">
         <article class="msg-container msg-remote" id="msg-1">
           <div class="msg-box">
@@ -217,9 +169,9 @@
           </svg>
         </button>
       </form>
-    </section>
+    </section> -->
 
-    <button id="toggleChat" class="btn btn-danger" style="margin-left: 1400px;margin-bottom: 40px;margin-top: 40px;">Discuter</button>
+    <!-- <button id="toggleChat" class="btn btn-danger" style="margin-left: 1400px;margin-bottom: 40px;margin-top: 40px;">Discuter</button>
 
     <script>
       // Script pour afficher/masquer la section chatbox
@@ -242,68 +194,6 @@
           // Mettez à jour la fenêtre de chat avec le nouveau message
           console.log('Nouveau message:', event.message);
         });
-    </script>
+    </script> -->
   </main><!-- End #main -->
-
-  <!-- ======= Footer ======= -->
-  <footer id="footer">
-
-    <div class="footer-top">
-      <div class="container">
-        <div class="row">
-
-          <div class="col-lg-4 col-md-6 footer-contact">
-            <h3><img src="assets/img/NOUS LOGO 1_Plan de travail 1.png" alt="" style="width: 100px;height: 100px;"></h3>
-          </div>
-
-          <div class="col-lg-3 col-md-6 footer-links">
-            <h4>Liens importants</h4>
-            <ul>
-              <li><i class="bx bx-chevron-right"></i> <a href="{{('/profils')}}">Trouver un partenaire</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="{{('/terms')}}">Termes et Conditions</a></li>
-
-            </ul>
-          </div>
-
-
-          <div class="col-lg-5 col-md-6 footer-newsletter">
-
-            <div>
-              <a href="{{('/offre')}}" class="btn-get-started scrollto">ESPACE KARAOKE</a>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <div class="container d-md-flex py-4">
-
-      <div class="me-md-auto text-center text-md-start">
-        <div class="copyright">
-          &copy; Copyright <strong><span>NOUS</span></strong>. Tous droits réservés
-        </div>
-      </div>
-      <div class="social-links text-center text-md-end pt-3 pt-md-0">
-        <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
-        <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
-        <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
-        <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
-        <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
-      </div>
-    </div>
-  </footer><!-- End Footer -->
-
-  <script src="{{asset('assets/vendor/purecounter/purecounter_vanilla.js')}}"></script>
-  <script src="{{asset('assets/vendor/aos/aos.js')}}"></script>
-  <script src="{{asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-  <script src="{{asset('assets/vendor/glightbox/js/glightbox.min.js')}}"></script>
-  <script src="{{asset('assets/vendor/isotope-layout/isotope.pkgd.min.js')}}"></script>
-  <script src="{{asset('assets/vendor/swiper/swiper-bundle.min.js')}}"></script>
-  <script src="{{asset('assets/vendor/php-email-form/validate.js')}}"></script>
-  <!-- Template Main JS File -->
-  <script src="{{asset('assets/js/main.js')}}"></script>
-  <script src="https://cdn.kkiapay.me/k.js"></script>
-</body>
-
-</html>
+@endsection

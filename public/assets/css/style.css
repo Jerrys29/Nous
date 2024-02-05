@@ -125,6 +125,7 @@ h6 {
   font-size: 14px;
   font-weight: 600;
   display: inline-block;
+  width: 140px;
 }
 
 .get-started-btn:hover {

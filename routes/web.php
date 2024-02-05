@@ -52,9 +52,8 @@ Route::post('/store-images5', 'App\Http\Controllers\NousController@storephoto5')
 
 Route::post('/like-profile/{profile_id}', 'App\Http\Controllers\NousController@likeProfile')->name('like-profile');
 Route::post('/unlike-profile/{profile_id}', 'App\Http\Controllers\NousController@unlikeProfile')->name('unlike-profile');
+Route::post('/logout', 'App\Http\Controllers\NousController@logout')->name('logout');
 
-// webhook
-// routes/web.php
 
 Route::get('/mettre-a-jour-paiement','App\Http\Controllers\NousController@mettreAJourPaiement');
 
