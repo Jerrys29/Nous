@@ -13,8 +13,10 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View as FacadesView;
+use Illuminate\Validation\Rule;
 
 class NousController extends Controller
 {
@@ -27,40 +29,66 @@ class NousController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string',
+            'email' => 'nullable|email|unique:users,email',
             'pseudo' => 'required|string',
             'town' => 'required|string',
-            'birthdate' => 'required|date',
+            'birthdate' => [
+                'required',
+                'date',
+                'before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
+            ],
             'birthplace' => 'required|string',
+            'genre' => 'required|string',
             'looking_for' => 'required|string',
             'mariatal_status' => 'required|string',
             'hair_color' => 'required|string',
             'eyes_color' => 'required|string',
-            'numero' => 'required|string',
+            'numero' => [
+                'required',
+                'string',
+                Rule::unique('users', 'numero')
+            ],
             'password' => 'required|string',
             'origin_country' => 'required|string',
-
         ]);
-
-        $user = new User;
-        $user->name = $validatedData['name'];
-        $user->pseudo = $validatedData['pseudo'];
-        $user->town = $validatedData['town'];
-        $user->birthdate = $validatedData['birthdate'];
-        $user->birthplace = $validatedData['birthplace'];
-        $user->looking_for = $validatedData['looking_for'];
-        $user->mariatal_status = $validatedData['mariatal_status'];
-        $user->hair_color = $validatedData['hair_color'];
-        $user->numero = $validatedData['numero'];
-        $user->password = Hash::make($validatedData['password']); // Hachage du mot de passe
-        $user->origin_country = $validatedData['origin_country'];
-        $user->role = 'nous';
+    
         $birthdate = new DateTime($validatedData['birthdate']);
         $today = new DateTime('now');
         $age = $birthdate->diff($today)->y;
-        $user->age = $age;
-        $user->save();
-        return redirect()->route('login');
+    
+        try {
+            $userData = [
+                'name' => $validatedData['name'],
+                'pseudo' => $validatedData['pseudo'],
+                'town' => $validatedData['town'],
+                'birthdate' => $validatedData['birthdate'],
+                'birthplace' => $validatedData['birthplace'],
+                'genre' => $validatedData['genre'],
+                'looking_for' => $validatedData['looking_for'],
+                'mariatal_status' => $validatedData['mariatal_status'],
+                'hair_color' => $validatedData['hair_color'],
+                'eyes_color' => $validatedData['eyes_color'],
+                'numero' => $validatedData['numero'],
+                'password' => Hash::make($validatedData['password']),
+                'origin_country' => $validatedData['origin_country'],
+                'role' => 'nous',
+                'age' => $age,
+            ];
+    
+            // Inclure le champ email uniquement s'il est fourni
+            if (isset($validatedData['email'])) {
+                $userData['email'] = $validatedData['email'];
+            }
+    
+            User::create($userData);
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->withErrors(['error' => 'Une erreur s\'est produite lors de l\'enregistrement. Veuillez réessayer.']);
+        }
+    
+        return redirect()->route('login')->with('success', 'Inscription réussie! Vous pouvez maintenant vous connecter.');
     }
+    
+    
 
     public function edit(Request $request)
     {
@@ -76,28 +104,68 @@ class NousController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('numero', 'password');
-
+        $identifier = $request->input('numero');
+        $field = filter_var($identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'numero';
+    
+        $credentials = [
+            $field => $identifier,
+            'password' => $request->input('password'),
+        ];
+    
         if (Auth::attempt($credentials)) {
             return redirect()->route('edit');
         }
-
+    
         return back()->withErrors(['login' => 'Les informations d\'identification sont incorrectes.']);
     }
+    
 
+    public function logout()
+    {
+        Auth::logout();
+
+        return redirect('/');
+    }
     public function view()
     {
-
-        $loggedInUser = auth()->user();
-
-        $users = User::whereNotNull('photo1')
-            ->where('looking_for', '=', $loggedInUser->genre)
-            ->where('role', '=', 'nous')
-            ->where('interests', 'like', '%' . $loggedInUser->interests . '%')
-            ->where('id', '!=', $loggedInUser->id)
-            ->get();
-        return view('nous.profils', ['users' => $users]);
+        if (auth()->check()) {
+            $loggedInUser = auth()->user();
+    
+            $users = User::whereNotNull('photo1')
+                ->where('role', 'nous')
+                ->where('id', '!=', $loggedInUser->id);
+    
+            if ($loggedInUser->looking_for == 'lesdeux') {
+                $users->where(function ($query) use ($loggedInUser) {
+                    $query->where('looking_for', 'homme')
+                          ->orWhere('looking_for', 'femme');
+                });
+            } else {
+                $users->where('looking_for', $loggedInUser->looking_for);
+            }
+                if ($loggedInUser->interests) {
+                $users->where('interests', 'like', '%' . $loggedInUser->interests . '%');
+            }
+    
+            $users = $users->get();
+                if ($users->isEmpty()) {
+                $fallbackUsers = User::whereNotNull('photo1')
+                    ->where('role', 'nous')
+                    ->where('looking_for', $loggedInUser->genre)
+                    ->where('id', '!=', $loggedInUser->id)
+                    ->get();
+    
+                return view('nous.profils', ['users' => $fallbackUsers]);
+            }
+    
+            return view('nous.profils', ['users' => $users]);
+        } else {
+            return redirect()->route('login')->with('error', 'Vous devez être connecté pour accéder à cette page.');
+        }
     }
+    
+    
+
     public function detail($userId)
     {
         $user = User::findOrFail($userId);
@@ -239,12 +307,7 @@ class NousController extends Controller
     public function likeProfile($profile_id)
     {
         $user = auth()->user();
-        $users = User::whereNotNull('photo1')
-            ->where('looking_for', '=', $user->genre)
-            ->where('role', '=', 'nous')
-            ->where('interests', 'like', '%' . $user->interests . '%')
-            ->where('id', '!=', $user->id)
-            ->get();
+     
         $like = new Like([
             'liked_by' => $user->id,
             'like_to' => $profile_id,
@@ -256,7 +319,7 @@ class NousController extends Controller
             $notification = auth()->user()->name . ' a aimé votre profil.';
             Session::push("notifications_{$profileOwner->id}", $notification);
         }
-        return view('nous.profils', ['users' => $users]);
+     return redirect()->back();
     }
 
     public function unlikeProfile($profileId)
@@ -270,24 +333,19 @@ class NousController extends Controller
             ->get();
         if ($user) {
             $user->likedProfiles()->detach($profileId);
-            return view('nous.profils', ['users' => $users]);
+         return redirect()->back();
         }
-        return view('nous.profils', ['users' => $users]);
+     return redirect()->back();
     }
 
     public function mettreAJourPaiement(Request $request)
     {
-        // Récupérer l'utilisateur connecté
         $user = Auth::user();
-
-        // Vérifier si l'utilisateur est connecté et si le paiement a été réussi
         if ($user) {
-            // Mettre à jour le champ "paiement" de l'utilisateur
             DB::table('users')->where('id', $user->id)->update(['paiement' => 1]);
+            return redirect()->back();
 
-            return response()->json(['paiementReussi' => true], 200);
         }
-
-        return response()->json(['paiementReussi' => false], 400);
+      return response()->json(['paiementReussi' => false], 400);
     }
 }
