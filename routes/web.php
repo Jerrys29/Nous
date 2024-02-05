@@ -1,10 +1,7 @@
 <?php
 
 use App\Http\Controllers\NousController;
-
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\karaokeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,63 +55,32 @@ Route::post('/logout', 'App\Http\Controllers\NousController@logout')->name('logo
 Route::get('/mettre-a-jour-paiement','App\Http\Controllers\NousController@mettreAJourPaiement');
 
 
-/* A D M I N */
-
-
-Route::get('admin', function () {
-    return view('Admin/login');
-});
-Route::get('utilisateurs', function () {
-    return view('Admin/users');
-});
 
 
 
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
-Route::get('/', function () {
-    return view('Nous/index');
-});
-Route::get('profils', function () {
-    return view('Nous/profils');
-});
-Route::get('profil', function () {
-    return view('Nous/detail');
-});
-Route::get('register', function () {
-    return view('Nous/register');
-});
-Route::get('terms', function () {
-    return view('Nous/terms');
-});
 
 
 /*E S P A C E K A R A O K E */
+
+
+
 Route::get('kprofil', 'App\Http\Controllers\karaokeController@showprofil')->name('kprofil');
 
 
 
 
-Route::get('karaoke', function () {
-    return view('Karaoke/index');
-});
+// Route::get('karaoke', function () {
+//     return view('Karaoke/index');
+// });
 
 Route::get('inscription', function () {
     return view('Karaoke/InscriKaraoke');
 });
-Route::get('connection', function () {
-    return view('Karaoke/login')->name('connection');;
-});
+// Route::get('connection', function () {
+//     return view('Karaoke/login')->name('connection');;
+// });
 Route::get('formulaire', function () {
     return view('Karaoke/formulaire');
 });
@@ -136,15 +102,15 @@ Route::get('/index', 'App\Http\Controllers\karaokeController@showAllKaraokeProfi
 
 
 Route::post('InscriKaraoke/','App\Http\Controllers\karaokeController@register')->name('filleinscrip');
-Route::get('login/', 'App\Http\Controllers\karaokeController@show')->name('login');
+Route::get('connection/', 'App\Http\Controllers\karaokeController@show')->name('connection');
 Route::get('/check-phone-number/{phoneNumber}', 'KaraokeController@checkPhoneNumber');
 
 //auth
-Route::post('/login', 'App\Http\Controllers\karaokeController@loginUser')->name('login');
+ Route::post('/login', 'App\Http\Controllers\karaokeController@loginUser')->name('login');
 
 Route::post('/karaoke/update-name/{id}','App\Http\Controllers\karaokeController@updateName')->name('update_name');
-    Route::post('/karaoke/update-numero/{id}', 'App\Http\Controllers\karaokeController@updateNumero')->name('update_numero');
-    Route::post('/karaoke/update-pseudo/{id}', 'App\Http\Controllers\karaokeController@updatPseudo')->name('update_pseudo');
+Route::post('/karaoke/update-numero/{id}', 'App\Http\Controllers\karaokeController@updateNumero')->name('update_numero');
+Route::post('/karaoke/update-pseudo/{id}', 'App\Http\Controllers\karaokeController@updatPseudo')->name('update_pseudo');
 //profile view
 
 
@@ -179,3 +145,5 @@ Route::post('/unblock/user/{id}', 'App\Http\Controllers\AdminController@unblockU
 
 Route::get('utilisateurs', 'App\Http\Controllers\AdminController@showAllUsers')->name('utilisateurs');
 Route::post('/payment', 'App\Http\Controllers\karaokeController@processPayment')->name('payment.form');
+Route::post('/deconnexion', 'App\Http\Controllers\karaokeController@Deco')->name('deconnexion');
+Route::get('/deconnexion', 'App\Http\Controllers\AdminController@Deco')->name('Deco');

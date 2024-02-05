@@ -53,7 +53,7 @@ class KaraokeController extends Controller
     
         // Redirigez ou effectuez d'autres actions après l'enregistrement
     
-        return redirect()->route('login')->with('success', 'Félicitation !! Votre compte sera activé dans les plus brefs délais. Revenez dans 24h.');
+        return redirect()->route('connection')->with('success', 'Félicitation !! Votre compte sera activé dans les plus brefs délais. Revenez dans 24h.');
     }
     
 
@@ -62,7 +62,7 @@ class KaraokeController extends Controller
         // Récupérer l'utilisateur connecté
         $user = Auth::user();
 
-        return view('karaoke/login', compact('user'));
+        return view('karaoke/connection', compact('user'));
     }
 
     public function showRegistration()
@@ -81,36 +81,37 @@ class KaraokeController extends Controller
 
 //connection utilisateur
 
-public function loginUser(Request $request)
-{
-    $credentials = $request->only('numero', 'password');
+    public function loginUser(Request $request)
+    {
+        $credentials = $request->only('numero', 'password');
+        $credentials['numero'] = preg_replace('/\s+/', '', $credentials['numero']);
 
-    if (auth()->attempt($credentials)) {
-        $user = auth()->user();
+        if (auth()->attempt($credentials)) {
+            $user = auth()->user();
 
-        if ($user->active == 1) {
-            // gérer les différents rôles et rediriger en conséquence
-            if ($user->role == 'karaoke') {
-                $request->session()->regenerate();
-                return redirect()->route('kprofil');
-            } elseif ($user->role == 'admin') {
-                $request->session()->regenerate();
-                return redirect()->route('utilisateurs'); // Redirigez vers la page admin si le rôle est admin
+            if ($user->active == 1) {
+                // gérer les différents rôles et rediriger en conséquence
+                if ($user->role == 'karaoke') {
+                    $request->session()->regenerate();
+                    return redirect()->route('kprofil');
+                } elseif ($user->role == 'admin') {
+                    $request->session()->regenerate();
+                    return redirect()->route('utilisateurs'); // Redirigez vers la page admin si le rôle est admin
+                } else {
+                    // Redirigez vers la page de connexion avec un message d'erreur
+                    auth()->logout();
+                    return redirect()->route('connection')->withErrors(['credentials' => 'Erreur de connexion.'])->withInput();
+                }
             } else {
-                // Redirigez vers la page de connexion avec un message d'erreur
+                // Si le champ 'active' n'est pas égal à 1, l'utilisateur n'est pas autorisé
                 auth()->logout();
-                return redirect()->route('login')->withErrors(['credentials' => 'Erreur de connexion.'])->withInput();
+                return redirect()->route('connection')->withErrors(['active' => 'Votre compte n\'est pas actif. Veuillez revenir dans quelques heures.'])->withInput();
             }
         } else {
-            // Si le champ 'active' n'est pas égal à 1, l'utilisateur n'est pas autorisé
-            auth()->logout();
-            return redirect()->route('login')->withErrors(['active' => 'Votre compte n\'est pas actif. Veuillez revenir dans quelques heures.'])->withInput();
+            // Si l'authentification échoue, redirigez avec des erreurs
+            return redirect()->route('connection')->withErrors(['credentials' => 'Identifiants invalides'])->withInput();
         }
-    } else {
-        // Si l'authentification échoue, redirigez avec des erreurs
-        return redirect()->route('login')->withErrors(['credentials' => 'Identifiants invalides'])->withInput();
     }
-}
 
 public function showprofil()
     { 
@@ -131,7 +132,7 @@ public function showprofil()
             return view('profilperso',  compact('user'));
         } else {
             // Rediriger ou afficher un message d'erreur si l'utilisateur n'est pas connecté
-            return redirect('/login')->with('error', 'Vous devez être connecté pour accéder à cette page.');
+            return redirect('/connection')->with('error', 'Vous devez être connecté pour accéder à cette page.');
         }
     }
 
@@ -189,22 +190,34 @@ public function showprofil()
     public function showAllKaraokeProfiles()
     {
         // Récupérer tous les utilisateurs ayant le rôle "karaoke" et dont le compte est activé
-        $users = User::where('role', 'karaoke')->where('active', 1)->get();
-    
+        // avec au moins un profil et au moins une photo associée
+        $users = User::where('role', 'karaoke')
+                    ->where('active', 1)
+                    ->where(function ($query) {
+                        // Vérifier s'il y a au moins une photo non nulle
+                        $query->whereNotNull('photo1')
+                              ->orWhereNotNull('photo2')
+                              ->orWhereNotNull('photo3')
+                              ->orWhereNotNull('photo4')
+                              ->orWhereNotNull('photo5');
+                    })
+                    ->get();
+        
         // Passer les données à la vue
-        return view('karaoke/index', compact('users'));
+        return view('karaoke.index', compact('users'));
     }
     
+    
+    
         // KaraokeController.php
-public function showKaraokeProfile($userId)
-{
-    $user = User::findOrFail($userId);
-
-// Vérifie si toutes les colonnes de photos sont égales à null
-    if ($user->photo1 !== null || $user->photo2 !== null || $user->photo3 !== null || $user->photo4 !== null || $user->photo5 !== null) {
-    return view('karaoke/profilevue', ['user' => $user]);
-}
-}
+        public function showKaraokeProfile($userId)
+        {
+            $user = User::findOrFail($userId);
+        
+            // Afficher la vue même si toutes les colonnes de photos sont null
+            return view('karaoke/profilevue', ['user' => $user]);
+        }
+        
 
         
 
@@ -229,6 +242,11 @@ public function processPayment(Request $request)
     return redirect()->back()->with('success', 'Paiement enregistré avec succès.');
 }
     
+        public function Deco()
+        {
+            Auth::logout();
 
+            return redirect('/connection');
+        }
 
 }

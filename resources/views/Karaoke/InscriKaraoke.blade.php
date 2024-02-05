@@ -86,7 +86,7 @@
                             </div><br>
                             
 
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <select name="origin_country" class="origin_country" id="origin_country" placeholder="Pays d'Origine" required>
                                     <option value="" disabled selected hidden>Pays d'Origine</option>
                                     <option value="Benin">Bénin</option>
@@ -105,6 +105,29 @@
                                 <span class="select-btn">
                                     <i class="zmdi zmdi-chevron-down"></i>
                                 </span>
+                            </div> -->
+                            <div class="form-group">
+                                <select name="origin_country" class="form-control" id="origin_country" placeholder="Pays d'Origine" class="form-control" required>
+                                    <option value="" disabled selected hidden>Pays d'Origine</option>
+                                    <option value="Benin">Bénin</option>
+                                    <option value="Togo">Togo</option>
+                                    <option value="Ivoire">Côte d'Ivoire</option>
+                                    <option value="BurkinaFaso">Burkina Faso</option>
+                                    <option value="CapeVert">Cap Vert</option>
+                                    <option value="Gambia">Gambie</option>
+                                    <option value="Ghana">Ghana</option>
+                                    <option value="Guinea">Guinée</option>
+                                    <option value="GuineaBissau">Guinée-Bissau</option>
+                                    <option value="Mali">Mali</option>
+                                    <option value="Niger">Niger</option>
+                                    <option value="Nigeria">Nigeria</option>
+                                    <option value="Senegal">Sénégal</option>
+
+                                </select>
+                                <span class="select-btn">
+                                    <i class="zmdi zmdi-chevron-down"></i>
+                                </span>
+
                             </div>
                             <div class="form-group" id="error-message-step-2"></div>
 
@@ -117,6 +140,8 @@
     
                     
                     </form>
+                    <a href="{{('/connection')}}"> <p class="w-100 text-center">&mdash; ou Se connecter &mdash;</p></a>
+
                 </div>
             </div>
         </div>

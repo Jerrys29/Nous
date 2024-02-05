@@ -35,7 +35,7 @@
 
 @yield('document')
 
-@include('components.footerka')
+@include('components.footer')
 
 
 <!-- Inclure vos fichiers locaux après les scripts externes -->

@@ -68,5 +68,10 @@
             </li>
 
         </ul>
+            <form method="POST" action="{{ route('Deco') }}">
+                @csrf
+                <button type="submit" class="get-started-btn">Déconnexion</button>
+            </form>
+    
     </div>
 </aside>

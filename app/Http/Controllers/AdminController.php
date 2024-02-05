@@ -137,7 +137,12 @@ class AdminController extends Controller
    
 
 
-
+    public function Deco()
+    {
+        Auth::logout();
+    
+        return redirect('/connection');
+    }
      
 
 }
