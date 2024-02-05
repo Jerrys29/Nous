@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Paiements;
 use Illuminate\Support\Facades\Hash; // Assurez-vous d'importer la classe Hash
 use Illuminate\Validation\Rule; // Assurez-vous d'importer la classe Rule pour la validation
 
@@ -26,35 +27,35 @@ class KaraokeController extends Controller
             'birthplace' => 'required|string',
             'origin_country' => 'required|string',
         ]);
-
-        if (User::where('numero', $request->input('numero'))->exists()) {
+    
+        // Nettoyez le numéro en supprimant les espaces en trop
+        $cleanedNumero = preg_replace('/\s+/', '', $request->input('numero'));
+    
+        if (User::where('numero', $cleanedNumero)->exists()) {
             $errorMessage = 'Impossible d\'utiliser ce numéro pour vous inscrire. Veuillez utiliser un autre numéro.';
             return redirect()->route('inscription')->withErrors(['customError' => $errorMessage]);
         }
-
-
-         
-   
-
+    
         // Utilisez la fonction Hash::make pour hacher le mot de passe avant de l'enregistrer dans la base de données
         $hashedPassword = Hash::make($request->input('password'));
-
+    
         // Créez un nouvel utilisateur avec le rôle 'karaoke' et les données du formulaire
         $user = User::create([
             'name' => $request->input('name'),
             'password' => $hashedPassword,
-            'numero' => $request->input('numero'),
+            'numero' => $cleanedNumero, // Utilisez le numéro nettoyé
             'pseudo' => $request->input('pseudo'),
             'birthdate' => $request->input('birthdate'),
             'birthplace' => $request->input('birthplace'),
             'origin_country' => $request->input('origin_country'),
             'role' => 'karaoke',
         ]);
-
+    
         // Redirigez ou effectuez d'autres actions après l'enregistrement
-
+    
         return redirect()->route('login')->with('success', 'Félicitation !! Votre compte sera activé dans les plus brefs délais. Revenez dans 24h.');
     }
+    
 
     public function show()
     {
@@ -80,7 +81,7 @@ class KaraokeController extends Controller
 
 //connection utilisateur
 
-    public function loginUser(Request $request)
+public function loginUser(Request $request)
 {
     $credentials = $request->only('numero', 'password');
 
@@ -91,7 +92,10 @@ class KaraokeController extends Controller
             // gérer les différents rôles et rediriger en conséquence
             if ($user->role == 'karaoke') {
                 $request->session()->regenerate();
-                return redirect()->route('profil'); // 
+                return redirect()->route('kprofil');
+            } elseif ($user->role == 'admin') {
+                $request->session()->regenerate();
+                return redirect()->route('utilisateurs'); // Redirigez vers la page admin si le rôle est admin
             } else {
                 // Redirigez vers la page de connexion avec un message d'erreur
                 auth()->logout();
@@ -131,28 +135,100 @@ public function showprofil()
         }
     }
 
-    public function updateProfile(Request $request)
+    public function updateName(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+        ]);
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'Utilisateur non trouvé.');
+        }
+
+        $user->update($validatedData);
+
+        return redirect()->back()->with('success', 'Nom mis à jour avec succès.');
+    }
+
+    public function updateNumero(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'numero' => 'required|string',
+        ]);
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'Utilisateur non trouvé.');
+        }
+
+        $user->update($validatedData);
+
+        return redirect()->back()->with('success', 'Numéro mis à jour avec succès.');
+    }
+
+    public function updatePseudo(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'pseudo' => 'required|string',
+        ]);
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'Utilisateur non trouvé.');
+        }
+
+        $user->update($validatedData);
+
+        return redirect()->back()->with('success', 'Pseudo mis à jour avec succès.');
+    }
+
+    public function showAllKaraokeProfiles()
+    {
+        // Récupérer tous les utilisateurs ayant le rôle "karaoke" et dont le compte est activé
+        $users = User::where('role', 'karaoke')->where('active', 1)->get();
+    
+        // Passer les données à la vue
+        return view('karaoke/index', compact('users'));
+    }
+    
+        // KaraokeController.php
+        public function showKaraokeProfile($userId)
 {
-    // Validez les données du formulaire, assurez-vous d'ajouter des règles de validation appropriées
-    $validatedData = $request->validate([
-        'name' => 'required|string|max:255',
-        'pseudo' => 'required|string|max:255',
-        'birthdate' => 'nullable|date',
-        'birthplace' => 'nullable|string|max:255',
-        'origin_country' => 'nullable|string|max:255',
-        'phone' => 'nullable|string|max:20',
-    ]);
+    $user = User::findOrFail($userId);
 
-    // Mettez à jour les informations de l'utilisateur
-    $user = Auth::user();
-    /** @var \App\Models\User $user **/
-    $user->update($validatedData);
-
-    // Redirigez l'utilisateur vers la page du profil ou une autre page appropriée
-    return redirect()->route('profile')->with('success', 'Profil mis à jour avec succès!');
+    // Vérifie si toutes les colonnes de photos sont égales à null
+    if ($user->photo1 !== null || $user->photo2 !== null || $user->photo3 !== null || $user->photo4 !== null || $user->photo5 !== null) {
+        return view('karaoke/profilevue', ['user' => $user]);
+    } 
 }
 
+        
 
+
+public function processPayment(Request $request)
+{
+    // Validez les données du formulaire de paiement
+    $request->validate([
+        'name' => 'required|string',
+        'phone' => 'required|numeric',
+    ]);
+
+    // Créez une nouvelle entrée dans la table des paiements
+    $payment = Paiements::create([
+        'user_id' => auth()->id(), // L'ID de l'utilisateur connecté
+        'payee_name' => $request->input('name'),
+        'payee_phone' => $request->input('phone'),
+    ]);
+
+    // Vous pouvez également faire d'autres actions ici, telles que rediriger l'utilisateur ou afficher un message de succès.
+
+    return redirect()->back()->with('success', 'Paiement enregistré avec succès.');
+}
     
+
 
 }

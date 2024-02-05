@@ -1,4 +1,4 @@
-@extends('templates.admin')
+  @extends('templates.admin')
 @section('document')
   <main class="main-content position-relative border-radius-lg ">
     <!-- Navbar -->
@@ -29,12 +29,12 @@
               <table class="table align-items-center mb-0">
             <thead>
                 <tr>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-20">Nom Complet</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-20 ps-2">Numéro</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-20 ps-2">Pseudo</th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-20">Ville</th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-20">Provenance</th>
-
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nom Complet</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Numéro</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Pseudo</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Ville</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Etat</th>
+                    <th class="text-secondary opacity-7">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -56,12 +56,22 @@
                         <td class="align-middle text-center">
                             <span class="text-secondary text-xs font-weight-bold">{{ $user->town }}</span>
                         </td>
-                       
                         <td class="align-middle text-center text-sm">
-                            <p class="text-xs font-weight-bold mb-0">{{ $user->role }}</p>
+                            <span class="badge badge-sm {{ $user->active ? 'bg-gradient-success' : 'bg-gradient-secondary' }}">
+                                {{ $user->active ? 'Activé' : 'Désactivé' }}
+                            </span>
                         </td>
-                    
-                    </tr>
+                        <td class="align-middle">
+                        <form method="post" action="{{ route('unblock.user', ['id' => $user->id]) }}">
+                                    @csrf
+                                    @method('POST')
+                                    @if(!$user->active)
+                                        <button type="submit" class="btn btn-success btn-sm">Débloquer</button>
+                                    @else
+                                        <button type="button" class="btn btn-success btn-sm" disabled>Débloquer</button>
+                                    @endif
+                                </form>
+                        </td>
                 @endforeach
             </tbody>
         </table>

@@ -141,6 +141,7 @@ class NousController extends Controller
         $user->update($validatedData);
         return redirect()->back()->with('success', 'Informations mises à jour avec succès.');
     }
+    
     public function updateage(Request $request, $id)
     {
         $validatedData = $request->validate([

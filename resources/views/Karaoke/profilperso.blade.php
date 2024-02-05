@@ -1,450 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
 
-  @extends('templates.karaoke')
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>NOUS</title>
+    <!-- Favicons -->
+    <link href="{{ asset('assets/img/nous_logo.png') }}" rel="icon">
+<link href="{{ asset('assets/img/nous_logo.png') }}" rel="apple-touch-icon">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+<!-- Vendor CSS Files -->
+<link href="{{ asset('assets/vendor/aos/aos.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+<!-- Template Main CSS File -->
+<link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
 
-  @section('document')
-    <!-- Ajout du style pour les images -->
     <style>
-      .user-images {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        gap: 10px;
-      }
+        .edit-icon {
+            cursor: pointer;
+        }
 
-      .image-container {
-        position: relative;
-      }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
 
-      .user-images img {
-        width: calc(25% - 10px);
-        max-width: 100%;
-        height: auto;
-      }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
 
-      .user-images img:first-child {
-        width: 100%;
-      }
-
-      .edit-image-btn {
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-      }
-
-      #modifyImagesBtn {
-        margin-top: 20px;
-      }
-
-      #imageModal .modal-body {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        max-height: 60vh;
-        overflow-y: auto;
-      }
-
-      #imageModal .modal-body img {
-        width: calc(33.33% - 10px);
-        max-width: 100%;
-        height: auto;
-      }
-
-      #imageModal .modal-body .edit-image-btn {
-        position: absolute;
-        bottom: 5px;
-        right: 5px;
-        
-      }
-      
-      .editable-content {
-        border: 1px solid #ced4da;
-        border-radius: 0.1rem;
-        padding: 0.375rem 0.75rem;
-        margin-bottom: 1rem;
-        display: inline-block;
-        /* Ensures the content expands to fill the available space */
-      }
-
-      .editable-content button {
-        margin-left: 1rem;
-      }
-      
-      body {
-        background-color: #f8f9fa;
-        font-family: 'Open Sans', sans-serif;
-      }
-      
-      section {
-        padding: 60px 0;
-      }
-      .user-profile h2 {
-        color: #007bff;
-      }
-      .user-profile {
-        background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-      }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
     </style>
-  </head>
-  <body>
+</head>
 
-    <section class="d-flex align-items-center">
-      <!-- ======= Header ======= -->
-      <header id="header" class="fixed-top d-flex align-items-center">
-        <div class="container d-flex align-items-center">
-          <h1 class="logo me-auto"><img src="assets/img/nous_logo.png" alt=""></h1>
-        </div>
-      </header><!-- End Header -->
-    </section><!-- End Hero -->
+<body>
+    @if($errors->any())
+    <div class="alert alert-danger">
+        {{ $errors->first() }}
+    </div>
+    @endif
 
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @endif
+    @include('components.headerKa')
     <main id="main">
-      <section id="user-profile" class="user-profile">
-        <div class="container">
-          <div class="row">
+        <section id="user-profile" class="user-profile">
+            <div class="container">
+                <div class="row">
 
-              <div class="col-lg-4">
-              @auth
-                  <!-- Contenu visible uniquement pour les utilisateurs connectés -->
-                  <h4>  {{ Auth::user()->name }}</h4>
-              @endauth
-                
-                  <div class="user-images">
-                    <img src="assets\img\tabs-1.jpg" alt="Image 1">
-                    <img src="assets\img\tabs-2.jpg" alt="Image 2">
-                    <img src="assets\img\tabs-3.jpg" alt="Image 3">
-                    <img src="assets\img\tabs-4.jpg" alt="Image 4">
-                    <img src="assets\img\tabs-4.jpg" alt="Image 5">
-                  </div>
-                  <div class="text-center">
-                      <!-- Bouton "Modifier les images"  -->
-                      <button id="modifyImagesBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageModal">Modifier les images</button>
-                  </div>
-                                    
-              </div>
+                    <div class="col-lg-4">
+                        <h2>{{ $user->pseudo }}</h2>
+                        <div class="user-images">
+                            <img src="{{ asset('storage/' . $user->photo1) }}" alt="User Photo 1">
+                            <img src="{{ asset('storage/' . $user->photo2) }}" alt="User Photo 2">
+                            <img src="{{ asset('storage/' . $user->photo3) }}" alt="User Photo 3">
+                            <img src="{{ asset('storage/' . $user->photo4) }}" alt="User Photo 4">
+                            <img src="{{ asset('storage/' . $user->photo5) }}" alt="User Photo 5">
+                        </div>
+                        <div class="text-center">
+                            <button id="modifyImagesBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageModal">Modifier les images</button>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 ">
+                        <!-- Colonne pour les informations de l'utilisateur -->
+                        <h2 style="margin-top: 3rem;">Informations Personnelles</h2>
 
-            <div class="col-lg-8 ">
-              <!-- Colonne pour les informations de l'utilisateur -->
-              <h2 style="margin-top: 2rem;">informations Personnelles</h2>
-              <div class="mb-3">
-                <label><h5>Pseudo :</h5></label>
-                <span id="userPseudo">{{ $user->pseudo }}</span>
-                <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" onclick="editInformation('userName')">Modifier</button>
-              </div>
-              <div class="mb-3">
-                <label><h5>Nom :</h5></label>
-                <span id="userName">{{ $user->name }}</span>
-                <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" onclick="editInformation('userName')">Modifier</button>
-              </div>
-            
-                <div class="mb-3">
-                  <label><h5>Tel:</h5></label>
-                  <span id="userPhone">{{ $user->numero }}</span>
-                  <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" onclick="editInformation('userPhone')">Modifier</button>
+
+                        <div class="mb-3">
+                            <label>
+                                <h5>Pseudo:</h5>
+                            </label>
+                            <span id="userName">{{ $user->pseudo }}</span>
+                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editPseudo" onclick="editInformation('userName')">Modifier</button>
+                            <div class="modal fade" id="editPseudo" tabindex="-1" aria-labelledby="editPseudoLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editPseudoLabel">Modifier l'information</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form method="post" action="{{ route('update-pseudo', ['id' => $user->id]) }}">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="modal-body">
+                                                <label for="editField">Nouvelle valeur:</label>
+                                                <input type="text" name="pseudo" value="{{ $user->pseudo }}" class="form-control" required>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
+                                                <button type="submit" class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="mb-3">
+                            <label>
+                                <h5>Tel:</h5>
+                            </label>
+                            <span id="userPhone">{{ $user->numero }}</span>
+                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editNumero" onclick="editInformation('userPhone')">Modifier</button>
+                            <div class="modal fade" id="editNumero" tabindex="-1" aria-labelledby="editNumeroLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editNumeroLabel">Modifier l'information</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form method="post" action="{{ route('update-numero', ['id' => $user->id]) }}">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="modal-body">
+                                                <label for="editField">Nouvelle valeur:</label>
+                                                <input type="text" id="editField" name="numero" class="form-control">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
+                                                <button type="submit" class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>
+                                <h5>Nom:</h5>
+                            </label>
+                            <span id="userName">{{ $user->name }}</span>
+                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editName" onclick="editInformation('userName')">Modifier</button>
+                            <div class="modal fade" id="editName" tabindex="-1" aria-labelledby="editNameLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editNameLabel">Modifier l'information</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form method="post" action="{{ route('update-name', ['id' => $user->id]) }}">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="modal-body">
+                                                <label for="editField">Nouvelle valeur:</label>
+                                                <input type="text" name="name" value="{{ $user->name }}" class="form-control" required>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
+                                                <button type="submit" class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        </div>
+                        
+                        </div>
+                       
+                        </div>
+
+                       
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              
-              
-            
-
-            
-              <!-- 
-                <div class="mb-3">
-                  <label><h5>Centres d'intérêt</h5></label>
-                  <div id="interestsView" class="editable-content">
-                    <span id="interests">Intérêt 1, Intérêt 2</span>
-                    <button class="btn btn-secondary btn-sm" onclick="editBiography('interests')">Modifier</button>
-                  </div>
-                </div>
-              </div> -->
             </div>
-            <!-- Colonne pour les images de l'utilisateur -->
-            
-          </div>
-        </div>
-      </section>
+        </section>
     </main>
 
-    <div class="modal fade" id="editImageModal" tabindex="-1" aria-labelledby="editImageModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editImageModalLabel">Modifier l'image</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <label for="editImageInput">Nouvelle image:</label>
-            <input type="file" id="editImageInput" name="editImageInput" class="form-control">
-            <button class="btn btn-primary" onclick="uploadImage()">Uploader</button>
-    
-            <!-- Cropper.js -->
-            <div class="image-container">
-              <img src="assets\img\tabs-1.jpg" alt="Image 1" class="image-cropper">
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Modifier les images</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="{{ route('store-images1') }}" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                    <div class="modal-body">
+
+                        <div class="image-container">
+                            <img src="{{ asset('storage/' . $user->photo1) }}" alt="Image 1" class="image-cropper" data-image-index="1">
+                            <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="1">
+                                Choisir une image
+                                <input type="file" name="photo1" class="image-input" style="display:none;">
+                            </label>
+                        </div>
+                 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
+                        <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
+                    </div>
+                </form>
+                <form method="POST" action="{{ route('store-images2') }}" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                    <div class="modal-body">
+
+                        <div class="image-container">
+                            <img src="{{ asset('storage/' . $user->photo2) }}" alt="Image 2" class="image-cropper" data-image-index="2">
+                            <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="2">
+                                Choisir une image
+                                <input type="file" name="photo2" class="image-input" style="display:none;">
+                            </label>
+                        </div>
+                 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
+                        <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
+                    </div>
+                </form>
+                <form method="POST" action="{{ route('store-images3') }}" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                    <div class="modal-body">
+
+                        <div class="image-container">
+                            <img src="{{ asset('storage/' . $user->photo3) }}" alt="Image 3" class="image-cropper" data-image-index="3">
+                            <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="3">
+                                Choisir une image
+                                <input type="file" name="photo3" class="image-input" style="display:none;">
+                            </label>
+                        </div>
+                 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
+                        <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
+                    </div>
+                </form>
+                <form method="POST" action="{{ route('store-images4') }}" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                    <div class="modal-body">
+
+                        <div class="image-container">
+                            <img src="{{ asset('storage/' . $user->photo4) }}" alt="Image 1" class="image-cropper" data-image-index="4">
+                            <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="4">
+                                Choisir une image
+                                <input type="file" name="photo4" class="image-input" style="display:none;">
+                            </label>
+                        </div>
+                 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
+                        <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
+                    </div>
+                </form>
+                <form method="POST" action="{{ route('store-images5') }}" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                    <div class="modal-body">
+
+                        <div class="image-container">
+                            <img src="{{ asset('storage/' . $user->photo5) }}" alt="Image 5" class="image-cropper" data-image-index="5">
+                            <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="5">
+                                Choisir une image
+                                <input type="file" name="photo5" class="image-input" style="display:none;">
+                            </label>
+                        </div>
+                 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
+                        <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
+                    </div>
+                </form>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
-            <button type="button" class="btn btn-primary" onclick="saveImageEdit()">Enregistrer</button>
-          </div>
         </div>
-      </div>
     </div>
 
-    <!-- Ajouter une modal pour l'édition des informations -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editModalLabel">Modifier l'information</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <label for="editField">Nouvelle valeur:</label>
-            <input type="text" id="editField" name="editField" class="form-control">
-            <input type="hidden" id="editFieldName" name="editFieldName">
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
-            <button type="button" class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-
-    <!-- Ajouter une modal pour modifier les images -->
-    <!-- Ajouter une modal pour modifier les images -->
-  <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="imageModalLabel">Modifier les images</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <!-- Vignettes des images avec bouton "Modifier" -->
-            <div class="image-container">
-              <img src="assets\img\tabs-1.jpg" alt="Image 1" class="image-cropper">
-              <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="0">
-                  Choisir une image
-                  <input type="file" class="image-input" style="display:none;" data-image-index="0">
-                  </label>
-            </div>
-            <div class="image-container">
-              <img src="assets\img\tabs-2.jpg" alt="Image 2" class="image-cropper">
-              <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="0">
-                  Choisir une image
-                  <input type="file" class="image-input" style="display:none;" data-image-index="0">
-                  </label>
-            </div>
-            <div class="image-container">
-              <img src="assets\img\tabs-3.jpg" alt="Image 3" class="image-cropper">
-              <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="0">
-                  Choisir une image
-                  <input type="file" class="image-input" style="display:none;" data-image-index="0">
-                  </label>
-            </div>
-            <div class="image-container">
-              <img src="assets\img\tabs-4.jpg" alt="Image 4" class="image-cropper">
-              <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="0">
-                  Choisir une image
-                  <input type="file" class="image-input" style="display:none;" data-image-index="0">
-                  </label>
-            </div>
-          <!-- Vignettes des images avec bouton "Choisir une image" -->
-          <div class="image-container">
-              <img src="assets\img\tabs-4.jpg" alt="Image 1" class="image-cropper">
-              <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="0">
-              Choisir une image
-              <input type="file" class="image-input" style="display:none;" data-image-index="0">
-              </label>
-          </div>
-    <!-- Répéter la structure ci-dessus pour les autres images -->
-    
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
-            <button type="button" class="btn btn-primary ml-auto" onclick="uploadNewImages()">Enregistrer</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-
-  <!-- Ajouter ce script à la fin de votre balise body -->
-  <script>
-function editInformation(fieldName) {
-    // Récupérer la valeur actuelle de l'information
-    var currentValue = $("#" + fieldName).text();
-
-    // Pré-remplir le champ d'édition du modal avec la valeur actuelle
-    $("#editField").val(currentValue);
-    $("#editFieldName").val(fieldName);
-
-    // Afficher le modal
-    $("#editModal").modal("show");
-  }
-
-  function saveEdit() {
-    // Récupérer la nouvelle valeur depuis le champ d'édition du modal
-    var newValue = $("#editField").val();
-    var fieldName = $("#editFieldName").val();
-
-    // Protection CSRF
-    var csrfToken = "{{ csrf_token() }}";
-
-    // Validation Côté Serveur - Vous pouvez personnaliser cela selon vos besoins
-    if (newValue.trim() === "") {
-      alert("La nouvelle valeur ne peut pas être vide.");
-      return;
-    }
-
-    // AJAX pour mettre à jour les informations
-    $.ajax({
-      url: "/update-profile", // Remplacez par l'URL correcte de votre route
-      type: "POST",
-      data: {
-        fieldName: fieldName,
-        newValue: newValue,
-        _token: csrfToken
-      },
-      success: function (response) {
-        // Gérer la réponse du serveur ici
-        console.log('Réponse du serveur:', response);
-
-        // Mettre à jour la valeur sur la page si la mise à jour a réussi
-        $("#" + fieldName).text(newValue);
-
-        // Fermer le modal
-        $("#editModal").modal("hide");
-      },
-      error: function (error) {
-        // Gérer les erreurs de la requête AJAX ici
-        console.error('Erreur AJAX:', error);
-        alert("Erreur lors de la mise à jour. Veuillez réessayer.");
-      }
-    });
-  }
-
-  function uploadImage() {
-    // Récupérer le fichier sélectionné par l'utilisateur
-    var input = document.getElementById('editImageInput');
-    var file = input.files[0];
-
-    if (file) {
-        // Créer un objet FormData et y ajouter le fichier
-        var formData = new FormData();
-        formData.append('image', file);
-
-        // Envoyer le fichier au serveur
-        fetch('/update-profile-image', {  // Remplacez par l'URL correcte de votre script serveur
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Gérer la réponse du serveur ici
-            console.log('Réponse du serveur:', data);
-        })
-        .catch(error => {
-            console.error('Erreur lors de l\'envoi de l\'image:', error);
+    <script>
+        $(document).ready(function() {
+            $('.image-input').change(function() {
+                var imageIndex = $(this).closest('.image-container').find('.image-cropper').data('image-index');
+                var file = this.files[0];
+                if (file) {
+                    var imageURL = URL.createObjectURL(file);
+                    $(this).closest('.image-container').find('.image-cropper').attr('src', imageURL);
+                }
+            });
         });
-    }
-}
 
-    var currentFieldName; // Variable globale pour stocker le nom du champ en cours d'édition
-      var currentImageIndex; // Variable globale pour stocker l'index de l'image en cours d'édition
-      var cropper; // Variable globale pour stocker l'instance du cropper
+        function uploadNewImages() {
+            var formData = new FormData();
 
-      function editInformation(fieldName) {
-        // Récupérer la valeur actuelle de l'information
-        var currentValue = $("#" + fieldName).text();
+            // Ajoutez chaque fichier d'image à formData
+            for (var i = 1; i <= 5; i++) {
+                var fileInput = $('input[name="photo' + i + '"]')[0];
+                var file = fileInput.files[0];
+                if (file) {
+                    formData.append('photo' + i, file);
+                }
+            }
+            formData.append('user_id', '{{ $user->id }}');
+            $.ajax({
+                url: '{{ route("store-images1") }}',
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    console.log(response);
+                    $('#imageModal').modal('hide');
+                },
+                error: function(error) {
+                    console.error(error);
+                }
+            });
+        }
 
-        // Pré-remplir le champ d'édition du modal avec la valeur actuelle
-        $("#editField").val(currentValue);
+        var currentFieldName; // Variable globale pour stocker le nom du champ en cours d'édition
+        var currentImageIndex; // Variable globale pour stocker l'index de l'image en cours d'édition
+        var cropper; // Variable globale pour stocker l'instance du cropper
 
-        // Stocker le nom du champ en cours d'édition dans la variable globale
-        currentFieldName = fieldName;
+        function editInformation(fieldName) {
+            // Récupérer la valeur actuelle de l'information
+            var currentValue = $("#" + fieldName).text();
 
-        // Afficher le modal
-        $("#editModal").modal("show");
-      }
+            // Pré-remplir le champ d'édition du modal avec la valeur actuelle
+            $("#editField").val(currentValue);
 
-      // Événement avant l'affichage du modal d'édition des images
-      $('#editImageModal').on('show.bs.modal', function (event) {
-        // Récupérer l'index de l'image en cours d'édition
-        currentImageIndex = $(event.relatedTarget).data('image-index');
+            // Stocker le nom du champ en cours d'édition dans la variable globale
+            currentFieldName = fieldName;
 
-        // Initialiser le cropper avec l'image sélectionnée
-        cropper = new Cropper($('.image-cropper')[currentImageIndex], {
-          aspectRatio: 16 / 9, // Vous pouvez ajuster le ratio selon vos besoins
+            // Afficher le modal
+            $("#editModal").modal("show");
+        }
+
+        // Événement avant l'affichage du modal d'édition des images
+        $('#editImageModal').on('show.bs.modal', function(event) {
+            // Récupérer l'index de l'image en cours d'édition
+            currentImageIndex = $(event.relatedTarget).data('image-index');
+
+            // Initialiser le cropper avec l'image sélectionnée
+            cropper = new Cropper($('.image-cropper')[currentImageIndex], {
+                aspectRatio: 16 / 9, // Vous pouvez ajuster le ratio selon vos besoins
+            });
         });
-      });
 
-      function saveImageEdit() {
-        // Récupérer le canvas résultant du cropper
-        var canvas = cropper.getCroppedCanvas();
+        function saveImageEdit() {
+            // Récupérer le canvas résultant du cropper
+            var canvas = cropper.getCroppedCanvas();
 
-        // Convertir le canvas en une image base64
-        var editedImageSrc = canvas.toDataURL('image/jpeg');
+            // Convertir le canvas en une image base64
+            var editedImageSrc = canvas.toDataURL('image/jpeg');
 
-        // Mettre à jour la source de l'image sur la page
-        $('.image-cropper')[currentImageIndex].src = editedImageSrc;
+            // Mettre à jour la source de l'image sur la page
+            $('.image-cropper')[currentImageIndex].src = editedImageSrc;
 
-        // Fermer le modal
-        $('#editImageModal').modal('hide');
-      }
+            // Fermer le modal
+            $('#editImageModal').modal('hide');
+        }
 
-      function saveEdit() {
-              // Récupérer la nouvelle valeur depuis le champ d'édition du modal
-              var newValue = $("#editField").val();
+        function saveEdit() {
+            // Récupérer la nouvelle valeur depuis le champ d'édition du modal
+            var newValue = $("#editField").val();
 
-  // Mettre à jour la valeur sur la page
-  $("#" + currentFieldName).text(newValue);
+            // Mettre à jour la valeur sur la page
+            $("#" + currentFieldName).text(newValue);
 
-  // Fermer le modal
-  $("#editModal").modal("hide");
-  }
+            // Fermer le modal
+            $("#editModal").modal("hide");
+        }
 
-  function editBiography(fieldName) {
-  // Récupérer la valeur actuelle de la biographie ou des centres d'intérêt
-  var currentValue = $("#" + fieldName).text();
+        function editBiography(fieldName) {
+            // Récupérer la valeur actuelle de la biographie ou des centres d'intérêt
+            var currentValue = $("#" + fieldName).text();
 
-  // Pré-remplir le champ d'édition du modal avec la valeur actuelle
-  $("#editField").val(currentValue);
+            // Pré-remplir le champ d'édition du modal avec la valeur actuelle
+            $("#editField").val(currentValue);
 
-  // Stocker le nom du champ en cours d'édition dans la variable globale
-  currentFieldName = fieldName;
+            // Stocker le nom du champ en cours d'édition dans la variable globale
+            currentFieldName = fieldName;
 
-  // Afficher le modal
-  $("#editModal").modal("show");
-  }
+            // Afficher le modal
+            $("#editModal").modal("show");
+        }
 
-  // Événement avant la fermeture du modal d'édition des images
-  $('#editImageModal').on('hidden.bs.modal', function () {
-  // Détruire l'instance du cropper pour libérer les ressources
-  cropper.destroy();
-  });
-  function uploadImage() {
-      // Récupérer le fichier sélectionné par l'utilisateur
-      var input = document.getElementById('editImageInput');
-      var file = input.files[0];
+        // Événement avant la fermeture du modal d'édition des images
+        $('#editImageModal').on('hidden.bs.modal', function() {
+            // Détruire l'instance du cropper pour libérer les ressources
+            cropper.destroy();
+        });
 
-      if (file) {
-        // Lire le fichier en tant que Data URL
-        var reader = new FileReader();
-        reader.onload = function (e) {
-          // Mettre à jour la source de l'image du cropper avec le fichier local
-          $('.image-cropper').attr('src', e.target.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-  </script>
+        function uploadImage() {
+            // Récupérer le fichier sélectionné par l'utilisateur
+            var input = document.getElementById('editImageInput');
+            var file = input.files[0];
 
-  
-  @endsection
+            if (file) {
+                // Lire le fichier en tant que Data URL
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    // Mettre à jour la source de l'image du cropper avec le fichier local
+                    $('.image-cropper').attr('src', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
 
+    @include('components.footer')
+    <style>
+        .user-images {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 10px;
+        }
 
+        .image-container {
+            position: relative;
+        }
 
+        .user-images img {
+            width: calc(25% - 10px);
+            max-width: 100%;
+            height: auto;
+        }
+
+        .user-images img:first-child {
+            width: 100%;
+        }
+
+        .edit-image-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+
+        #modifyImagesBtn {
+            margin-top: 20px;
+        }
+
+        #imageModal .modal-body {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        #imageModal .modal-body img {
+            width: calc(33.33% - 10px);
+            max-width: 100%;
+            height: auto;
+        }
+
+        #imageModal .modal-body .edit-image-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+
+        }
+
+        .editable-content {
+            border: 1px solid #ced4da;
+            border-radius: 0.1rem;
+            padding: 0.375rem 0.75rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            /* Ensures the content expands to fill the available space */
+        }
+
+        .editable-content button {
+            margin-left: 1rem;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        section {
+            padding: 60px 0;
+        }
+
+        .user-profile h2 {
+            color: #007bff;
+        }
+
+        .user-profile {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+    </style>
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+<!-- Vendor JS Files -->
+<script src="{{ asset('assets/vendor/purecounter/purecounter_vanilla.js') }}"></script>
+<script src="{{ asset('assets/vendor/aos/aos.js') }}"></script>
+<script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
+
+<!-- Template Main JS File -->
+<script src="{{ asset('assets/js/main.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            $(".edit-icon").click(function() {
+                var field = $(this).attr('data-field');
+                var currentValue = ""; // Récupérez la valeur actuelle du champ depuis le DOM
+                var newValue = prompt("Modifier " + field, currentValue);
+                if (newValue !== null) {
+                    // Mettez à jour la valeur dans le DOM et enregistrez-la côté serveur
+                    alert(field + " mis à jour avec succès: " + newValue);
+                }
+            });
+
+            $("#photoForm").submit(function(e) {
+                e.preventDefault();
+                // Gérez le téléchargement des photos ici
+                alert("Photos téléchargées avec succès!");
+            });
+        });
+    </script>
+
+</body>
+
+</html>

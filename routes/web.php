@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\NousController;
-use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\karaokeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,15 +58,58 @@ Route::post('/unlike-profile/{profile_id}', 'App\Http\Controllers\NousController
 
 Route::get('/mettre-a-jour-paiement','App\Http\Controllers\NousController@mettreAJourPaiement');
 
+
+/* A D M I N */
+
+
+Route::get('admin', function () {
+    return view('Admin/login');
+});
+Route::get('utilisateurs', function () {
+    return view('Admin/users');
+});
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
+
+Route::get('/', function () {
+    return view('Nous/index');
+});
+Route::get('profils', function () {
+    return view('Nous/profils');
+});
+Route::get('profil', function () {
+    return view('Nous/detail');
+});
+Route::get('register', function () {
+    return view('Nous/register');
+});
+Route::get('terms', function () {
+    return view('Nous/terms');
+});
+
+
 /*E S P A C E K A R A O K E */
+Route::get('kprofil', 'App\Http\Controllers\karaokeController@showprofil')->name('kprofil');
+
+
 
 
 Route::get('karaoke', function () {
     return view('Karaoke/index');
 });
-Route::get('profil', function () {
-    return view('Karaoke/profilperso');
-});
+
 Route::get('inscription', function () {
     return view('Karaoke/InscriKaraoke');
 });
@@ -77,15 +122,17 @@ Route::get('formulaire', function () {
 Route::get('/inscription', 'App\Http\Controllers\karaokeController@showRegistration')->name('inscription');
 // web.php
 
-Route::middleware(['auth'])->group(function () {
-   //route vers le profilperso
-Route::get('/profil', 'App\Http\Controllers\karaokeController@showprofil')->name('profil');
-});
+
+   
+
 
 //route vers mise à jour du profil
 Route::post('/update-profile', 'App\Http\Controllers\karaokeController@updateProfile')->name('update-profile');
 
 
+//page index
+// Ajoutez cette ligne dans votre fichier web.php
+Route::get('/index', 'App\Http\Controllers\karaokeController@showAllKaraokeProfiles')->name('karaokeusers');
 
 
 
@@ -96,15 +143,40 @@ Route::get('/check-phone-number/{phoneNumber}', 'KaraokeController@checkPhoneNum
 //auth
 Route::post('/login', 'App\Http\Controllers\karaokeController@loginUser')->name('login');
 
+Route::post('/karaoke/update-name/{id}','App\Http\Controllers\karaokeController@updateName')->name('update_name');
+    Route::post('/karaoke/update-numero/{id}', 'App\Http\Controllers\karaokeController@updateNumero')->name('update_numero');
+    Route::post('/karaoke/update-pseudo/{id}', 'App\Http\Controllers\karaokeController@updatPseudo')->name('update_pseudo');
+//profile view
 
 
+
+Route::get('/Karaokeprofils/{userId}', 'App\Http\Controllers\karaokeController@showKaraokeProfile')->name('Karaokeprofils');
 /* A D M I N */
 
 
 Route::get('admin', function () {
     return view('Admin/login');
 });
-Route::get('utilisateurs', function () {
-    return view('Admin/users');
-});
+// Route::get('KaraokeUsers', function () {
+//     return view('Admin/KaraokeUsers');
+// });
 
+// Route::get('NousUsers', function () {
+//     return view('Admin/NousUsers');
+// });
+
+Route::get('KaraokeUsers', 'App\Http\Controllers\AdminController@showAllKaraokeUsers')->name('KaraokeUsers');
+Route::get('NousUsers', 'App\Http\Controllers\AdminController@showAllNousUsers')->name('Noussers');
+
+
+Route::get('LokKaraokeUsers', 'App\Http\Controllers\AdminController@showLokKaraokeUsers')->name('LokKaraokeUsers');
+Route::get('LokNousUsers', 'App\Http\Controllers\AdminController@showLokNousUsers')->name('LokNousUsers');
+
+
+Route::post('block-user/{id}', 'App\Http\Controllers\AdminController@blockUser')->name('block.user');
+Route::post('/unblock/user/{id}', 'App\Http\Controllers\AdminController@unblockUser')->name('unblock.user');
+
+
+
+Route::get('utilisateurs', 'App\Http\Controllers\AdminController@showAllUsers')->name('utilisateurs');
+Route::post('/payment', 'App\Http\Controllers\karaokeController@processPayment')->name('payment.form');
