@@ -14,9 +14,11 @@
               <li><a href="#">Anglais</a></li>
             </ul>
           </li> -->
-          <a href="{{ url('/edit') }}" class="get-started-btn scrollto" style="color: white;">Mon profil</a>
-          <li class="dropdown">
+        
     @auth
+    <a href="{{ url('/edit') }}" class="get-started-btn scrollto" style="color: white;">Mon profil</a>
+    
+    <li class="dropdown">
     <a href="#"><span>Notifications</span> <i class="bi bi-chevron-down"></i></a>
     <ul>
         @if (Session::has('notifications_' . auth()->user()->id))
