@@ -221,27 +221,6 @@ public function showprofil()
 
         
 
-
-public function processPayment(Request $request)
-{
-    // Validez les données du formulaire de paiement
-    $request->validate([
-        'name' => 'required|string',
-        'phone' => 'required|numeric',
-    ]);
-
-    // Créez une nouvelle entrée dans la table des paiements
-    $payment = Paiements::create([
-        'user_id' => auth()->id(), // L'ID de l'utilisateur connecté
-        'payee_name' => $request->input('name'),
-        'payee_phone' => $request->input('phone'),
-    ]);
-
-    // Vous pouvez également faire d'autres actions ici, telles que rediriger l'utilisateur ou afficher un message de succès.
-
-    return redirect()->back()->with('success', 'Paiement enregistré avec succès.');
-}
-    
         public function Deco()
         {
             Auth::logout();
@@ -249,4 +228,79 @@ public function processPayment(Request $request)
             return redirect('/connection');
         }
 
+        public function processPayment(Request $request)
+        {
+            // Valider les données du formulaire de paiement
+            $validatedData = $request->validate([
+                'name' => 'required|string',
+                'phone' => 'required|string',
+            ]);
+    
+            // Vérifier si l'utilisateur est connecté
+            if (auth()->check()) {
+                // Si l'utilisateur est connecté, enregistrez l'ID de l'utilisateur dans le paiement
+                $userId = auth()->id();
+            } else {
+                // Si l'utilisateur n'est pas connecté, enregistrez l'ID de l'utilisateur en tant qu'invité (par exemple, 0)
+                $userId = 0;
+            }
+    
+            // Créer une nouvelle entrée dans la table des paiements
+            $payment = Paiements::create([
+                'name' => $validatedData['name'],
+                'phone' => $validatedData['phone'],
+                
+            ]);
+    
+            // Autres actions après le traitement du paiement
+            // Rediriger l'utilisateur vers la page detail.blade ou effectuer d'autres actions
+    
+            return redirect()->route('Karaokeprofils')->with('success', 'Payez un forfait pour communiquer par WhatsApp');
+        }
+    
+        
+    
+        public function visiteur($userId)
+        {
+            $user = User::find($userId);
+
+            return view('karaoke/formulaire', ['userId' => $userId]);
+        }
+
+
+
+
+        public function Visiteurs(Request $request,$userId)
+        {
+
+            $user = User::find($userId);
+
+            // Validez les données du formulaire
+            $request->validate([
+                'name' => 'required|string',
+                'numero' => [
+                    'required',
+                    'string',
+                ],
+              
+            ]);
+        
+            // Nettoyez le numéro en supprimant les espaces en trop
+            $cleanedNumero = preg_replace('/\s+/', '', $request->input('numero'));
+        
+           
+        
+            // Créez un nouvel utilisateur avec le rôle 'karaoke' et les données du formulaire
+            $user = User::create([
+                'name' => $request->input('name'),
+               
+                'numero' => $cleanedNumero, // Utilisez le numéro nettoyé
+                
+                'role' => 'visiteur',
+            ]);
+        
+            // Redirigez ou effectuez d'autres actions après l'enregistrement
+        
+            return view('karaoke/modal', ['user' => $user]);     }
+     
 }

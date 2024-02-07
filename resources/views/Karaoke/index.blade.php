@@ -23,7 +23,7 @@
                         <!-- ... (rest of your modal code) ... -->
                       </div>
                       @else
-                      <a href="{{ url('/Karaokeprofils/' . $user->id) }}" target="_blank">
+                      <a href="{{ url('/visiteur/' . $user->id) }}" target="_blank">
                         <button type="button" class="btn btn-success">
                           <i class="bi bi-whatsapp whatsapp-icon"></i> Discuter
                         </button>

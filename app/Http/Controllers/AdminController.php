@@ -114,7 +114,14 @@ class AdminController extends Controller
         // Passer les données à la vue
         return view('Admin/LokKaraokeUsers', compact('users'));
     }
+    // public function showVisiteurUsers()
+    // {
+    //     // Récupérer tous les utilisateurs avec le rôle "karaoke" et un compte bloqué
+    //     $users = User::where('role', 'visiteur')->get();
 
+    //     // Passer les données à la vue
+    //     return view('Admin/uspaie', compact('users'));
+    // }
 
     // AdminController NousUsers
     public function showAllNousUsers()

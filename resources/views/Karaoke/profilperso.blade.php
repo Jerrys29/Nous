@@ -49,6 +49,12 @@
 </head>
 
 <body>
+<form method="POST" action="{{ route('Deco') }}">
+            @csrf
+            <div class="d-grid">
+                <button type="submit" class="btn btn-danger btn-block">Déconnexion</button>
+            </div>
+        </form> 
     @if($errors->any())
     <div class="alert alert-danger">
         {{ $errors->first() }}
@@ -214,7 +220,8 @@
                         <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
                     </div>
                 </form>
-                <form method="POST" action="{{ route('store-images2') }}" enctype="multipart/form-data">
+                <form me
+                thod="POST" action="{{ route('store-images2') }}" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="user_id" value="{{ $user->id }}">
                     <div class="modal-body">

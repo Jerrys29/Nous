@@ -46,7 +46,7 @@
                 </ul>
             </li>
 
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link" href="#">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i>
@@ -65,13 +65,11 @@
                         </a>
                     </li>
                 </ul>
-            </li>
+            </li> -->
 
         </ul>
-            <form method="POST" action="{{ route('Deco') }}">
-                @csrf
-                <button type="submit" class="get-started-btn">Déconnexion</button>
-            </form>
+        
+
     
     </div>
 </aside>

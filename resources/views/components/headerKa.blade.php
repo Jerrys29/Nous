@@ -7,13 +7,13 @@
 
       <nav id="navbar" class="navbar order-last order-lg-0">
         <ul>
-          <li><a class="nav-link scrollto active" href="{{('/profils')}}">Trouver votre partenaire</a></li>
-          <li class="dropdown"><a href="#"><span>Langues</span> <i class="bi bi-chevron-down"></i></a>
+        <li><a class="nav-link scrollto active" href="{{('/profils')}}">Trouver votre partenaire</a></li>
+          <!-- <li class="dropdown"><a href="#"><span>Langues</span> <i class="bi bi-chevron-down"></i></a>
             <ul>
               <li><a href="#">Francais</a></li>
               <li><a href="#">Anglais</a></li>
             </ul>
-          </li>
+          </li> -->
           
 
 

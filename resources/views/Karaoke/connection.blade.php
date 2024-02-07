@@ -34,7 +34,7 @@
 			@endif
 					<div class="login-wrap p-0">
 		      	
-		      	<form method="POST"  action="{{route('login') }}" class="signin-form">
+		      	<form method="POST"  action="{{route('logins') }}" class="signin-form">
 				  @csrf
 					<!-- Display error messages -->
 					@if ($errors->any())

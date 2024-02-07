@@ -138,7 +138,15 @@
                             </div>
                         </div>
     
-                    
+                        <div class="form-check form-check-info text-left">
+                                <input class="form-check-input" type="checkbox" name="agreement" id="flexCheckDefault" checked>
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    J'accepte <a href="{{('terms')}}:;" class="text-dark font-weight-bolder">les termes et conditions</a>
+                                </label>
+                                @error('agreement')
+                                <p class="text-danger text-xs mt-2">Vous n'avez pas accepté les termes et conditions.</p>
+                                @enderror
+                            </div>
                     </form>
                     <a href="{{('/connection')}}"> <p class="w-100 text-center">&mdash; ou Se connecter &mdash;</p></a>
 

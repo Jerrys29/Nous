@@ -106,11 +106,14 @@ Route::get('connection/', 'App\Http\Controllers\karaokeController@show')->name('
 Route::get('/check-phone-number/{phoneNumber}', 'KaraokeController@checkPhoneNumber');
 
 //auth
- Route::post('/login', 'App\Http\Controllers\karaokeController@loginUser')->name('login');
+ Route::post('/connection', 'App\Http\Controllers\karaokeController@loginUser')->name('logins');
 
 Route::post('/karaoke/update-name/{id}','App\Http\Controllers\karaokeController@updateName')->name('update_name');
 Route::post('/karaoke/update-numero/{id}', 'App\Http\Controllers\karaokeController@updateNumero')->name('update_numero');
 Route::post('/karaoke/update-pseudo/{id}', 'App\Http\Controllers\karaokeController@updatPseudo')->name('update_pseudo');
+Route::post('/visiteurs/{id}','App\Http\Controllers\KaraokeController@Visiteurs')->name('paiementV');
+
+
 //profile view
 
 
@@ -118,6 +121,7 @@ Route::post('/karaoke/update-pseudo/{id}', 'App\Http\Controllers\karaokeControll
 Route::get('/Karaokeprofils/{userId}', 'App\Http\Controllers\karaokeController@showKaraokeProfile')->name('Karaokeprofils');
 /* A D M I N */
 
+Route::get('/visiteur/{id}', 'App\Http\Controllers\karaokeController@visiteur')->name('visiteur');
 
 Route::get('admin', function () {
     return view('Admin/login');
