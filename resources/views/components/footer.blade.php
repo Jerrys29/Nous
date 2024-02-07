@@ -37,7 +37,7 @@
         </div>
       </div>
       <div class="social-links text-center text-md-end pt-3 pt-md-0">
-      <a href="https://www.facebook.com/" class="facebook" target="_blank"><i class="bx bxl-facebook"></i></a>
+      <a href="http://facebook.com/nous.meet" class="facebook" target="_blank"><i class="bx bxl-facebook"></i></a>
 <a href="https://web.whatsapp.com/" class="whatsapp" target="_blank"><i class="bx bxl-whatsapp"></i></a>
 <a href="mailto:example@gmail.com" class="gmail" target="_blank"><i class="bx bxl-google"></i></a>
 
