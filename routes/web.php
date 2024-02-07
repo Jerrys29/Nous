@@ -37,6 +37,7 @@ Route::get('/profil/{userId}', 'App\Http\Controllers\NousController@detail')->na
 
 Route::put('/update-name/{id}', 'App\Http\Controllers\NousController@updatename')->name('update-name');
 Route::put('/update-numero/{id}', 'App\Http\Controllers\NousController@updatenumero')->name('update-numero');
+Route::put('/update-password/{id}', 'App\Http\Controllers\NousController@updatepassword')->name('update-password');
 Route::put('/update-pseudo/{id}', 'App\Http\Controllers\NousController@updatepseudo')->name('update-pseudo');
 Route::put('/update-age/{id}', 'App\Http\Controllers\NousController@updateage')->name('update-age');
 Route::put('/update-about/{id}', 'App\Http\Controllers\NousController@updateabout')->name('update-about');

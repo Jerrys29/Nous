@@ -197,6 +197,26 @@ class NousController extends Controller
         $user->update($validatedData);
         return redirect()->back()->with('success', 'Informations mises à jour avec succès.');
     }
+    public function updatepassword(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'password' => 'required|string|min:8', // Assurez-vous d'ajouter une règle pour la longueur minimale du mot de passe
+        ]);
+    
+        $user = User::find($id);
+        if (!$user) {
+            return redirect()->back()->with('error', 'Utilisateur non trouvé.');
+        }
+    
+        // Hasher le nouveau mot de passe
+        $hashedPassword = Hash::make($validatedData['password']);
+    
+        // Mettre à jour le mot de passe haché
+        $user->password = $hashedPassword;
+        $user->save();
+    
+        return redirect()->back()->with('success', 'Mot de passe mis à jour avec succès.');
+    }
     public function updatepseudo(Request $request, $id)
     {
         $validatedData = $request->validate([
@@ -339,13 +359,16 @@ class NousController extends Controller
     }
 
     public function mettreAJourPaiement(Request $request)
-    {
-        $user = Auth::user();
-        if ($user) {
-            DB::table('users')->where('id', $user->id)->update(['paiement' => 1]);
-            return redirect()->back();
-
-        }
-      return response()->json(['paiementReussi' => false], 400);
+{
+    $user = Auth::user();
+    if ($user) {
+        DB::table('users')->where('id', $user->id)->update([
+            'paiement' => 1,
+            'paiement_date' => now() 
+        ]);
+        return redirect()->back();
     }
+    return response()->json(['paiementReussi' => false], 400);
+}
+
 }

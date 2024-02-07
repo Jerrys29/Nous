@@ -50,7 +50,8 @@ class User extends Authenticatable
         'about',
         'interests',
         'paiement',
-        ];
+            'paiement_date',
+    ];
     /**
      * The attributes that should be hidden for serialization.
      *
