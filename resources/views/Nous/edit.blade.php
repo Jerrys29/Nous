@@ -7,20 +7,20 @@
     <title>NOUS</title>
     <!-- Favicons -->
     <link href="{{ asset('assets/img/nous_logo.png') }}" rel="icon">
-<link href="{{ asset('assets/img/nous_logo.png') }}" rel="apple-touch-icon">
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-<!-- Vendor CSS Files -->
-<link href="{{ asset('assets/vendor/aos/aos.css') }}" rel="stylesheet">
-<link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-<link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
-<link href="{{ asset('assets/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
-<link href="{{ asset('assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
-<link href="{{ asset('assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
-<link href="{{ asset('assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
-<!-- Template Main CSS File -->
-<link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/img/nous_logo.png') }}" rel="apple-touch-icon">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <!-- Vendor CSS Files -->
+    <link href="{{ asset('assets/vendor/aos/aos.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+    <!-- Template Main CSS File -->
+    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
 
     <style>
         .edit-icon {
@@ -112,34 +112,34 @@
                             </div>
                         </div>
                         <div class="mb-3">
-    <label>
-        <h5>Mot de passe:</h5>
-    </label>
-    <span>•••</span> <!-- Afficher des points pour l'ancien mot de passe -->
-    <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editName">Modifier</button>
-    <div class="modal fade" id="editName" tabindex="-1" aria-labelledby="editNameLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editNameLabel">Modifier l'information</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form method="post" action="{{ route('update-password', ['id' => $user->id]) }}">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-body">
-                        <label for="editField">Nouveau mot de passe:</label>
-                        <input type="password" name="password" class="form-control" required> <!-- Champ de saisie vide pour le nouveau mot de passe -->
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+                            <label>
+                                <h5>Mot de passe:</h5>
+                            </label>
+                            <span>•••</span> <!-- Afficher des points pour l'ancien mot de passe -->
+                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editName">Modifier</button>
+                            <div class="modal fade" id="editName" tabindex="-1" aria-labelledby="editNameLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editNameLabel">Modifier l'information</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form method="post" action="{{ route('update-password', ['id' => $user->id]) }}">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="modal-body">
+                                                <label for="editField">Nouveau mot de passe:</label>
+                                                <input type="password" name="password" class="form-control" required> <!-- Champ de saisie vide pour le nouveau mot de passe -->
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
+                                                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
 
                         <div class="mb-3">
@@ -315,7 +315,7 @@
                                 <input type="file" name="photo1" class="image-input" style="display:none;">
                             </label>
                         </div>
-                 
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
@@ -334,7 +334,7 @@
                                 <input type="file" name="photo2" class="image-input" style="display:none;">
                             </label>
                         </div>
-                 
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
@@ -353,7 +353,7 @@
                                 <input type="file" name="photo3" class="image-input" style="display:none;">
                             </label>
                         </div>
-                 
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
@@ -372,7 +372,7 @@
                                 <input type="file" name="photo4" class="image-input" style="display:none;">
                             </label>
                         </div>
-                 
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
@@ -391,7 +391,7 @@
                                 <input type="file" name="photo5" class="image-input" style="display:none;">
                             </label>
                         </div>
-                 
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
@@ -623,19 +623,36 @@
             overflow: hidden;
         }
     </style>
+    <script>
+        var inactivityTimeout = 30 * 60 * 1000;
 
+        var timeout;
+
+        function resetTimer() {
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                window.location.href = "{{ route('login') }}";
+            }, inactivityTimeout);
+        }
+
+        document.addEventListener('mousemove', resetTimer);
+        document.addEventListener('keypress', resetTimer);
+        document.addEventListener('scroll', resetTimer);
+
+        resetTimer(); // Initialise le minuteur lors du chargement de la page
+    </script>
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-<!-- Vendor JS Files -->
-<script src="{{ asset('assets/vendor/purecounter/purecounter_vanilla.js') }}"></script>
-<script src="{{ asset('assets/vendor/aos/aos.js') }}"></script>
-<script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
-<script src="{{ asset('assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
-<script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
-<script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
+    <!-- Vendor JS Files -->
+    <script src="{{ asset('assets/vendor/purecounter/purecounter_vanilla.js') }}"></script>
+    <script src="{{ asset('assets/vendor/aos/aos.js') }}"></script>
+    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
 
-<!-- Template Main JS File -->
-<script src="{{ asset('assets/js/main.js') }}"></script>
+    <!-- Template Main JS File -->
+    <script src="{{ asset('assets/js/main.js') }}"></script>
 
     <script>
         $(document).ready(function() {
