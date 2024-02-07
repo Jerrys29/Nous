@@ -84,7 +84,7 @@
                         <h2 style="margin-top: 3rem;">Informations Personnelles</h2>
                         <div class="mb-3">
                             <label>
-                                <h5>Tel:</h5>
+                                <h5>Numéro Whatsapp:</h5>
                             </label>
                             <span id="userPhone">{{ $user->numero }}</span>
                             <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editNumero" onclick="editInformation('userPhone')">Modifier</button>
@@ -111,6 +111,37 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="mb-3">
+    <label>
+        <h5>Mot de passe:</h5>
+    </label>
+    <span>•••</span> <!-- Afficher des points pour l'ancien mot de passe -->
+    <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editName">Modifier</button>
+    <div class="modal fade" id="editName" tabindex="-1" aria-labelledby="editNameLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editNameLabel">Modifier l'information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="{{ route('update-password', ['id' => $user->id]) }}">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <label for="editField">Nouveau mot de passe:</label>
+                        <input type="password" name="password" class="form-control" required> <!-- Champ de saisie vide pour le nouveau mot de passe -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
                         <div class="mb-3">
                             <label>
                                 <h5>Nom:</h5>

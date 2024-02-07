@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
 
     <!-- Main CSS -->
-    <link rel="stylesheet" href="assets/css/ins.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/inscription.css') }}">
 </head>
 
 <body>
