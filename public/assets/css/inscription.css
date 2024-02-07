@@ -198,23 +198,13 @@ body {
   font-family: Poppins;
   margin: 0px; }
 
-
-
-  .kbody {
-    background:  url('../img/kaka2.jpg') no-repeat center center fixed;
-    background-size: 100% 100%;
-}
-
-
-
-  
 .main {
   padding: 115px 0;
   position: relative; }
 
 .container {
   width: 1150px;
- 
+  background: #fff;
   margin: 0 auto;
   box-shadow: 0px 10px 9.9px 0.1px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: 0px 10px 9.9px 0.1px rgba(0, 0, 0, 0.05);
@@ -235,7 +225,7 @@ body {
   -ms-flex-wrap: wrap; }
 
 .booking-image {
-  width: 50%;
+  width: 58.33%;
   margin-bottom: -8px; }
 
 .booking-img {
@@ -243,8 +233,8 @@ body {
   border-bottom-left-radius: 10px; }
 
 .booking-form {
-  width: 50%;
-  
+  width: 41.67%;
+  background: #111;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px; }
 
