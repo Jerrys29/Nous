@@ -66,31 +66,43 @@ class AdminController extends Controller
     {
         // Récupérer l'utilisateur à bloquer
         $user = User::find($id);
-
+    
+        // Vérifier si l'utilisateur en question est l'administrateur lui-même
+        if ($user->role === 'admin') {
+            return redirect()->route('utilisateurs')->withErrors(['error' => 'Vous ne pouvez pas bloquer l\'administrateur.']);
+        }
+    
         // Changer le statut de l'utilisateur
         $user->active = !$user->active;
-
+    
         // Sauvegarder les modifications
         $user->save();
-
+    
         // Rediriger vers la page des utilisateurs
         return redirect()->route('utilisateurs');
     }
 
-    public function unblockUser($id)
-    {
-        // Récupérer l'utilisateur à débloquer
-        $user = User::find($id);
 
-        // Changer le statut de l'utilisateur
-        $user->active = !$user->active;
 
-        // Sauvegarder les modifications
-        $user->save();
+   public function unblockUser($id)
+{
+    // Récupérer l'utilisateur à débloquer
+    $user = User::find($id);
 
-        // Rediriger vers la page des utilisateurs
-        return redirect()->route('utilisateurs');
+    // Vérifier si l'utilisateur en question est l'administrateur lui-même
+    if ($user->role === 'admin') {
+        return redirect()->route('utilisateurs')->withErrors(['error' => 'Vous ne pouvez pas débloquer l\'administrateur.']);
     }
+
+    // Changer le statut de l'utilisateur
+    $user->active = !$user->active;
+
+    // Sauvegarder les modifications
+    $user->save();
+
+    // Rediriger vers la page des utilisateurs
+    return redirect()->route('utilisateurs');
+}
 
 
     // AdminController KaraokeUsers
