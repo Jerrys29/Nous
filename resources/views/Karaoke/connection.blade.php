@@ -64,9 +64,9 @@
 									  <span class="checkmark"></span>
 									</label>
 								</div>
-								<div class="w-50 text-md-right">
+								<!-- <div class="w-50 text-md-right">
 									<a href="#" style="color: #fff">Mot de passe oublié</a>
-								</div>
+								</div> -->
 	            </div>
 	          </form>
 	         <a href="{{('/inscription')}}"> <p class="w-100 text-center">&mdash; ou S'inscrire &mdash;</p></a>

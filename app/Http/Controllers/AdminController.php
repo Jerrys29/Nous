@@ -55,7 +55,7 @@ class AdminController extends Controller
     public function showAllUsers()
     {
         // Récupérer tous les utilisateurs
-        $users = User::all();
+        $users  = User::where('role', 'visiteur')->get();
 
         // Passer les données à la vue
         return view('Admin/users', compact('users'));
@@ -139,7 +139,7 @@ class AdminController extends Controller
     public function showAllNousUsers()
     {
         // Récupérer tous les utilisateurs sans le rôle "karaoke"
-        $users = User::where('role', '<>', 'karaoke')->get();
+        $users = User::where('role',  'nous')->get();
 
         // Passer les données à la vue
         return view('Admin/NousUsers', compact('users'));
@@ -148,7 +148,7 @@ class AdminController extends Controller
     public function showLokNousUsers()
     {
         // Récupérer tous les utilisateurs sans le rôle "karaoke" et un compte bloqué
-        $users = User::where('role', '<>', 'karaoke')->where('active', true)->get();
+        $users = User::where('role',  'nous')->where('active', true)->get();
 
         // Passer les données à la vue
         return view('Admin/LokNousUsers', compact('users'));

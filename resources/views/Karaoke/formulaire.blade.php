@@ -7,13 +7,15 @@
             <div class="container">
                 <div class="row" data-aos="fade-up">
                     <div class="col-lg-6 mx-auto">
-                        <div class="text-center">
-                            VOS INFORMATIONS NE SERONT PAS DIVULGUÉES
+                        <div class="text-center" >
+                            <strong>VOS INFORMATIONS NE SERONT PAS DIVULGUÉES</strong> <br>
+                            <i class="fa fa-info-circle"></i> L'accès à la discussion est payante <br>
+
                         </div>
                         <form action="{{ route('paiementV', ['id' => $userId]) }}" method="POST" class="p-4 p-md-5 border rounded">
                             @csrf
                             ENREGISTRER VOUS POUR DISCUTER
-                            <div class="form-group">
+                            <div class="form-group" style="margin-top: 1rem;">
                                 <label for="nom" class="form-label">Nom</label>
                                 <input type="text" name="name" class="form-control" id="name" placeholder="Entrez votre nom complet" required>
                             </div>

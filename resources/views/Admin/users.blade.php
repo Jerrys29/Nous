@@ -34,8 +34,7 @@
                 <tr>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-20">Nom Complet</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-20 ps-2">Numéro</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-20 ps-2">Pseudo</th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-20">Ville</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-20 ps-2">Date & heure visite</th>
                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-20">Provenance</th>
 
                 </tr>
@@ -54,11 +53,9 @@
                             <p class="text-xs font-weight-bold mb-0">{{ $user->numero }}</p>
                         </td>
                         <td>
-                            <p class="text-xs font-weight-bold mb-0">{{ $user->pseudo }}</p>
+                            <p class="text-xs font-weight-bold mb-0">{{ $user->created_at }}</p>
                         </td>
-                        <td class="align-middle text-center">
-                            <span class="text-secondary text-xs font-weight-bold">{{ $user->town }}</span>
-                        </td>
+                       
                        
                         <td class="align-middle text-center text-sm">
                             <p class="text-xs font-weight-bold mb-0">{{ $user->role }}</p>
