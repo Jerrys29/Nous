@@ -45,6 +45,24 @@
             background-color: #d4edda;
             border-color: #c3e6cb;
         }
+
+        .form-label {
+            font-weight: bold;
+            color: black;
+            /* Couleur bleue */
+            font-size: 18px;
+            /* Taille de police */
+        }
+
+        .user-photo {
+            width: 200px;
+            /* Ajustez la largeur et la hauteur selon vos besoins */
+            height: 200px;
+            object-fit: cover;
+            /* Pour ajuster la taille de l'image tout en conservant son aspect ratio */
+            margin-right: 10px;
+            /* Espacement entre les images */
+        }
     </style>
 </head>
 
@@ -62,232 +80,226 @@
     @endif
     @include('components.header')
     <main id="main">
+        @if(!$user->photo1)
+        <div class="alert alert-warning" role="alert">
+            Attention : Veuillez sélectionner une image pour la première photo.
+        </div>
+
+        @endif
+
         <section id="user-profile" class="user-profile">
             <div class="container">
                 <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h2>{{ $user->name }}</h2>
+                                <div class="user-images">
+                                    <div class="row">
+                                        <div class="col-4"> @if ($user->photo1)
+                                            <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo1) }}" alt="Photo 1">
+                                            @endif
+                                        </div>
+                                        <div class="col-4"> @if ($user->photo2)
+                                            <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo2) }}" alt="Photo 2">
+                                            @endif
+                                        </div>
+                                        <div class="col-4"> @if ($user->photo3)
+                                            <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo3) }}" alt="Photo 3">
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            @if ($user->photo4)
+                                            <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo4) }}" alt="Photo 4">
+                                            @endif
+                                        </div>
+                                        <div class="col-6"> @if ($user->photo5)
+                                            <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo5) }}" alt="Photo 5">
+                                            @endif
+                                        </div>
+                                    </div>
+                                    @if (!$user->photo1 && !$user->photo2 && !$user->photo3 && !$user->photo4 && !$user->photo5)
+                                    <p style="text-align: center;">Aucune photo disponible pour vous.Veuillez charger vos photos.</p>
+                                    @endif
+                                </div>
 
-                    <div class="col-lg-4">
-                        <h2>{{ $user->name }}</h2>
-                        <div class="user-images">
-                            <img src="{{ asset('storage/' . $user->photo1) }}" alt="User Photo 1">
-                            <img src="{{ asset('storage/' . $user->photo2) }}" alt="User Photo 2">
-                            <img src="{{ asset('storage/' . $user->photo3) }}" alt="User Photo 3">
-                            <img src="{{ asset('storage/' . $user->photo4) }}" alt="User Photo 4">
-                            <img src="{{ asset('storage/' . $user->photo5) }}" alt="User Photo 5">
-                        </div>
-                        <div class="text-center">
-                            <button id="modifyImagesBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageModal">Modifier les images</button>
+                                <form action="{{ route('profile.photos.update') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+
+                                    <div class="form-group">
+                                        <label for="photo1" class="fw-bold">Changer la photo1</label>
+                                        <input type="file" class="form-control" id="photo1" name="photo1">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="delete_photo1" name="delete_photo1">
+                                            <label class="form-check-label btn btn-danger btn-sm" for="delete_photo1">Supprimer la photo1</label>
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                    <div class="form-group">
+                                        <label for="photo2" class="fw-bold">Changer la photo2</label>
+                                        <input type="file" class="form-control" id="photo2" name="photo2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="delete_photo2" name="delete_photo2">
+                                            <label class="form-check-label btn btn-danger btn-sm" for="delete_photo1">Supprimer la photo2</label>
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                    <div class="form-group">
+                                        <label for="photo3" class="fw-bold">Changer la photo3</label>
+                                        <input type="file" class="form-control" id="photo3" name="photo3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="delete_photo3" name="delete_photo3">
+                                            <label class="form-check-label btn btn-danger btn-sm" for="delete_photo1">Supprimer la photo3</label>
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                    <div class="form-group">
+                                        <label for="photo4" class="fw-bold">Changer la photo4</label>
+                                        <input type="file" class="form-control" id="photo4" name="photo4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="delete_photo4" name="delete_photo4">
+                                            <label class="form-check-label btn btn-danger btn-sm" for="delete_photo1">Supprimer la photo4</label>
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                    <div class="form-group">
+                                        <label for="photo5">Changer la photo5</label>
+                                        <input type="file" class="form-control" id="photo5" name="photo5">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="delete_photo5" name="delete_photo5">
+                                            <label class="form-check-label btn btn-danger btn-sm" for="delete_photo1">Supprimer la photo5</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-8"></div>
+                                        <div class="col-4">
+                                            <button type="submit" class="get-started-btn scrollto">Valider</button>
+                                        </div>
+                                    </div>
+
+                                </form>
+
+                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-8 ">
-                        <!-- Colonne pour les informations de l'utilisateur -->
-                        <h2 style="margin-top: 3rem;">Informations Personnelles</h2>
-                        <div class="mb-3">
-                            <label>
-                                <h5>Numéro Whatsapp:</h5>
-                            </label>
-                            <span id="userPhone">{{ $user->numero }}</span>
-                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editNumero" onclick="editInformation('userPhone')">Modifier</button>
-                            <div class="modal fade" id="editNumero" tabindex="-1" aria-labelledby="editNumeroLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editNumeroLabel">Modifier l'information</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <form method="post" action="{{ route('update-numero', ['id' => $user->id]) }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-body">
-                                                <label for="editField">Nouvelle valeur:</label>
-                                                <input type="text" id="editField" name="numero" class="form-control">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h2 style="margin-top: 3rem;">Informations Personnelles</h2>
+                                <form action="{{ route('profile.update') }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="row">
+                                        <input type="hidden" name="user_id" value="{{ $user->id }}">
+
+                                        <div class="col-lg-6"> <!-- Champ de numéro WhatsApp -->
+                                            <div class="mb-3">
+                                                <label for="numero" class="form-label fw-bold ">Numéro Whatsapp:</label>
+                                                <input type="text" class="form-control" id="numero" name="numero" value="{{ $user->numero }}">
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
-                                                <button type="submit" class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
+                                            <div class="mb-3">
+                                                <label for="email" class="form-label fw-bold ">Adresse Email:</label>
+                                                <input type="text" class="form-control" id="email" name="email" value="{{ $user->email }}">
                                             </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label>
-                                <h5>Mot de passe:</h5>
-                            </label>
-                            <span>•••</span> <!-- Afficher des points pour l'ancien mot de passe -->
-                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editName">Modifier</button>
-                            <div class="modal fade" id="editName" tabindex="-1" aria-labelledby="editNameLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editNameLabel">Modifier l'information</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <form method="post" action="{{ route('update-password', ['id' => $user->id]) }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-body">
-                                                <label for="editField">Nouveau mot de passe:</label>
-                                                <input type="password" name="password" class="form-control" required> <!-- Champ de saisie vide pour le nouveau mot de passe -->
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
-                                                <button type="submit" class="btn btn-primary">Enregistrer</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
 
-                        <div class="mb-3">
-                            <label>
-                                <h5>Nom:</h5>
-                            </label>
-                            <span id="userName">{{ $user->name }}</span>
-                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editName" onclick="editInformation('userName')">Modifier</button>
-                            <div class="modal fade" id="editName" tabindex="-1" aria-labelledby="editNameLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editNameLabel">Modifier l'information</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <form method="post" action="{{ route('update-name', ['id' => $user->id]) }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-body">
-                                                <label for="editField">Nouvelle valeur:</label>
-                                                <input type="text" name="name" value="{{ $user->name }}" class="form-control" required>
+                                            <!-- Champ de mot de passe -->
+                                            <div class="mb-3">
+                                                <label for="password" class="form-label">Mot de passe:</label>
+                                                <input type="password" class="form-control" id="password" name="password">
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
-                                                <button type="submit" class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label>
-                                <h5>Pseudo:</h5>
-                            </label>
-                            <span id="userName">{{ $user->pseudo }}</span>
-                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editPseudo" onclick="editInformation('userName')">Modifier</button>
-                            <div class="modal fade" id="editPseudo" tabindex="-1" aria-labelledby="editPseudoLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editPseudoLabel">Modifier l'information</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <form method="post" action="{{ route('update-pseudo', ['id' => $user->id]) }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-body">
-                                                <label for="editField">Nouvelle valeur:</label>
-                                                <input type="text" name="pseudo" value="{{ $user->pseudo }}" class="form-control" required>
+                                            <!-- Champ de nom -->
+                                            <div class="mb-3">
+                                                <label for="name" class="form-label">Nom:</label>
+                                                <input type="text" class="form-control" id="name" name="name" value="{{ $user->name }}">
+                                            </div>
 
+                                            <!-- Champ de pseudo -->
+                                            <div class="mb-3">
+                                                <label for="pseudo" class="form-label">Pseudo:</label>
+                                                <input type="text" class="form-control" id="pseudo" name="pseudo" value="{{ $user->pseudo }}">
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
-                                                <button type="submit" class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label>
-                                <h5>Âge:</h5>
-                            </label>
-                            <span id="userAge">{{ $user->age }}</span>
-                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editAge" onclick="editInformation('userAge')">Modifier</button>
-                            <div class="modal fade" id="editAge" tabindex="-1" aria-labelledby="editAgeLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editAgeLabel">Modifier l'information</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <form method="post" action="{{ route('update-age', ['id' => $user->id]) }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-body">
-                                                <label for="editField">Nouvelle valeur:</label>
-                                                <input type="text" name="age" value="{{ $user->age }}" class="form-control" required>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
-                                                <button type="submit" class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label>
-                                <h5>À propos de moi</h5>
-                            </label><br>
-                            <span class="editable-content" id="about">{{ $user->about }}</span>
-                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editAbout" onclick="editBiography('about')">Modifier</button>
-                            <div class="modal fade" id="editAbout" tabindex="-1" aria-labelledby="editAboutLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editAboutLabel">Modifier l'information</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <form method="post" action="{{ route('update-about', ['id' => $user->id]) }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-body">
-                                                <label for="editField">Nouvelle valeur:</label>
-                                                <textarea name="about" type="text" id="" class="form-control" cols="30" rows="10">{{ $user->about }} </textarea>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
-                                                <button type="submit" class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label>
-                                <h5>Centres d'intérêt(séparés par des virgules)</h5>
-                            </label><br>
-                            <span class="editable-content" id="interests">{{ $user->interests }}</span>
-                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editInterests" onclick="editBiography('interests')">Modifier</button>
-                            <div class="modal fade" id="editInterests" tabindex="-1" aria-labelledby="editInterestsLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editInterestsLabel">Modifier l'information</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <!-- Champ d'âge -->
+                                            <div class="mb-3">
+                                                <label for="age" class="form-label">Âge:</label>
+                                                <input type="text" class="form-control" id="age" name="age" value="{{ $user->age }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="genre" class="form-label">Genre:</label>
+                                                <select class="form-select" id="genre" name="genre">
+                                                    <option value="homme" {{ $user->genre == 'homme' ? 'selected' : '' }}>Homme</option>
+                                                    <option value="femme" {{ $user->genre == 'femme' ? 'selected' : '' }}>Femme</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="looking_for" class="form-label">Genre recherché:</label>
+                                                <select class="form-select" id="looking_for" name="looking_for">
+                                                    <option value="homme" {{ $user->looking_for == 'homme' ? 'selected' : '' }}>Homme</option>
+                                                    <option value="femme" {{ $user->looking_for == 'femme' ? 'selected' : '' }}>Femme</option>
+                                                    <option value="lesdeux" {{ $user->looking_for == 'autre' ? 'selected' : '' }}>Homme et Femme</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="town" class="form-label">Ville:</label>
+                                                <input type="text" class="form-control" id="town" name="town" value="{{ $user->town }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="origin_country" class="form-label">Pays d'origine:</label>
+                                                <input type="text" class="form-control" id="origin_country" name="origin_country" value="{{ $user->origin_country }}">
+                                            </div>
+
                                         </div>
-                                        <form method="post" action="{{ route('update-interests', ['id' => $user->id]) }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-body">
-                                                <label for="editField">Nouvelle valeur:</label>
-                                                <input type="text" name="interests" value="{{ $user->interests }}" class="form-control" required>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label for="birthplace" class="form-label">Ville de naissance:</label>
+                                                <input type="text" class="form-control" id="birthplace" name="birthplace" value="{{ $user->birthplace }}">
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
-                                                <button type="submit" class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
+                                         
+                                            <div class="mb-3">
+                                                <label for="town" class="form-label">Ville:</label>
+                                                <input type="text" class="form-control" id="town" name="town" value="{{ $user->town }}">
                                             </div>
-                                        </form>
+                                            <div class="mb-3">
+                                                <label for="mariatal_status" class="form-label">Situation Matrimoniale:</label>
+                                                <input type="text" class="form-control" id="mariatal_status" name="mariatal_status" value="{{ $user->mariatal_status }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="hair_color" class="form-label">Couleur des cheveux:</label>
+                                                <input type="text" class="form-control" id="hair_color" name="hair_color" value="{{ $user->hair_color }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="eyes_color" class="form-label">Couleur des yeux</label>
+                                                <input type="text" class="form-control" id="eyes_color" name="eyes_color" value="{{ $user->eyes_color }}">
+                                            </div>
+                                            <!-- Champ d'À propos de moi -->
+                                            <div class="mb-3">
+                                                <label for="about" class="form-label">À propos de moi:</label>
+                                                <textarea class="form-control" id="about" name="about" rows="3">{{ $user->about }}</textarea>
+                                            </div>
+
+                                            <!-- Champ des centres d'intérêt -->
+                                            <div class="mb-3">
+                                                <label for="interests" class="form-label">Centres d'intérêt(séparés par des virgules):</label>
+                                                <input type="text" class="form-control" id="interests" name="interests" value="{{ $user->interests }}">
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                    <div class="row">
+                                        <div class="col-8"></div>
+                                        <div class="col-4">
+                                            <button type="submit" class="get-started-btn scrollto">Enregistrer</button>
+                                        </div>
+                                    </div>
+                                  
+                                </form>
+
+
                             </div>
                         </div>
                     </div>
@@ -295,247 +307,6 @@
             </div>
         </section>
     </main>
-
-    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="imageModalLabel">Modifier les images</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form method="POST" action="{{ route('store-images1') }}" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="user_id" value="{{ $user->id }}">
-                    <div class="modal-body">
-
-                        <div class="image-container">
-                            <img src="{{ asset('storage/' . $user->photo1) }}" alt="Image 1" class="image-cropper" data-image-index="1">
-                            <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="1">
-                                Choisir une image
-                                <input type="file" name="photo1" class="image-input" style="display:none;">
-                            </label>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
-                        <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
-                    </div>
-                </form>
-                <form method="POST" action="{{ route('store-images2') }}" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="user_id" value="{{ $user->id }}">
-                    <div class="modal-body">
-
-                        <div class="image-container">
-                            <img src="{{ asset('storage/' . $user->photo2) }}" alt="Image 2" class="image-cropper" data-image-index="2">
-                            <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="2">
-                                Choisir une image
-                                <input type="file" name="photo2" class="image-input" style="display:none;">
-                            </label>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
-                        <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
-                    </div>
-                </form>
-                <form method="POST" action="{{ route('store-images3') }}" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="user_id" value="{{ $user->id }}">
-                    <div class="modal-body">
-
-                        <div class="image-container">
-                            <img src="{{ asset('storage/' . $user->photo3) }}" alt="Image 3" class="image-cropper" data-image-index="3">
-                            <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="3">
-                                Choisir une image
-                                <input type="file" name="photo3" class="image-input" style="display:none;">
-                            </label>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
-                        <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
-                    </div>
-                </form>
-                <form method="POST" action="{{ route('store-images4') }}" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="user_id" value="{{ $user->id }}">
-                    <div class="modal-body">
-
-                        <div class="image-container">
-                            <img src="{{ asset('storage/' . $user->photo4) }}" alt="Image 1" class="image-cropper" data-image-index="4">
-                            <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="4">
-                                Choisir une image
-                                <input type="file" name="photo4" class="image-input" style="display:none;">
-                            </label>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
-                        <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
-                    </div>
-                </form>
-                <form method="POST" action="{{ route('store-images5') }}" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="user_id" value="{{ $user->id }}">
-                    <div class="modal-body">
-
-                        <div class="image-container">
-                            <img src="{{ asset('storage/' . $user->photo5) }}" alt="Image 5" class="image-cropper" data-image-index="5">
-                            <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="5">
-                                Choisir une image
-                                <input type="file" name="photo5" class="image-input" style="display:none;">
-                            </label>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
-                        <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        $(document).ready(function() {
-            $('.image-input').change(function() {
-                var imageIndex = $(this).closest('.image-container').find('.image-cropper').data('image-index');
-                var file = this.files[0];
-                if (file) {
-                    var imageURL = URL.createObjectURL(file);
-                    $(this).closest('.image-container').find('.image-cropper').attr('src', imageURL);
-                }
-            });
-        });
-
-        function uploadNewImages() {
-            var formData = new FormData();
-
-            // Ajoutez chaque fichier d'image à formData
-            for (var i = 1; i <= 5; i++) {
-                var fileInput = $('input[name="photo' + i + '"]')[0];
-                var file = fileInput.files[0];
-                if (file) {
-                    formData.append('photo' + i, file);
-                }
-            }
-            formData.append('user_id', '{{ $user->id }}');
-            $.ajax({
-                url: '{{ route("store-images1") }}',
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    console.log(response);
-                    $('#imageModal').modal('hide');
-                },
-                error: function(error) {
-                    console.error(error);
-                }
-            });
-        }
-
-        var currentFieldName; // Variable globale pour stocker le nom du champ en cours d'édition
-        var currentImageIndex; // Variable globale pour stocker l'index de l'image en cours d'édition
-        var cropper; // Variable globale pour stocker l'instance du cropper
-
-        function editInformation(fieldName) {
-            // Récupérer la valeur actuelle de l'information
-            var currentValue = $("#" + fieldName).text();
-
-            // Pré-remplir le champ d'édition du modal avec la valeur actuelle
-            $("#editField").val(currentValue);
-
-            // Stocker le nom du champ en cours d'édition dans la variable globale
-            currentFieldName = fieldName;
-
-            // Afficher le modal
-            $("#editModal").modal("show");
-        }
-
-        // Événement avant l'affichage du modal d'édition des images
-        $('#editImageModal').on('show.bs.modal', function(event) {
-            // Récupérer l'index de l'image en cours d'édition
-            currentImageIndex = $(event.relatedTarget).data('image-index');
-
-            // Initialiser le cropper avec l'image sélectionnée
-            cropper = new Cropper($('.image-cropper')[currentImageIndex], {
-                aspectRatio: 16 / 9, // Vous pouvez ajuster le ratio selon vos besoins
-            });
-        });
-
-        function saveImageEdit() {
-            // Récupérer le canvas résultant du cropper
-            var canvas = cropper.getCroppedCanvas();
-
-            // Convertir le canvas en une image base64
-            var editedImageSrc = canvas.toDataURL('image/jpeg');
-
-            // Mettre à jour la source de l'image sur la page
-            $('.image-cropper')[currentImageIndex].src = editedImageSrc;
-
-            // Fermer le modal
-            $('#editImageModal').modal('hide');
-        }
-
-        function saveEdit() {
-            // Récupérer la nouvelle valeur depuis le champ d'édition du modal
-            var newValue = $("#editField").val();
-
-            // Mettre à jour la valeur sur la page
-            $("#" + currentFieldName).text(newValue);
-
-            // Fermer le modal
-            $("#editModal").modal("hide");
-        }
-
-        function editBiography(fieldName) {
-            // Récupérer la valeur actuelle de la biographie ou des centres d'intérêt
-            var currentValue = $("#" + fieldName).text();
-
-            // Pré-remplir le champ d'édition du modal avec la valeur actuelle
-            $("#editField").val(currentValue);
-
-            // Stocker le nom du champ en cours d'édition dans la variable globale
-            currentFieldName = fieldName;
-
-            // Afficher le modal
-            $("#editModal").modal("show");
-        }
-
-        // Événement avant la fermeture du modal d'édition des images
-        $('#editImageModal').on('hidden.bs.modal', function() {
-            // Détruire l'instance du cropper pour libérer les ressources
-            cropper.destroy();
-        });
-
-        function uploadImage() {
-            // Récupérer le fichier sélectionné par l'utilisateur
-            var input = document.getElementById('editImageInput');
-            var file = input.files[0];
-
-            if (file) {
-                // Lire le fichier en tant que Data URL
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    // Mettre à jour la source de l'image du cropper avec le fichier local
-                    $('.image-cropper').attr('src', e.target.result);
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-    </script>
-
     @include('components.footer')
     <style>
         .user-images {

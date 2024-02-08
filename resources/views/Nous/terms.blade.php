@@ -14,9 +14,9 @@
           </header>
           <h2>Collecte des données</h2>
           <div class="entry-content">
-            <p>
+            <p style="text-align: justify;">
 
-              NOUS recueille des données personnelles pendant l'inscription de l'utilisateur ou lorsque ce dernier fournit ces informations de sa propre initiative.
+              NOUS recueille des données personnelles pendant <a href="{{('register')}}">l'inscription</a> de l'utilisateur ou lorsque ce dernier fournit ces informations de sa propre initiative.
               Chaque utilisateur s'engage à communiquer des informations exactes et à les mettre à jour.
               NOUS prend toutes les mesures propres à assurer la protection, l'intégrité et la confidentialité des données à caractère personnel que NOUS détient et traite.
               Certaines données communiquées par les utilisateurs de leur propre initiative peuvent notamment permettre d'identifier leur origine ethnique, leur nationalité, leur religion et/ou leurs orientations sexuelles.
@@ -25,18 +25,18 @@
               De même, en fournissant des photos de soi-même, chaque utilisateur donne son consentement exprès et spécifique en vue de l'utilisation de ses photos par NOUS pour la durée et pour les finalités définies.
               NOUS se réserve la possibilité d'enregistrer, à chaque fois que l'utilisateur se connecte au site ou fait appel à ses services, des informations telles que l'URL, l'adresse IP, le type et la langue du navigateur, ainsi que la date et l'heure de la connexion, ce qui est expressément accepté par l'utilisateur.
             </p>
-            <p>
+            <p style="text-align: justify;">
               Les photos et toutes autres données personnelles communiquées par les utilisateurs et recueillies par NOUS peuvent être utilisées :
             <ul>
-              <li>Afin de permettre à NOUS de fournir les services demandés, y compris ceux
+              <li style="text-align: justify;">Afin de permettre à NOUS de fournir les services demandés, y compris ceux
                 qui entraînent l'affichage de contenus et publicités personnalisés.</li>
-              <li>A des fins d'audit, de recherches, de statistiques et d'analyse, afin d'optimiser
+              <li style="text-align: justify;">A des fins d'audit, de recherches, de statistiques et d'analyse, afin d'optimiser
                 les services rendus par NOUS.</li>
-              <li> Le consentement ainsi donné par les utilisateurs emporte autorisation à NOUS de recourir à des tiers pour le traitement des données personnelles et des photos ainsi recueillies, à condition que le tiers ainsi choisi par NOUS respecte toutes les mesures de confidentialité et de sécurité appropriées.</p>
+              <li style="text-align: justify;"> Le consentement ainsi donné par les utilisateurs emporte autorisation à NOUS de recourir à des tiers pour le traitement des données personnelles et des photos ainsi recueillies, à condition que le tiers ainsi choisi par NOUS respecte toutes les mesures de confidentialité et de sécurité appropriées.</p>
               </li>
             </ul>
 
-            <p>Il est précisé que NOUS utilise d'autres technologies, afin de faciliter l'accès des utilisateurs aux services proposés, afin d'étudier l'usage qui en est fait et plus généralement afin d'améliorer ses prestations. Ces technologies évitent notamment aux utilisateurs d'avoir à répéter la saisie d'informations à chaque visite sur le Site. Les utilisateurs ont cependant le droit de modifier les paramètres et options de leur logiciel de navigation sur internet pour empêcher l'utilisation des cookies. Toutefois, cela peut perturber le fonctionnement de certains services ou fonctions
+            <p style="text-align: justify;">Il est précisé que NOUS utilise d'autres technologies, afin de faciliter l'accès des utilisateurs aux services proposés, afin d'étudier l'usage qui en est fait et plus généralement afin d'améliorer ses prestations. Ces technologies évitent notamment aux utilisateurs d'avoir à répéter la saisie d'informations à chaque visite sur le Site. Les utilisateurs ont cependant le droit de modifier les paramètres et options de leur logiciel de navigation sur internet pour empêcher l'utilisation des cookies. Toutefois, cela peut perturber le fonctionnement de certains services ou fonctions
               Les partenaires de NOUS destinataires de certaines des informations personnelles figurent dans la liste ci-dessous
               Statistiques d'audience :
             <ul>
@@ -54,7 +54,7 @@
             NOUS communiquera des informations nominatives concernant un utilisateur en cas de réquisition judiciaire et à toute autorité qui effectuerait des vérifications ou enquêtes en relation avec des contenus et/ou services illicites accessibles via le réseau Internet ou téléphonique ou avec des activités illégales.
             En tant que membre de NOUS, l'utilisateur peut recevoir des emails à l'adresse email qu'il aura donné à son inscription.</p>
 
-            <p>
+            <p style="text-align: justify;">
               Pour tous les emails dits d'« alerte » l'informant sur :
             <ul>
               <li>Demande de contact </li>
@@ -71,7 +71,7 @@
             formulaire de contact.</p>
 
             <h2>Inscription</h2>
-            <p>NOUS est seul propriétaire des données d'identification des utilisateurs et se donne
+            <p style="text-align: justify;">NOUS est seul propriétaire des données d'identification des utilisateurs et se donne
               le devoir de ne pas les divulguées à la demande d'un tiers ou d'un autre utilisateur
               du site sous aucun prétexte. Par ailleurs il est à notifier que l'accès aux utilisateurs
               du site est soumis à une souscription minimum en guise de soutient aux

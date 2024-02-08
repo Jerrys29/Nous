@@ -34,6 +34,8 @@ Route::get('/login', 'App\Http\Controllers\NousController@loginview')->name('log
 Route::post('/login', 'App\Http\Controllers\NousController@login')->name('login');
 Route::get('/profils', 'App\Http\Controllers\NousController@view')->name('profils');
 Route::get('/profil/{userId}', 'App\Http\Controllers\NousController@detail')->name('profil');
+Route::put('/profile/update', 'App\Http\Controllers\NousController@update')->name('profile.update');
+Route::post('/profile/photos/update', 'App\Http\Controllers\NousController@updatePhotos')->name('profile.photos.update');
 
 Route::put('/update-name/{id}', 'App\Http\Controllers\NousController@updatename')->name('update-name');
 Route::put('/update-numero/{id}', 'App\Http\Controllers\NousController@updatenumero')->name('update-numero');
@@ -85,7 +87,7 @@ Route::get('inscription', function () {
 Route::get('formulaire', function () {
     return view('Karaoke/formulaire');
 });
-Route::get('/inscription', 'App\Http\Controllers\karaokeController@showRegistration')->name('inscription');
+Route::get('/inscription', 'App\Http\Controllers\KaraokeController@showRegistration')->name('inscription');
 // web.php
 
 
@@ -93,25 +95,25 @@ Route::get('/inscription', 'App\Http\Controllers\karaokeController@showRegistrat
 
 
 //route vers mise à jour du profil
-Route::post('/update-profile', 'App\Http\Controllers\karaokeController@updateProfile')->name('update-profile');
+Route::post('/update-profile', 'App\Http\Controllers\KaraokeController@updateProfile')->name('update-profile');
 
 
 //page index
 // Ajoutez cette ligne dans votre fichier web.php
-Route::get('/index', 'App\Http\Controllers\karaokeController@showAllKaraokeProfiles')->name('karaokeusers');
+Route::get('/index', 'App\Http\Controllers\KaraokeController@showAllKaraokeProfiles')->name('karaokeusers');
 
 
 
-Route::post('InscriKaraoke/','App\Http\Controllers\karaokeController@register')->name('filleinscrip');
-Route::get('connection/', 'App\Http\Controllers\karaokeController@show')->name('connection');
+Route::post('InscriKaraoke/','App\Http\Controllers\KaraokeController@register')->name('filleinscrip');
+Route::get('connection/', 'App\Http\Controllers\KaraokeController@show')->name('connection');
 Route::get('/check-phone-number/{phoneNumber}', 'KaraokeController@checkPhoneNumber');
 
 //auth
- Route::post('/connection', 'App\Http\Controllers\karaokeController@loginUser')->name('logins');
+ Route::post('/connection', 'App\Http\Controllers\KaraokeController@loginUser')->name('logins');
 
-Route::post('/karaoke/update-name/{id}','App\Http\Controllers\karaokeController@updateName')->name('update_name');
-Route::post('/karaoke/update-numero/{id}', 'App\Http\Controllers\karaokeController@updateNumero')->name('update_numero');
-Route::post('/karaoke/update-pseudo/{id}', 'App\Http\Controllers\karaokeController@updatPseudo')->name('update_pseudo');
+Route::post('/karaoke/update-name/{id}','App\Http\Controllers\KaraokeController@updateName')->name('update_name');
+Route::post('/karaoke/update-numero/{id}', 'App\Http\Controllers\KaraokeController@updateNumero')->name('update_numero');
+Route::post('/karaoke/update-pseudo/{id}', 'App\Http\Controllers\KaraokeController@updatPseudo')->name('update_pseudo');
 Route::post('/visiteurs/{id}','App\Http\Controllers\KaraokeController@Visiteurs')->name('paiementV');
 
 
@@ -119,10 +121,10 @@ Route::post('/visiteurs/{id}','App\Http\Controllers\KaraokeController@Visiteurs'
 
 
 
-Route::get('/Karaokeprofils/{userId}', 'App\Http\Controllers\karaokeController@showKaraokeProfile')->name('Karaokeprofils');
+Route::get('/Karaokeprofils/{userId}', 'App\Http\Controllers\KaraokeController@showKaraokeProfile')->name('Karaokeprofils');
 /* A D M I N */
 
-Route::get('/visiteur/{id}', 'App\Http\Controllers\karaokeController@visiteur')->name('visiteur');
+Route::get('/visiteur/{id}', 'App\Http\Controllers\KaraokeController@visiteur')->name('visiteur');
 
 Route::get('admin', function () {
     return view('Admin/login');
@@ -149,6 +151,6 @@ Route::post('/unblock/user/{id}', 'App\Http\Controllers\AdminController@unblockU
 
 
 Route::get('utilisateurs', 'App\Http\Controllers\AdminController@showAllUsers')->name('utilisateurs');
-Route::post('/payment', 'App\Http\Controllers\karaokeController@processPayment')->name('payment.form');
-Route::post('/deconnexion', 'App\Http\Controllers\karaokeController@Deco')->name('deconnexion');
+Route::post('/payment', 'App\Http\Controllers\KaraokeController@processPayment')->name('payment.form');
+Route::post('/deconnexion', 'App\Http\Controllers\KaraokeController@Deco')->name('deconnexion');
 Route::get('/deconnexion', 'App\Http\Controllers\AdminController@Deco')->name('Deco');
