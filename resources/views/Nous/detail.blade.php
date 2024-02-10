@@ -9,7 +9,7 @@
       <div class="section-title">
         <h2>{{ $user->name }}</h2>
         @if (auth()->user() && auth()->user()->paiement == 0)
-        <i class="bi bi-whatsapp whatsapp-icon launch" data-toggle="modal" data-target="#staticBackdrop"></i>
+        <button class="btn btn-danger" data-toggle="modal" data-target="#staticBackdrop">Discuter avec {{$user->name}}</button>
         <div class="modal fade" id="staticBackdrop" data-backdrop="false" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
           <div class="modal-dialog modal-lg">
 
@@ -77,50 +77,128 @@
           </div>
         </div>
         @else
-        <a href="https://wa.me/{{ $user->numero }}" target="_blank"><i class="bi bi-whatsapp whatsapp-icon"></i></a>
+        <a href="https://wa.me/{{ $user->numero }}" target="_blank"><button class="btn btn-danger">Discuter avec {{$user->name}}</button></a>
         @endif
       </div>
-      <div class="row portfolio-container" data-aos="fade-up" data-aos-delay="150">
-        <div class="col-6">
-          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
-            <img src="{{ asset('storage/' . $user->photo1) }}" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <a href="{{ asset('storage/' . $user->photo1) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title=""><i class="bx bx-plus"></i></a>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="card">
+              <div class="card-body">
+               
+                <div class="user-images">
+                  <div class="row">
+                    <div class="col-4"> @if ($user->photo1)
+                      <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo1) }}" alt="Photo 1">
+                      @endif
+                    </div>
+                    <div class="col-4"> @if ($user->photo2)
+                      <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo2) }}" alt="Photo 2">
+                      @endif
+                    </div>
+                    <div class="col-4"> @if ($user->photo3)
+                      <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo3) }}" alt="Photo 3">
+                      @endif
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      @if ($user->photo4)
+                      <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo4) }}" alt="Photo 4">
+                      @endif
+                    </div>
+                    <div class="col-6"> @if ($user->photo5)
+                      <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo5) }}" alt="Photo 5">
+                      @endif
+                    </div>
+                  </div>
+                  <!-- Afficher un message si aucune photo n'est disponible -->
+                  @if (!$user->photo1 && !$user->photo2 && !$user->photo3 && !$user->photo4 && !$user->photo5)
+                  <p style="text-align: center;">Aucune photo disponible pour cet utilisateur.</p>
+                  @endif
+                </div>
+
+
+              </div>
             </div>
           </div>
+          <div class="col-lg-6">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-6"> <!-- Champ de numéro WhatsApp -->
 
-          <div class="col-lg-4 col-md-6 portfolio-item filter-web">
-            <img src="{{ asset('storage/' . $user->photo2) }}" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <a href="{{ asset('storage/' . $user->photo2) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title=""><i class="bx bx-plus"></i></a>
-            </div>
-          </div>
+                    <!-- Champ de nom -->
+                    <div class="mb-3">
+                      <label for="name" class="form-label fw-bold">Nom:</label>
+                      <p class="form-control-static">{{ $user->name }}</p>
+                    </div>
 
-          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
-            <img src="{{ asset('storage/' . $user->photo3) }}" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <a href="{{ asset('storage/' . $user->photo3) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title=""><i class="bx bx-plus"></i></a>
-            </div>
-          </div>
+                    <!-- Champ d'âge -->
+                    <div class="mb-3">
+                      <label for="age" class="form-label fw-bold">Âge:</label>
+                      <p class="form-control-static">{{ $user->age }}</p>
+                    </div>
+                    <div class="mb-3">
+                      <label for="genre" class="form-label fw-bold">Genre:</label>
+                      <p class="form-control-static">{{ $user->genre }}</p>
+                    </div>
+                    <div class="mb-3">
+                      <label for="looking_for" class="form-label fw-bold">Genre recherché:</label>
+                      <p class="form-control-static">{{ $user->looking_for }}</p>
+                    </div>
 
-          <div class="col-lg-4 col-md-6 portfolio-item filter-card">
-            <img src="{{ asset('storage/' . $user->photo4) }}" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <a href="{{ asset('storage/' . $user->photo4) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title=""><i class="bx bx-plus"></i></a>
-            </div>
-          </div>
+                    <div class="mb-3">
+                      <label for="town" class="form-label fw-bold">Ville:</label>
+                      <p class="form-control-static">{{ $user->town }}</p>                
+                        </div>
+                    <div class="mb-3">
+                      <label for="origin_country" class="form-label fw-bold">Pays d'origine:</label>
+                      <p class="form-control-static">{{ $user->origin_country }}</p>                    </div>
 
-          <div class="col-lg-4 col-md-6 portfolio-item filter-web">
-            <img src="{{ asset('storage/' . $user->photo5) }}" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <a href="{{ asset('storage/' . $user->photo5) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title=""><i class="bx bx-plus"></i></a>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="mb-3">
+                      <label for="birthplace" class="form-label fw-bold">Ville de naissance:</label>
+                      <p class="form-control-static">{{ $user->birthplace }}</p>
+                    </div>
+                    <div class="mb-3">
+                      <label for="town" class="form-label fw-bold">Ville:</label>
+                      <p class="form-control-static">{{ $user->town }}</p>
+                                    </div>
+
+                    <div class="mb-3">
+                      <label for="mariatal_status" class="form-label fw-bold">Situation Matrimoniale:</label>
+                      <p class="form-control-static">{{ $user->mariatal_status }}</p>                    </div>
+                    <div class="mb-3">
+                      <label for="hair_color" class="form-label fw-bold">Couleur des cheveux:</label>
+                      <p class="form-control-static">{{ $user->hair_color }}</p>                    </div>
+                    <div class="mb-3">
+                      <label for="eyes_color" class="form-label fw-bold">Couleur des yeux</label>
+                      <p class="form-control-static">{{ $user->eyes_color }}</p>                    </div>
+                    <!-- Champ d'À propos de moi -->
+                    <div class="mb-3">
+                      <label for="about" class="form-label fw-bold">À propos de cet utilisateur:</label>
+                      <p class="form-control-static">{{ $user->about }}</p>                    </div>
+
+                    <!-- Champ des centres d'intérêt -->
+                    <div class="mb-3">
+                      <label for="interests" class="form-label fw-bold">Centres d'intérêt</label>
+                      <p class="form-control-static">{{ $user->interests }}</p> 
+                                       </div>
+                  </div>
+                </div>
+
+              </div>
+
+              </form>
+
 
             </div>
           </div>
         </div>
-       
-
       </div>
+    </div>
 
     </div>
     <script>

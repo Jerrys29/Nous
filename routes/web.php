@@ -34,6 +34,8 @@ Route::get('/login', 'App\Http\Controllers\NousController@loginview')->name('log
 Route::post('/login', 'App\Http\Controllers\NousController@login')->name('login');
 Route::get('/profils', 'App\Http\Controllers\NousController@view')->name('profils');
 Route::get('/profil/{userId}', 'App\Http\Controllers\NousController@detail')->name('profil');
+Route::put('/profile/update', 'App\Http\Controllers\NousController@update')->name('profile.update');
+Route::post('/profile/photos/update', 'App\Http\Controllers\NousController@updatePhotos')->name('profile.photos.update');
 
 Route::put('/update-name/{id}', 'App\Http\Controllers\NousController@updatename')->name('update-name');
 Route::put('/update-numero/{id}', 'App\Http\Controllers\NousController@updatenumero')->name('update-numero');
