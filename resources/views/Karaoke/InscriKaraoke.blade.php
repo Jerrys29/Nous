@@ -74,7 +74,7 @@
                             <h2>Fin Inscription</h2>
 
                             <div class="form-group form-input">
-                                <input type="text" name="pseudo" id="first_name" class="input-text" placeholder="Pseudo" required>
+                                <input type="text" name="pseudo" id="first_pseudo" class="input-text" placeholder="Pseudo" required>
                             </div><br>
         
                             <div class="form-group">
@@ -106,7 +106,7 @@
                                     <i class="zmdi zmdi-chevron-down"></i>
                                 </span>
                             </div> -->
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <select name="origin_country" class="form-control" id="origin_country" placeholder="Pays d'Origine" class="form-control" required>
                                     <option value="" disabled selected hidden>Pays d'Origine</option>
                                     <option value="Benin">Bénin</option>
@@ -128,7 +128,11 @@
                                     <i class="zmdi zmdi-chevron-down"></i>
                                 </span>
 
-                            </div>
+                            </div> -->
+
+                            <div class="form-group">
+                                <input type="text" name="town" class="input-text" id="town" placeholder="Ville" required>
+                            </div><br>
                             <div class="form-group" id="error-message-step-2"></div>
 
                             <div class="form-group onsubmit="showCongratulationsPopup();>
@@ -138,15 +142,7 @@
                             </div>
                         </div>
     
-                        <div class="form-check form-check-info text-left">
-                                <input class="form-check-input" type="checkbox" name="agreement" id="flexCheckDefault" checked>
-                                <label class="form-check-label" for="flexCheckDefault">
-                                    J'accepte <a href="{{('terms')}}:;" class="text-dark font-weight-bolder">les termes et conditions</a>
-                                </label>
-                                @error('agreement')
-                                <p class="text-danger text-xs mt-2">Vous n'avez pas accepté les termes et conditions.</p>
-                                @enderror
-                            </div>
+                    
                     </form>
                     <a href="{{('/connection')}}"> <p class="w-100 text-center">&mdash; ou Se connecter &mdash;</p></a>
 
