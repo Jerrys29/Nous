@@ -2,6 +2,38 @@
 
 @section('document')
   <!-- ======= Hero Section ======= -->
+
+    <!-- style drapeaux -->
+    <style>
+    .scrolling-flags-container {
+      display: flex; /* Utilisation de flexbox pour aligner les drapeaux horizontalement */
+      animation: scroll 60s linear infinite; /* Animation de défilement */
+    }
+
+    .flag-image {
+      width: 25; /* Ajustez la largeur selon vos besoins */
+      height: 25px; /* Pour conserver les proportions de l'image */
+      margin-right: 10px; /* Espace entre les drapeaux */
+    }
+
+    /* Animation de défilement */
+    @keyframes scroll {
+      0% {
+        transform: translateX(0); /* Départ du défilement */
+      }
+      100% {
+        transform: translateX(calc(-50px * 56)); /* Fin du défilement - défilement de 56 drapeaux */
+      }
+    }
+  </style>
+
+    <div class="scrolling-flags-container" onmouseover="stopAnimation()" onmouseout="startAnimation()">
+      @for ($i = 1; $i <= 56; $i++)
+          <img src="{{ asset('assets/img/drap/' . $i . '.png') }}" alt="Drapeau {{ $i }}" class="flag-image">
+      @endfor
+  </div>
+
+
   <section id="hero" class="d-flex align-items-center">
     <!-- ======= Header ======= -->
  
@@ -14,6 +46,9 @@
         </div>
       </div>
     </div>
+    
+
+
 
   </section><!-- End Hero -->
 
@@ -21,11 +56,13 @@
 
     <!-- ======= About Section ======= -->
     <section id="about" class="about ">
+  
       <div class="container" data-aos="fade-up">
 
         <div class="row no-gutters">
           <div class="content col-xl-4 d-flex align-items-stretch">
             <div class="content">
+            <i class="flag-icon flag-icon-bj"></i>
               <h3>Pourquoi choisir<img src="assets/img/nous_logo.png" alt="" style="max-height: 40px;">?</h3>
               <p>
                 Nous vous fournissons une meilleure expérience de rencontre, vous avez la possibilité de rencontrer de nombreuses personnes de plus de 20 pays plus proches de vous que jamais. </p>
@@ -128,7 +165,23 @@
         </div>
 
       </div>
-    </section><!-- End Testimonials Section -->
+    </section>
+    <script>
+  var animation; // Variable pour stocker l'animation
+  
+  function stopAnimation() {
+    var flagsContainer = document.querySelector('.scrolling-flags-container');
+    animation = flagsContainer.style.animation; // Sauvegarde l'animation actuelle
+    flagsContainer.style.animation = 'none'; // Arrête l'animation
+  }
+
+  function startAnimation() {
+    var flagsContainer = document.querySelector('.scrolling-flags-container');
+    flagsContainer.style.animation = animation; // Redémarre l'animation
+  }
+</script>
+
+<!-- End Testimonials Section -->
     <!-- <section class="chatbox">
       <section class="chat-window">
         <article class="msg-container msg-remote" id="msg-1">

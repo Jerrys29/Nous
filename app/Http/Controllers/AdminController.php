@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 use App\Models\Like;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Avis;
+
 use DateTime;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Contracts\View\View;
@@ -163,5 +165,14 @@ class AdminController extends Controller
         return redirect('/connection');
     }
      
+    public function showavis()
+    {
+        // Récupérer tous les avis
+        $avisList = Avis::all();
 
+        // Passer les données à la vue
+        return view('Admin/avis', compact('avisList'));
+    }
+
+    
 }
