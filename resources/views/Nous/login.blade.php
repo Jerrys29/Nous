@@ -34,9 +34,10 @@
             <div class="booking-form">
                 <form id="booking-form" method="post" action="{{ route('login') }}">
                     @csrf
-                    <div class="img-logo">
-                        <img class="booking-img" src="assets/img/NOUS.png" alt="Image de nous" style="height: 100px;width: 100px;">
-                    </div>
+                    <a href="{{('/')}}"><div class="img-logo">
+                            <img class="booking-img" src="assets/img/NOUS.png" alt="Image de nous" style="height: 100px;width: 100px;">
+
+                        </div></a>
                     <div class="form-step" id="step-1">
                         <h2>Veuillez vous connecter avec les informations entrées à l'inscription!</h2>
                         <div class="form-group form-input">
