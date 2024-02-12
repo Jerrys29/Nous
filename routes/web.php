@@ -14,9 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('Nous/index');
-});
 Route::get('profils', function () {
     return view('Nous/profils');
 });
@@ -27,7 +24,7 @@ Route::get('register', function () {
 Route::get('terms', function () {
     return view('Nous/terms');
 });
-
+Route::get('/', 'App\Http\Controllers\NousController@index')->name('index');
 Route::get('/edit', 'App\Http\Controllers\NousController@edit')->name('edit');
 Route::post('/register', 'App\Http\Controllers\NousController@store')->name('inscription.store');
 Route::get('/login', 'App\Http\Controllers\NousController@loginview')->name('login');
@@ -53,9 +50,13 @@ Route::post('/store-images5', 'App\Http\Controllers\NousController@storephoto5')
 Route::post('/like-profile/{profile_id}', 'App\Http\Controllers\NousController@likeProfile')->name('like-profile');
 Route::post('/unlike-profile/{profile_id}', 'App\Http\Controllers\NousController@unlikeProfile')->name('unlike-profile');
 Route::post('/logout', 'App\Http\Controllers\NousController@logout')->name('logout');
-
-
 Route::get('/mettre-a-jour-paiement','App\Http\Controllers\NousController@mettreAJourPaiement');
+Route::post('/chat/send', 'App\Http\Controllers\ChatController@sendMessage')->name('chat.send');
+Route::post('/discussion', 'App\Http\Controllers\ChatController@store')->name('discussion.store');
+
+
+Route::get('/messages', 'App\Http\Controllers\ChatController@view')->name('messages');
+Route::get('/detail', 'App\Http\Controllers\ChatController@detail')->name('detail');
 
 
 
@@ -69,7 +70,7 @@ Route::get('/mettre-a-jour-paiement','App\Http\Controllers\NousController@mettre
 
 
 
-Route::get('kprofil', 'App\Http\Controllers\karaokeController@showprofil')->name('kprofil');
+Route::get('kprofil', 'App\Http\Controllers\KaraokeController@showprofil')->name('kprofil');
 
 
 

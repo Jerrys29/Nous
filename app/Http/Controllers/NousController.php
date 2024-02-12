@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Discussion;
 use App\Models\Like;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -21,9 +22,16 @@ use Illuminate\Validation\Rule;
 
 class NousController extends Controller
 {
+
+    public function index()
+    {
+        $messages = Discussion::all();
+        return view('Nous.index', compact('messages'));
+    }
+
     public function inscription()
     {
-        return view('nous.register');
+        return view('Nous.register');
     }
 
     public function store(Request $request)
@@ -95,8 +103,12 @@ class NousController extends Controller
     public function edit(Request $request)
     {
         $user = Auth::user();
-        if ($user->role = 'nous') {
-            return view('Nous/edit', compact('user'));
+        if ($user) {
+            if ($user->role = 'nous') {
+                return view('Nous/edit', compact('user'));
+            } else {
+                return view('Nous.login');
+            }
         } else {
             return view('Nous.login');
         }
@@ -125,13 +137,13 @@ class NousController extends Controller
         return back()->withErrors(['login' => 'Les informations d\'identification sont incorrectes.']);
     }
 
-
     public function logout()
     {
         Auth::logout();
 
         return redirect('/');
     }
+
     public function view()
     {
         if (auth()->check()) {
@@ -139,7 +151,7 @@ class NousController extends Controller
 
             $users = User::whereNotNull('photo1')
                 ->where('role', 'nous')
-                ->where('active', 0) 
+                ->where('active', 0)
                 ->where('id', '!=', $loggedInUser->id);
 
             if ($loggedInUser->looking_for == 'lesdeux') {
@@ -170,8 +182,6 @@ class NousController extends Controller
             return redirect()->route('login')->with('error', 'Vous devez être connecté pour accéder à cette page.');
         }
     }
-
-
 
     public function detail($userId)
     {
@@ -321,5 +331,103 @@ class NousController extends Controller
             return redirect()->back();
         }
         return response()->json(['paiementReussi' => false], 400);
+    }
+
+    public function storephoto1(Request $request)
+    {
+        $user = User::find($request->user_id);
+
+        if ($request->hasFile('photo1')) {
+            $imagePath = $request->file('photo1')->store('photos', 'public');
+            $user->{'photo1'} = $imagePath;
+        }
+
+        $user->save();
+
+        return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
+    }
+    public function storephoto2(Request $request)
+    {
+        $user = User::find($request->user_id);
+
+        if ($request->hasFile('photo2')) {
+            $imagePath = $request->file('photo2')->store('photos', 'public');
+            $user->{'photo2'} = $imagePath;
+        }
+        $user->save();
+        return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
+    }
+    public function storephoto3(Request $request)
+    {
+        $user = User::find($request->user_id);
+
+        if ($request->hasFile('photo3')) {
+            $imagePath = $request->file('photo3')->store('photos', 'public');
+            $user->{'photo3'} = $imagePath;
+        }
+        $user->save();
+        return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
+    }
+    public function storephoto4(Request $request)
+    {
+        $user = User::find($request->user_id);
+
+        if ($request->hasFile('photo4')) {
+            $imagePath = $request->file('photo4')->store('photos', 'public');
+            $user->{'photo4'} = $imagePath;
+        }
+        $user->save();
+        return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
+    }
+    public function storephoto5(Request $request)
+    {
+        $user = User::find($request->user_id);
+
+        if ($request->hasFile('photo5')) {
+            $imagePath = $request->file('photo5')->store('photos', 'public');
+            $user->{'photo5'} = $imagePath;
+        }
+        $user->save();
+        return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
+    }
+
+    public function updatenumero(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'numero' => 'required|string',
+        ]);
+        $user = User::find($id);
+        if (!$user) {
+            return redirect()->back()->with('error', 'Utilisateur non trouvé.');
+        }
+        $user->update($validatedData);
+        return redirect()->back()->with('success', 'Informations mises à jour avec succès.');
+    }
+
+
+    public function updatename(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+        ]);
+        $user = User::find($id);
+        if (!$user) {
+            return redirect()->back()->with('error', 'Utilisateur non trouvé.');
+        }
+        $user->update($validatedData);
+        return redirect()->back()->with('success', 'Informations mises à jour avec succès.');
+    }
+
+    public function updatepseudo(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'pseudo' => 'required|string',
+        ]);
+        $user = User::find($id);
+        if (!$user) {
+            return redirect()->back()->with('error', 'Utilisateur non trouvé.');
+        }
+        $user->update($validatedData);
+        return redirect()->back()->with('success', 'Informations mises à jour avec succès.');
     }
 }

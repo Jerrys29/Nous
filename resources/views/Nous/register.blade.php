@@ -37,10 +37,11 @@
                 <div class="booking-form">
                     <form id="booking-form" method="post" action="{{ route('inscription.store') }}">
                         @csrf
-                        <div class="img-logo">
+                        <a href="{{('/')}}"><div class="img-logo">
                             <img class="booking-img" src="assets/img/NOUS.png" alt="Image de nous" style="height: 100px;width: 100px;">
 
-                        </div>
+                        </div></a>
+                        
                         <div class="form-step" id="step-1">
                             <h2>Inscription - Étape 1</h2>
                             <div class="form-group form-input">
