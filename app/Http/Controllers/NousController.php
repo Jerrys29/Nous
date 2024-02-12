@@ -346,6 +346,7 @@ class NousController extends Controller
 
         return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
     }
+    
     public function storephoto2(Request $request)
     {
         $user = User::find($request->user_id);
@@ -357,6 +358,7 @@ class NousController extends Controller
         $user->save();
         return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
     }
+
     public function storephoto3(Request $request)
     {
         $user = User::find($request->user_id);
@@ -368,6 +370,7 @@ class NousController extends Controller
         $user->save();
         return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
     }
+
     public function storephoto4(Request $request)
     {
         $user = User::find($request->user_id);
@@ -379,6 +382,7 @@ class NousController extends Controller
         $user->save();
         return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
     }
+
     public function storephoto5(Request $request)
     {
         $user = User::find($request->user_id);
@@ -403,7 +407,6 @@ class NousController extends Controller
         $user->update($validatedData);
         return redirect()->back()->with('success', 'Informations mises à jour avec succès.');
     }
-
 
     public function updatename(Request $request, $id)
     {

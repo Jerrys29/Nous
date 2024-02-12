@@ -56,7 +56,7 @@ Route::post('/discussion', 'App\Http\Controllers\ChatController@store')->name('d
 
 
 Route::get('/messages', 'App\Http\Controllers\ChatController@view')->name('messages');
-Route::get('/detail', 'App\Http\Controllers\ChatController@detail')->name('detail');
+Route::get('/detail/{namesender}/{numero}','App\Http\Controllers\ChatController@viewDetail')->name('detail');
 
 
 
