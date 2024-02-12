@@ -25,7 +25,7 @@ class KaraokeController extends Controller
             'pseudo' => 'required|string',
             'birthdate' => 'required|date',
             'birthplace' => 'required|string',
-            'origin_country' => 'required|string',
+            'town' => 'required|string',
         ]);
     
         // Nettoyez le numéro en supprimant les espaces en trop
@@ -47,7 +47,7 @@ class KaraokeController extends Controller
             'pseudo' => $request->input('pseudo'),
             'birthdate' => $request->input('birthdate'),
             'birthplace' => $request->input('birthplace'),
-            'origin_country' => $request->input('origin_country'),
+            'town' => $request->input('town'),
             'role' => 'karaoke',
         ]);
     
@@ -62,12 +62,12 @@ class KaraokeController extends Controller
         // Récupérer l'utilisateur connecté
         $user = Auth::user();
 
-        return view('karaoke/connection', compact('user'));
+        return view('Karaoke/connection', compact('user'));
     }
 
     public function showRegistration()
     {
-        return view('karaoke/InscriKaraoke');
+        return view('Karaoke/InscriKaraoke');
     }
 
     public function checkPhoneNumber($phoneNumber)
@@ -118,7 +118,7 @@ public function showprofil()
         // Récupérer l'utilisateur connecté
         $user = Auth::user();
 
-        return view('karaoke/profilperso',compact('user'));
+        return view('Karaoke/profilperso',compact('user'));
     }
 
 
@@ -204,7 +204,7 @@ public function showprofil()
                     ->get();
         
         // Passer les données à la vue
-        return view('karaoke.index', compact('users'));
+        return view('Karaoke.index', compact('users'));
     }
     
     
@@ -215,7 +215,7 @@ public function showprofil()
             $user = User::findOrFail($userId);
         
             // Afficher la vue même si toutes les colonnes de photos sont null
-            return view('karaoke/profilevue', ['user' => $user]);
+            return view('Karaoke/profilevue', ['user' => $user]);
         }
         
 
@@ -264,7 +264,7 @@ public function showprofil()
         {
             $user = User::find($userId);
 
-            return view('karaoke/formulaire', ['userId' => $userId]);
+            return view('Karaoke/formulaire', ['userId' => $userId]);
         }
 
 
@@ -301,6 +301,6 @@ public function showprofil()
         
             // Redirigez ou effectuez d'autres actions après l'enregistrement
         
-            return view('karaoke/modal', ['user' => $user]);     }
+            return view('Karaoke/modal', ['user' => $user]);     }
      
 }

@@ -144,6 +144,7 @@ Route::get('NousUsers', 'App\Http\Controllers\AdminController@showAllNousUsers')
 
 Route::get('LokKaraokeUsers', 'App\Http\Controllers\AdminController@showLokKaraokeUsers')->name('LokKaraokeUsers');
 Route::get('LokNousUsers', 'App\Http\Controllers\AdminController@showLokNousUsers')->name('LokNousUsers');
+Route::get('avisadmin', 'App\Http\Controllers\AdminController@showavis')->name('avisadmin');
 
 
 Route::post('block-user/{id}', 'App\Http\Controllers\AdminController@blockUser')->name('block.user');
@@ -155,3 +156,9 @@ Route::get('utilisateurs', 'App\Http\Controllers\AdminController@showAllUsers')-
 Route::post('/payment', 'App\Http\Controllers\KaraokeController@processPayment')->name('payment.form');
 Route::post('/deconnexion', 'App\Http\Controllers\KaraokeController@Deco')->name('deconnexion');
 Route::get('/deconnexion', 'App\Http\Controllers\AdminController@Deco')->name('Deco');
+//Avis
+Route::get('avis', function () {
+    return view('Avis/vis');
+});
+Route::post('avis', 'App\Http\Controllers\NousController@avis')->name('avis.save');
+Route::get('avis', 'App\Http\Controllers\NousController@avisshow')->name('avis');

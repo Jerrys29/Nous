@@ -12,8 +12,18 @@
           <div class="col-lg-3 col-md-6 footer-links">
             <h4>Liens importants</h4>
             <ul>
+            <li><i class="bx bx-chevron-right"></i><a href="{{('/')}}" class="logo me-auto">Accueil</a></li>
               <li><i class="bx bx-chevron-right"></i> <a href="{{('/profils')}}">Trouver un partenaire</a></li>
               <li><i class="bx bx-chevron-right"></i> <a href="{{('/terms')}}">Termes et Conditions</a></li>
+              <li>
+                    Vous aimez ce site ? 
+                    <br> 
+                    Donnez votre 
+                </li>
+                <li> <a href="{{('/avis')}}" class="logo me-auto">
+                        <i class="bx bx-chevron-right"></i> Avis
+                    </a> </li>
+
             </ul>
           </div>
 

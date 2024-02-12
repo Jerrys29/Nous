@@ -6,6 +6,7 @@ use App\Models\Discussion;
 use App\Models\Like;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Avis;
 use DateTime;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Contracts\View\View;
@@ -333,6 +334,38 @@ class NousController extends Controller
         return response()->json(['paiementReussi' => false], 400);
     }
 
+
+    public function avis(Request $request)
+{
+    // Validation des données du formulaire
+    $validatedData = $request->validate([
+        'name' => 'required|string',
+        'phone' => 'required|string',
+        'comment' => 'required|string',
+    ]);
+
+    // Supprimer les espaces dans le numéro de téléphone
+    $phone = str_replace(' ', '', $validatedData['phone']);
+
+    // Créer un nouvel avis en utilisant le modèle Avis
+    $avis = Avis::create([
+        'name' => $validatedData['name'],
+        'phone' => $phone,
+        'comment' => $validatedData['comment'],
+    ]);
+
+    // Rediriger l'utilisateur vers une autre page ou afficher un message de succès
+    return redirect()->route('avis')->with('success', 'Votre avis a été soumis avec succès ! Merci pour votre contribution.');
+
+
+    }
+
+    public function avisshow()
+    {
+        return view('Avis.vis');
+        
+    }
+
     public function storephoto1(Request $request)
     {
         $user = User::find($request->user_id);
@@ -434,3 +467,4 @@ class NousController extends Controller
         return redirect()->back()->with('success', 'Informations mises à jour avec succès.');
     }
 }
+    
