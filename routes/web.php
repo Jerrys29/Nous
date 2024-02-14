@@ -54,7 +54,10 @@ Route::get('/mettre-a-jour-paiement','App\Http\Controllers\NousController@mettre
 Route::post('/chat/send', 'App\Http\Controllers\ChatController@sendMessage')->name('chat.send');
 Route::post('/discussion', 'App\Http\Controllers\ChatController@store')->name('discussion.store');
 
+Route::post('/envoi', 'App\Http\Controllers\ChatController@send')->name('discussion.send');
 
+Route::get('/get-new-messages/{lastMessageId}', 'App\Http\Controllers\ChatController@getNewMessages')->name('getNewMessages');
+Route::post('/envoyerMessage', 'App\Http\Controllers\ChatController@envoyerMessage')->name('envoyerMessage');
 Route::get('/messages', 'App\Http\Controllers\ChatController@view')->name('messages');
 Route::get('/detail/{namesender}/{numero}','App\Http\Controllers\ChatController@viewDetail')->name('detail');
 

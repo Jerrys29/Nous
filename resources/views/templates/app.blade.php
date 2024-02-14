@@ -35,7 +35,7 @@
 @yield('document')
 
 @include('components.footer')
-<script>
+<!-- <script>
         var inactivityTimeout = 30 * 60 * 1000;
 
         var timeout;
@@ -52,7 +52,7 @@
         document.addEventListener('scroll', resetTimer);
 
         resetTimer(); // Initialise le minuteur lors du chargement de la page
-    </script>
+    </script> -->
 
 <!-- Inclure vos fichiers locaux après les scripts externes -->
 <script src="{{asset('assets/vendor/purecounter/purecounter_vanilla.js')}}"></script>

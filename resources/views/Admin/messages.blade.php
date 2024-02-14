@@ -20,14 +20,15 @@
                                     <div class="row">
                                         <div class="col-10"></div>
                                         <div class="col-2">
-                                            <a href="{{ route('detail', ['namesender' => $message->name_sender, 'numero' => $message->numero]) }}">
+                                            <a href="/detail/{{ $message->name_sender }}/{{ $message->numero }}">
                                                 <button class="btn btn-danger">Répondre</button>
                                             </a>
+
                                         </div>
                                     </div>
-
                                 </li>
                                 @endforeach
+
                             </ul>
 
                         </ul>

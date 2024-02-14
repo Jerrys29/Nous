@@ -7,7 +7,7 @@
     <div class="container">
       <div class="row">
         <!-- User Profile Cards -->
-        <div class="col-lg-8">
+        <div class="col-lg-12">
           <div class="row">
             @foreach ($users as $user)
             <div class="col-lg-4 mb-3">

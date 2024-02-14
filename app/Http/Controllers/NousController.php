@@ -65,6 +65,7 @@ class NousController extends Controller
         $birthdate = new DateTime($validatedData['birthdate']);
         $today = new DateTime('now');
         $age = $birthdate->diff($today)->y;
+        $cleanedNumero = preg_replace('/[^0-9]/', '',  $request->input('numero'));
 
         try {
             $userData = [
@@ -78,7 +79,7 @@ class NousController extends Controller
                 'mariatal_status' => $validatedData['mariatal_status'],
                 'hair_color' => $validatedData['hair_color'],
                 'eyes_color' => $validatedData['eyes_color'],
-                'numero' => $validatedData['numero'],
+                'numero' =>  $cleanedNumero,
                 'password' => Hash::make($validatedData['password']),
                 'origin_country' => $validatedData['origin_country'],
                 'role' => 'nous',
@@ -98,23 +99,19 @@ class NousController extends Controller
         return redirect()->route('login')->with('success', 'Inscription réussie! Vous pouvez maintenant vous connecter.');
     }
 
-
-
-
     public function edit(Request $request)
     {
         $user = Auth::user();
         if ($user) {
-            if ($user->role = 'nous') {
+            if ($user->role === 'nous') { // Utilisez l'opérateur de comparaison pour vérifier l'égalité
                 return view('Nous/edit', compact('user'));
             } else {
                 return view('Nous.login');
             }
         } else {
-            return view('Nous.login');
+            return redirect()->route('login')->with('error', 'Vous n\'avez pas de compte sur l\'espace Nous.');
         }
     }
-
 
     public function loginview()
     {
@@ -124,19 +121,30 @@ class NousController extends Controller
     public function login(Request $request)
     {
         $identifier = $request->input('numero');
-        $field = filter_var($identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'numero';
-
+        $cleanedIdentifier = preg_replace('/[^0-9]/', '', $identifier); // Supprimer les caractères non numériques
+    
+        $field = filter_var($cleanedIdentifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'numero';
+    
         $credentials = [
-            $field => $identifier,
+            $field => $cleanedIdentifier,
             'password' => $request->input('password'),
         ];
-
+    
         if (Auth::attempt($credentials)) {
-            return redirect()->route('edit');
+            $user = Auth::user();
+            // Vérifiez si l'utilisateur a le rôle nécessaire
+            if ($user->role === 'nous') {
+                return redirect()->route('edit');
+            } else {
+                // Redirigez l'utilisateur vers une autre page avec un message d'erreur
+                return redirect()->route('login')->with('error', 'Vous n\'avez pas de compte sur l\'espace Nous.');
+            }
         }
-
+    
         return back()->withErrors(['login' => 'Les informations d\'identification sont incorrectes.']);
     }
+    
+
 
     public function logout()
     {
@@ -336,34 +344,31 @@ class NousController extends Controller
 
 
     public function avis(Request $request)
-{
-    // Validation des données du formulaire
-    $validatedData = $request->validate([
-        'name' => 'required|string',
-        'phone' => 'required|string',
-        'comment' => 'required|string',
-    ]);
+    {
+        // Validation des données du formulaire
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'phone' => 'required|string',
+            'comment' => 'required|string',
+        ]);
 
-    // Supprimer les espaces dans le numéro de téléphone
-    $phone = str_replace(' ', '', $validatedData['phone']);
+        // Supprimer les espaces dans le numéro de téléphone
+        $phone = str_replace(' ', '', $validatedData['phone']);
 
-    // Créer un nouvel avis en utilisant le modèle Avis
-    $avis = Avis::create([
-        'name' => $validatedData['name'],
-        'phone' => $phone,
-        'comment' => $validatedData['comment'],
-    ]);
+        // Créer un nouvel avis en utilisant le modèle Avis
+        $avis = Avis::create([
+            'name' => $validatedData['name'],
+            'phone' => $phone,
+            'comment' => $validatedData['comment'],
+        ]);
 
-    // Rediriger l'utilisateur vers une autre page ou afficher un message de succès
-    return redirect()->route('avis')->with('success', 'Votre avis a été soumis avec succès ! Merci pour votre contribution.');
-
-
+        // Rediriger l'utilisateur vers une autre page ou afficher un message de succès
+        return redirect()->route('avis')->with('success', 'Votre avis a été soumis avec succès ! Merci pour votre contribution.');
     }
 
     public function avisshow()
     {
         return view('Avis.vis');
-        
     }
 
     public function storephoto1(Request $request)
@@ -379,7 +384,7 @@ class NousController extends Controller
 
         return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
     }
-    
+
     public function storephoto2(Request $request)
     {
         $user = User::find($request->user_id);
@@ -467,4 +472,3 @@ class NousController extends Controller
         return redirect()->back()->with('success', 'Informations mises à jour avec succès.');
     }
 }
-    

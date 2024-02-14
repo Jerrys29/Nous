@@ -12,6 +12,7 @@
 body {
   font-family: "Open Sans", sans-serif;
   color: #444444;
+  overflow-x: hidden;
 }
 
 a {
@@ -1970,7 +1971,9 @@ section {
   color: #fff;
   font-size: 14px;
   background: #111111;
+  
 }
+
 
 #footer .footer-top {
   padding: 60px 0 30px 0;
