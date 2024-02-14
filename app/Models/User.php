@@ -41,6 +41,7 @@ class User extends Authenticatable
         'photo3',
         'photo4',
         'photo5',
+        'photo6',
         'active',
         'paiement',
         'created_at',

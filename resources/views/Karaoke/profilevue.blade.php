@@ -94,6 +94,13 @@
             <a href="{{ asset('storage/' . $user->photo5) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title=""><i class="bx bx-plus"></i></a>
           </div>
         </div>
+        <div class="col-lg-4 col-md-6 portfolio-item filter-web">
+          <img src="{{ asset('storage/' . $user->photo6) }}" class="img-fluid" alt="">
+          <div class="portfolio-info">
+            <a href="{{ asset('storage/' . $user->photo6) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title=""><i class="bx bx-plus"></i></a>
+          </div>
+        </div>
+       
       </div>
     </div>
   </section><!-- End Portfolio Section -->

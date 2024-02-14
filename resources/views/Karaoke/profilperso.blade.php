@@ -64,11 +64,17 @@
     @endif
     @include('components.headerKa')
     <main id="main">
+    @if(!$user->photo1)
+        <div class="alert alert-warning" role="alert">
+            Attention : Veuillez sélectionner une image pour la première photo.
+        </div>
+
+        @endif
         <section id="user-profile" class="user-profile">
             <div class="container">
                 <div class="row">
 
-                    <div class="col-lg-4">
+                    <div class="col-lg-6">
                         <h2>{{ $user->pseudo }}</h2>
                         <div class="user-images">
                             <img src="{{ asset('storage/' . $user->photo1) }}" alt="User Photo 1">
@@ -76,12 +82,14 @@
                             <img src="{{ asset('storage/' . $user->photo3) }}" alt="User Photo 3">
                             <img src="{{ asset('storage/' . $user->photo4) }}" alt="User Photo 4">
                             <img src="{{ asset('storage/' . $user->photo5) }}" alt="User Photo 5">
+                            <img src="{{ asset('storage/' . $user->photo6) }}" alt="User Photo 6">
+
                         </div>
                         <div class="text-center">
                             <button id="modifyImagesBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageModal">Modifier les images</button>
                         </div>
                     </div>
-                    <div class="col-lg-8 ">
+                    <div class="col-lg-6 ">
                         <!-- Colonne pour les informations de l'utilisateur -->
                         <h2 style="margin-top: 3rem;">Informations Personnelles</h2>
 
@@ -293,6 +301,28 @@
                         <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
                     </div>
                 </form>
+
+
+                <form method="POST" action="{{ route('store-images6') }}" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                    <div class="modal-body">
+
+                        <div class="image-container">
+                            <img src="{{ asset('storage/' . $user->photo6) }}" alt="Image 6" class="image-cropper" data-image-index="6">
+                            <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="6">
+                                Choisir une image
+                                <input type="file" name="photo6" class="image-input" style="display:none;">
+                            </label>
+                        </div>
+                 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
+                        <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
+                    </div>
+                </form>
+               
             </div>
         </div>
     </div>
@@ -313,7 +343,7 @@
             var formData = new FormData();
 
             // Ajoutez chaque fichier d'image à formData
-            for (var i = 1; i <= 5; i++) {
+            for (var i = 1; i <= 6; i++) {
                 var fileInput = $('input[name="photo' + i + '"]')[0];
                 var file = fileInput.files[0];
                 if (file) {
@@ -550,6 +580,24 @@
                 alert("Photos téléchargées avec succès!");
             });
         });
+    </script>
+    <script>
+        var inactivityTimeout = 30 * 60 * 1000;
+
+        var timeout;
+
+        function resetTimer() {
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+              window.location.href = "{{ route('login') }}";
+            }, inactivityTimeout);
+        }
+
+        document.addEventListener('mousemove', resetTimer);
+        document.addEventListener('keypress', resetTimer);
+        document.addEventListener('scroll', resetTimer);
+
+        resetTimer(); // Initialise le minuteur lors du chargement de la page
     </script>
 
 </body>

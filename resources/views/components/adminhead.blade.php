@@ -25,7 +25,20 @@
 
     <hr class="horizontal dark mt-0">
     <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
+        <ul>
+        <li class="nav-item">
+                        <a class="nav-link" href="{{ route('avisadmin') }}">
+                            <span class="ms-2">Avis</span>
+                        </a>
+                </li>
+        <li class="nav-item">
+                        <a class="nav-link" href="{{'utilisateurs'}}">
+                            <span class="ms-2">Visiteurs</span>
+                        </a>
+                    </li>
+        </ul>
         <ul class="navbar-nav">
+      
             <li class="nav-item">
                 <a class="nav-link active" href="#">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -35,11 +48,7 @@
                 </a>
                 
                 <ul class="nav-dropdown">
-                <li class="nav-item">
-                        <a class="nav-link" href="{{ route('avisadmin') }}">
-                            <span class="ms-2">Avis</span>
-                        </a>
-                    </li>
+               
                         
 
                     <li class="nav-item">
@@ -52,10 +61,7 @@
                             <span class="ms-2">Karaoke</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{'utilisateurs'}}">
-                            <span class="ms-2">Visiteurs</span>
-                        </a>
+                    
                 </ul>
             </li>
 
@@ -117,6 +123,23 @@
 
 
     </div>
-    
+    <script>
+        var inactivityTimeout = 30 * 60 * 1000;
+
+        var timeout;
+
+        function resetTimer() {
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+              window.location.href = "{{ route('login') }}";
+            }, inactivityTimeout);
+        }
+
+        document.addEventListener('mousemove', resetTimer);
+        document.addEventListener('keypress', resetTimer);
+        document.addEventListener('scroll', resetTimer);
+
+        resetTimer(); // Initialise le minuteur lors du chargement de la page
+    </script>
 </aside>
  

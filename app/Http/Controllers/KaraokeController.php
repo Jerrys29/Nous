@@ -113,7 +113,7 @@ class KaraokeController extends Controller
         }
     }
 
-public function showprofil()
+    public function showprofil()
     { 
         // Récupérer l'utilisateur connecté
         $user = Auth::user();
@@ -123,11 +123,11 @@ public function showprofil()
 
 
     public function showUserProfile() {
-        // Récupérer l'utilisateur connecté
+        // Récupérer l'utilisateur connecté:
         $user = Auth::user();
     
         // Vérifier si l'utilisateur est connecté
-        if ($user) {
+        if ($user->role == 'karaoke' && $user->activity == 1) {
             // L'utilisateur est connecté, vous pouvez maintenant utiliser $user pour accéder à ses propriétés
             return view('profilperso',  compact('user'));
         } else {

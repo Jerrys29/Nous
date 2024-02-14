@@ -256,9 +256,19 @@ class NousController extends Controller
                 Storage::delete($user->photo5);
                 $user->photo5 = null;
             } else {
-                return redirect()->back()->with('error', 'La photo 1 n\'existe pas.');
+                return redirect()->back()->with('error', 'La photo 5 n\'existe pas.');
             }
         }
+        if ($request->has('delete_photo6')) {
+            if ($user->photo6) {
+                Storage::delete($user->photo6);
+                $user->photo6 = null;
+            } else {
+                return redirect()->back()->with('error', 'La photo 6 n\'existe pas.');
+            }
+        }
+
+    
 
         if ($request->hasFile('photo1')) {
             $imagePath = $request->file('photo1')->store('photos', 'public');
@@ -281,6 +291,11 @@ class NousController extends Controller
             $imagePath = $request->file('photo5')->store('photos', 'public');
             $user->{'photo5'} = $imagePath;
         }
+        if ($request->hasFile('photo6')) {
+            $imagePath = $request->file('photo6')->store('photos', 'public');
+            $user->{'photo6'} = $imagePath;
+        }
+      
 
         $user->save();
 
@@ -379,6 +394,7 @@ class NousController extends Controller
 
         return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
     }
+
     public function storephoto2(Request $request)
     {
         $user = User::find($request->user_id);
@@ -412,6 +428,7 @@ class NousController extends Controller
         $user->save();
         return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
     }
+
     public function storephoto5(Request $request)
     {
         $user = User::find($request->user_id);
@@ -424,6 +441,21 @@ class NousController extends Controller
         return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
     }
 
+    public function storephoto6(Request $request)
+    {
+        $user = User::find($request->user_id);
+
+        if ($request->hasFile('photo6')) {
+            $imagePath = $request->file('photo6')->store('photos', 'public');
+            $user->{'photo6'} = $imagePath;
+        }
+
+        $user->save();
+
+        return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
+    }
+
+   
     public function updatenumero(Request $request, $id)
     {
         $validatedData = $request->validate([
@@ -464,4 +496,5 @@ class NousController extends Controller
         return redirect()->back()->with('success', 'Informations mises à jour avec succès.');
     }
 }
+    
     

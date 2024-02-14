@@ -11,7 +11,7 @@
                         @csrf
                         <h2 class="text-center mb-4">Paiement</h2>
                         <div class="text-center mb-4">
-                            <p>Votre paiement est irrécupérable.</p>
+                            <p>Votre paiement est irrécupérable.(1000FCFA)</p>
                         </div>
                         <div class="text-center mb-4">
                             <kkiapay-widget amount="981" key="de9c4e671f1c676a8613e0a567252e182c8fc52c"
