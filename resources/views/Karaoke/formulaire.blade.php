@@ -9,7 +9,7 @@
                     <div class="col-lg-6 mx-auto">
                         <div class="text-center" >
                             <strong>VOS INFORMATIONS NE SERONT PAS DIVULGUÉES</strong> <br>
-                            <i class="fa fa-info-circle"></i> L'accès à la discussion est payante <br>
+                            <i class="fa fa-info-circle"></i> L'accès à la discussion est payante(1000FCFA) <br>
 
                         </div>
                         <form action="{{ route('paiementV', ['id' => $userId]) }}" method="POST" class="p-4 p-md-5 border rounded">
@@ -32,6 +32,24 @@
 
         
     </main><!-- End #main -->
+    <script>
+        var inactivityTimeout = 30 * 60 * 1000;
+
+        var timeout;
+
+        function resetTimer() {
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+              window.location.href = "{{ route('login') }}";
+            }, inactivityTimeout);
+        }
+
+        document.addEventListener('mousemove', resetTimer);
+        document.addEventListener('keypress', resetTimer);
+        document.addEventListener('scroll', resetTimer);
+
+        resetTimer(); // Initialise le minuteur lors du chargement de la page
+    </script>
 
     
 @endsection

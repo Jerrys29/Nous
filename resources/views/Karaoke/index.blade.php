@@ -4,11 +4,11 @@
 <main id="main">
   <section id="about" class="about">
     <div class="container">
-      <div class="row">
-        <div class="col-lg-8">
+     
+        <div class="col-lg-12">
           <div class="row">
             @foreach ($users as $user)
-            <div class="col-lg-4 mb-3">
+            <div class="col-lg-3 mb-3">
               <a href="{{ url('/Karaokeprofils/' . $user->id) }}" style="text-decoration: none; color: inherit; cursor: auto;">
                 <div class="card">
                   <div style="width: 100%; height: 200px; overflow: hidden;">
@@ -41,7 +41,7 @@
             @endforeach
           </div>
         </div>
-      </div>
+      
     </div>
   </section>
 </main>

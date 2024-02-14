@@ -11,6 +11,7 @@
 	
     <link rel="stylesheet" href="assets/css/login.css">
 
+
 	</head>
 	<body class="img js-fullheight" >
 
@@ -104,6 +105,24 @@ function togglePassword() {
         document.getElementById('alert-message').style.display = 'none';
     }, 9000);
 	</script>
+	<script>
+        var inactivityTimeout = 30 * 60 * 1000;
+
+        var timeout;
+
+        function resetTimer() {
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+              window.location.href = "{{ route('login') }}";
+            }, inactivityTimeout);
+        }
+
+        document.addEventListener('mousemove', resetTimer);
+        document.addEventListener('keypress', resetTimer);
+        document.addEventListener('scroll', resetTimer);
+
+        resetTimer(); // Initialise le minuteur lors du chargement de la page
+    </script>
 
 	</body>
 </html>
