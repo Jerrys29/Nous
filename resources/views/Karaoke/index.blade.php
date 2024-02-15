@@ -6,7 +6,7 @@
     <div class="container">
       <div class="row">
         @foreach ($users as $user)
-          <div class="col-lg-3 mb-4">
+          <div class="col-lg-3 col-md-6 mb-4"> <!-- Utilisation de col-md-6 pour les écrans de taille moyenne et plus petits -->
             <a href="{{ url('/Karaokeprofils/' . $user->id) }}" style="text-decoration: none; color: inherit;">
               <div class="card h-100 card custom-card">
                 <div style="width: 100%; max-height: 200px; overflow: hidden;">
