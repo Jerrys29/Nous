@@ -51,23 +51,22 @@
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
-    </div>  
+    </div>
   </header><!-- End Header -->
 </section><!-- End Hero -->
-<style>.button-container {
-  display: flex;
-  list-style-type: none;
-  padding: 0;
-}
+<style>
+  .button-container {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+  }
 
-.button-container a {
-  margin-right: 10px; /* Ajoutez une marge entre les boutons pour l'espace */
-}
+  .button-container a {
+    margin-right: 10px;
+    /* Ajoutez une marge entre les boutons pour l'espace */
+  }
 </style>
+
 </section><!-- End Hero -->
 
 <!-- End Hero -->
-
-
-
-  

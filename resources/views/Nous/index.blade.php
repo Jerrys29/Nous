@@ -3,8 +3,59 @@
 @section('document')
 <!-- ======= Hero Section ======= -->
 
+<div class="container" id="ok">
+  <div class="row">
+    <div class="col-12" style="margin-top: -4rem; margin-bottom:4rem;" >
+      <div class="scrolling-flags-container" onmouseover="stopAnimation()" onmouseout="startAnimation()" style="margin-top: 4rem; margin-bottom: -2rem;">
+        @for ($i = 1; $i <= 56; $i++)
+        <img src="{{ asset('assets/img/drap/' . $i . '.png') }}" alt="Drapeau {{ $i }}" class="flag-image">
+        @endfor
+      </div>
+    </div>
+   </div>
+  </div>
 
+  
+  <style>
+    .scrolling-flags-container {
+  flex-wrap: nowrap;
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  animation: scroll 30s linear infinite; /* Réduire la durée de l'animation */
+}
+
+    .flag-image {
+  width: 5%; /* Utilisation d'un pourcentage pour la taille des drapeaux */
+  height: auto;
+  margin: 5px; /* Ajoutez de la marge entre les images */
+}
+
+@media screen and (max-width: 768px) {
+  .flag-image {
+    width: 10%; /* Réduisez la taille des images pour les écrans plus petits */
+  }
+}
+
+  
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50px * 28)); /* Réduire le nombre de drapeaux à défiler */
+  }
+}
+
+#ok{
+  padding-top: 60px 0;
+  overflow: hidden;
+  position: relative;
+}
+   
+  </style>
 <section id="hero" class="d-flex align-items-center">
+  
   <!-- ======= Header ======= -->
 
   <div class="container" data-aos="zoom-out" data-aos-delay="100">
