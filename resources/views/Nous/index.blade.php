@@ -3,41 +3,6 @@
 @section('document')
 <!-- ======= Hero Section ======= -->
 
-<style>
-  .scrolling-flags-container {
-    display: flex;
-    /* Utilisation de flexbox pour aligner les drapeaux horizontalement */
-    animation: scroll 60s linear infinite;
-    /* Animation de défilement */
-  }
-
-  .flag-image {
-    width: 25;
-    /* Ajustez la largeur selon vos besoins */
-    height: 25px;
-    /* Pour conserver les proportions de l'image */
-    margin-right: 10px;
-    /* Espace entre les drapeaux */
-  }
-
-  /* Animation de défilement */
-  @keyframes scroll {
-    0% {
-      transform: translateX(0);
-      /* Départ du défilement */
-    }
-
-    100% {
-      transform: translateX(calc(-50px * 56));
-      /* Fin du défilement - défilement de 56 drapeaux */
-    }
-  }
-</style>
-
-<div class="scrolling-flags-container" onmouseover="stopAnimation()" onmouseout="startAnimation()">
-  @for ($i = 1; $i <= 56; $i++) <img src="{{ asset('assets/img/drap/' . $i . '.png') }}" alt="Drapeau {{ $i }}" class="flag-image">
-    @endfor
-</div>
 
 <section id="hero" class="d-flex align-items-center">
   <!-- ======= Header ======= -->

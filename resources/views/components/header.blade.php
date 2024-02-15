@@ -51,7 +51,7 @@
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
-    </div>
+    </div>  
   </header><!-- End Header -->
 </section><!-- End Hero -->
 <style>.button-container {
@@ -64,3 +64,54 @@
   margin-right: 10px; /* Ajoutez une marge entre les boutons pour l'espace */
 }
 </style>
+  <div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="scrolling-flags-container" onmouseover="stopAnimation()" onmouseout="startAnimation()" style="margin-top: 4rem; margin-bottom: -2rem;">
+        @for ($i = 1; $i <= 56; $i++)
+        <img src="{{ asset('assets/img/drap/' . $i . '.png') }}" alt="Drapeau {{ $i }}" class="flag-image">
+        @endfor
+      </div>
+    </div>
+  </div>
+</section><!-- End Hero -->
+
+<!-- End Hero -->
+
+
+   <style>
+    .scrolling-flags-container {
+      flex-wrap: nowrap;
+      display: flex; /* Utilisation de flexbox pour aligner les drapeaux horizontalement */
+      justify-content: center;
+      
+      margin-top: 2rem; /* Espace au-dessus des drapeaux */
+
+
+
+      animation: scroll 60s linear infinite; /* Animation de défilement */
+    }
+
+    .flag-image {
+      width: 50px; /* Ajustez cette valeur en fonction de vos besoins */
+    height: auto;
+    margin: 5px; /* Ajoutez de la marge entre les images */
+    }
+
+    @media screen and (max-width: 768px) {
+    .flag-image {
+        width: 50px; /* Réduisez la taille des images pour les écrans plus petits */
+    }
+  }
+  @keyframes scroll {
+  0% {
+    transform: translateX(0); /* Départ du défilement */
+  }
+  100% {
+    transform: translateX(calc(-50px * 56)); /* Fin du défilement - défilement de 56 drapeaux */
+  }
+}
+
+   
+  </style>
+  

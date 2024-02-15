@@ -7,7 +7,7 @@
         <div class="col-12">
           <div class="card mb-4">
             <div class="card-header pb-0">
-              <h6>Utilisateurs Nous</h6>
+              <h6>Comptes utilisateurs Nous</h6>
             </div>
             <div class="card-body px-0 pt-0 pb-2">
               <div class="table-responsive p-0">
@@ -42,7 +42,7 @@
                         </td>
                         
                         <td class="align-middle">
-                        <form method="post" action="{{ route('block.user', ['id' => $user->id]) }}">
+                        <form method="post" action="{{ route('block.user', ['id' => $user->id, 'redirect' => 'Noussers']) }}">
                                     @csrf
                                     @method('POST')
                                     @if(!$user->active)
