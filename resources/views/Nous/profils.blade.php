@@ -11,10 +11,12 @@
           <div class="row">
             @foreach ($users as $user)
             <div class="col-lg-4 mb-3">
-              <a href="{{ url('/profil/' . $user->id) }}" style="text-decoration: none; color: inherit; cursor: auto;">
-                <div class="card">
-                  <img src="{{ asset('storage/' . $user->photo1) }}" class="card-img card-img-top img-fluid" alt="Profile Image {{ $user->id }}">
-                  <div class="card-body">
+    <a href="{{ url('/profil/' . $user->id) }}" style="text-decoration: none; color: inherit; cursor: auto;">
+        <div class="card">
+            <img src="{{ asset('storage/' . $user->photo1) }}" class="card-img card-img-top img-fluid" alt="Profile Image {{ $user->id }}" style="object-fit: cover; height: 100%;">
+            <div class="card-body">
+
+        
                     <div class="row">
                       <div class="col-8">
                         <h5 class="card-title">{{ $user->name }}</h5>
