@@ -202,7 +202,7 @@
                     <div class="row">
                         <div class="col-md-8"></div>
                         <div class="col-md-4">
-                            <button type="submit" class="get-started-btn scrollto">Valider</button>
+                            <button type="submit" class="get-started-btn scrollto" style="background-color: green;">Valider</button>
                         </div>
                     </div>
                 </form>
@@ -345,7 +345,7 @@
                     <div class="row">
                         <div class="col-md-8"></div>
                         <div class="col-md-4">
-                            <button type="submit" class="get-started-btn scrollto">Valider</button>
+                            <button type="submit" class="get-started-btn scrollto" style="background-color: green;">Valider</button>
                         </div>
                     </div>
                 </form>

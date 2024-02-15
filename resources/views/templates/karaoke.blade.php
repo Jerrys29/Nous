@@ -31,7 +31,7 @@
 <body>
 <script src="https://cdn.kkiapay.me/k.js"></script>
 
-@include('components.headerka')
+@include('components.headerKa')
 
 @yield('document')
 
