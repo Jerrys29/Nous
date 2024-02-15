@@ -1,4 +1,4 @@
-  @extends('templates.admin')
+@extends('templates.admin')
 @section('document')
   <main class="main-content position-relative border-radius-lg ">
   
@@ -7,11 +7,13 @@
         <div class="col-12">
           <div class="card mb-4">
             <div class="card-header pb-0">
-              <h6>Inscrites</h6>
+              <h6>Comptes utilisateurs Karaoke bloqué ou non activé</h6>
             </div>
             <div class="card-body px-0 pt-0 pb-2">
               <div class="table-responsive p-0">
+             
               <table class="table align-items-center mb-0">
+                
             <thead>
                 <tr>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nom Complet</th>
@@ -42,21 +44,26 @@
                             <span class="text-secondary text-xs font-weight-bold">{{ $user->town }}</span>
                         </td>
                         <td class="align-middle text-center text-sm">
-                            <span class="badge badge-sm {{ $user->active ? 'bg-gradient-success' : 'bg-gradient-secondary' }}">
-                                {{ $user->active ? 'Activé' : 'Désactivé' }}
-                            </span>
+                            @if($user->active && $user->activated_at)
+                                <span class="badge badge-sm bg-gradient-success">Activé</span>
+                            @elseif(!$user->active && $user->activated_at)
+                                <span class="badge badge-sm bg-gradient-secondary">Bloqué</span>
+                            @else
+                                <span class="badge badge-sm bg-gradient-warning">Non activé</span>
+                            @endif
                         </td>
                         <td class="align-middle">
-                        <form method="post" action="{{ route('unblock.user', ['id' => $user->id]) }}">
+                            @if(!$user->active)
+                                <form method="post" action="{{ route('unblock.user', ['id' => $user->id, 'redirect' => 'LokKaraokeUsers']) }}">
                                     @csrf
                                     @method('POST')
-                                    @if(!$user->active)
-                                        <button type="submit" class="btn btn-success btn-sm">Débloquer</button>
-                                    @else
-                                        <button type="button" class="btn btn-success btn-sm" disabled>Débloquer</button>
-                                    @endif
+                                    <button type="submit" class="btn btn-success btn-sm">Débloquer</button>
                                 </form>
+                            @else
+                                <button type="button" class="btn btn-success btn-sm" disabled>Débloquer</button>
+                            @endif
                         </td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>
@@ -65,12 +72,9 @@
           </div>
         </div>
       </div>
-   
-    
     </div>
     <script>
         var inactivityTimeout = 30 * 60 * 1000;
-
         var timeout;
 
         function resetTimer() {
@@ -87,6 +91,4 @@
         resetTimer(); // Initialise le minuteur lors du chargement de la page
     </script>
   </main>
- 
-  
 @endsection

@@ -70,12 +70,33 @@
         </div>
 
         @endif
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-3 ml-auto">
+                            <form method="POST" action="{{ route('Deco') }}">
+                                @csrf
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-danger btn-block">Déconnexion</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card card-body">
+                        <h1 class="text-center">Profil Personnel</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <section id="user-profile" class="user-profile">
             <div class="container">
                 <div class="row">
 
                     <div class="col-lg-6">
-                        <h2>{{ $user->pseudo }}</h2>
+                        <div class="card card-body">
+                        <h2>{{ $user->name }}</h2>
                         <div class="user-images">
                             <img src="{{ asset('storage/' . $user->photo1) }}" alt="User Photo 1">
                             <img src="{{ asset('storage/' . $user->photo2) }}" alt="User Photo 2">
@@ -88,111 +109,128 @@
                         <div class="text-center">
                             <button id="modifyImagesBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageModal">Modifier les images</button>
                         </div>
-                    </div>
+                        </div>
+                       
+                    </div>  
+                  
                     <div class="col-lg-6 ">
-                        <!-- Colonne pour les informations de l'utilisateur -->
-                        <h2 style="margin-top: 3rem;">Informations Personnelles</h2>
+                    <div class="card card-body">
+                         <!-- Colonne pour les informations de l'utilisateur -->
+                         <h2 style="margin-top: 3rem;">Informations Personnelles</h2>
 
 
-                        <div class="mb-3">
-                            <label>
-                                <h5>Pseudo:</h5>
-                            </label>
-                            <span id="userName">{{ $user->pseudo }}</span>
-                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editPseudo" onclick="editInformation('userName')">Modifier</button>
-                            <div class="modal fade" id="editPseudo" tabindex="-1" aria-labelledby="editPseudoLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editPseudoLabel">Modifier l'information</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <form method="post" action="{{ route('update-pseudo', ['id' => $user->id]) }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-body">
-                                                <label for="editField">Nouvelle valeur:</label>
-                                                <input type="text" name="pseudo" value="{{ $user->pseudo }}" class="form-control" required>
+                         <div class="mb-3">
+    <label>
+        <h5>Pseudo:</h5>
+    </label>
+    <span id="userName">{{ $user->pseudo }}</span>
+    <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editPseudo" onclick="editInformation('userName')">Modifier</button>
+    <div class="modal fade" id="editPseudo" tabindex="-1" aria-labelledby="editPseudoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editPseudoLabel">Modifier l'information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="{{ route('update-pseudo', ['id' => $user->id]) }}">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <label for="editField">Nouvelle valeur:</label>
+                        <input type="text" name="pseudo" value="{{ $user->pseudo }}" class="form-control" required>
 
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
-                                                <button type="submit" class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        <div class="mb-3">
-                            <label>
-                                <h5>Tel:</h5>
-                            </label>
-                            <span id="userPhone">{{ $user->numero }}</span>
-                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editNumero" onclick="editInformation('userPhone')">Modifier</button>
-                            <div class="modal fade" id="editNumero" tabindex="-1" aria-labelledby="editNumeroLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editNumeroLabel">Modifier l'information</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <form method="post" action="{{ route('update-numero', ['id' => $user->id]) }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-body">
-                                                <label for="editField">Nouvelle valeur:</label>
-                                                <input type="text" id="editField" name="numero" class="form-control">
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
-                                                <button type="submit" class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label>
-                                <h5>Nom:</h5>
-                            </label>
-                            <span id="userName">{{ $user->name }}</span>
-                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editName" onclick="editInformation('userName')">Modifier</button>
-                            <div class="modal fade" id="editName" tabindex="-1" aria-labelledby="editNameLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editNameLabel">Modifier l'information</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <form method="post" action="{{ route('update-name', ['id' => $user->id]) }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-body">
-                                                <label for="editField">Nouvelle valeur:</label>
-                                                <input type="text" name="name" value="{{ $user->name }}" class="form-control" required>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
-                                                <button type="submit" class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
+                        <button type="submit" class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<div class="mb-3">
+    <label>
+        <h5>Tel:</h5>
+    </label>
+    <span id="userPhone">{{ $user->numero }}</span>
+    <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editNumero" onclick="editInformation('userPhone')">Modifier</button>
+    <div class="modal fade" id="editNumero" tabindex="-1" aria-labelledby="editNumeroLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editNumeroLabel">Modifier l'information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="{{ route('update-numero', ['id' => $user->id]) }}">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <label for="editField">Nouvelle valeur:</label>
+                        <input type="text" id="editField" name="numero" class="form-control">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
+                        <button type="submit" class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-                        
-                        </div>
-                        
-                        </div>
+<div class="mb-3">
+    <label>
+        <h5>Nom:</h5>
+    </label>
+    <span id="userName">{{ $user->name }}</span>
+    <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editName" onclick="editInformation('userName')">Modifier</button>
+    <div class="modal fade" id="editName" tabindex="-1" aria-labelledby="editNameLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editNameLabel">Modifier l'information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="{{ route('update-name', ['id' => $user->id]) }}">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <label for="editField">Nouvelle valeur:</label>
+                        <input type="text" name="name" value="{{ $user->name }}" class="form-control" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
+                        <button type="submit" class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</div>
+
+</div>
+
+</div>
+
+
+    </div>
+</div>
+                    </div>
+                    
+</div>
+
+</div>
+
+</div>
+
+
+    </div>
+</div>
+                    </div>
                        
-                        </div>
-
-                       
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -220,9 +258,10 @@
                         </div>
                  
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
                         <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
+                    <div class="modal-footer">
+                       
                     </div>
                 </form>
                 <form method="POST" action="{{ route('store-images2') }}" enctype="multipart/form-data">
@@ -239,9 +278,10 @@
                         </div>
                  
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
                         <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
+                    <div class="modal-footer">
+                        
                     </div>
                 </form>
                 <form method="POST" action="{{ route('store-images3') }}" enctype="multipart/form-data">
@@ -256,11 +296,11 @@
                                 <input type="file" name="photo3" class="image-input" style="display:none;">
                             </label>
                         </div>
-                 
-                    </div>
-                    <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
                         <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
+                    </div>
+                    <div class="modal-footer">
+                       
                     </div>
                 </form>
                 <form method="POST" action="{{ route('store-images4') }}" enctype="multipart/form-data">
@@ -275,11 +315,11 @@
                                 <input type="file" name="photo4" class="image-input" style="display:none;">
                             </label>
                         </div>
-                 
-                    </div>
-                    <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
                         <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
+                    </div>
+                    <div class="modal-footer">
+                       
                     </div>
                 </form>
                 <form method="POST" action="{{ route('store-images5') }}" enctype="multipart/form-data">
@@ -294,11 +334,11 @@
                                 <input type="file" name="photo5" class="image-input" style="display:none;">
                             </label>
                         </div>
-                 
-                    </div>
-                    <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
                         <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
+                    </div>
+                    <div class="modal-footer">
+                        
                     </div>
                 </form>
 
@@ -315,11 +355,11 @@
                                 <input type="file" name="photo6" class="image-input" style="display:none;">
                             </label>
                         </div>
-                 
-                    </div>
-                    <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quitter</button>
                         <button type="submit" class="btn btn-primary ml-auto">Enregistrer</button>
+                    </div>
+                    <div class="modal-footer">
+                        
                     </div>
                 </form>
                

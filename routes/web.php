@@ -148,8 +148,8 @@ Route::get('LokNousUsers', 'App\Http\Controllers\AdminController@showLokNousUser
 Route::get('avisadmin', 'App\Http\Controllers\AdminController@showavis')->name('avisadmin');
 
 
-Route::post('block-user/{id}', 'App\Http\Controllers\AdminController@blockUser')->name('block.user');
-Route::post('/unblock/user/{id}', 'App\Http\Controllers\AdminController@unblockUser')->name('unblock.user');
+Route::post('block/user/{id}/{redirect}', 'App\Http\Controllers\AdminController@blockUser')->name('block.user');
+Route::post('/unblock/user/{id}/{redirect}', 'App\Http\Controllers\AdminController@unblockUser')->name('unblock.user');
 
 
 

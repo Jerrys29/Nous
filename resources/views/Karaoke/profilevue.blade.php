@@ -65,40 +65,64 @@
       </div>
       <div class="row portfolio-container" data-aos="fade-up" data-aos-delay="150">
         <div class="col-lg-4 col-md-6 portfolio-item filter-app">
-          <img src="{{ asset('storage/' . $user->photo1) }}" class="img-fluid" alt="">
-          <div class="portfolio-info">
-            <a href="{{ asset('storage/' . $user->photo1) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title=""><i class="bx bx-plus"></i></a>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 portfolio-item filter-web">
-          <img src="{{ asset('storage/' . $user->photo2) }}" class="img-fluid" alt="">
-          <div class="portfolio-info">
-            <a href="{{ asset('storage/' . $user->photo2) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title=""><i class="bx bx-plus"></i></a>
-          </div>
+          <a href="{{ asset('storage/' . $user->photo1) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="">
+            <div class="position-relative">
+              <img src="{{ asset('storage/' . $user->photo1) }}"  data-gallery="portfolioGallery" class="img-fluid" alt="">
+              <div class="portfolio-info position-absolute top-50 start-50 translate-middle">
+                <i class="bx bx-zoom-in"></i>
+              </div>
+            </div>
+          </a>
         </div>
         <div class="col-lg-4 col-md-6 portfolio-item filter-app">
-          <img src="{{ asset('storage/' . $user->photo3) }}" class="img-fluid" alt="">
-          <div class="portfolio-info">
-            <a href="{{ asset('storage/' . $user->photo3) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title=""><i class="bx bx-plus"></i></a>
-          </div>
+          <a href="{{ asset('storage/' . $user->photo2) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="">
+            <div class="position-relative">
+              <img src="{{ asset('storage/' . $user->photo2) }}"  data-gallery="portfolioGallery" class="img-fluid" alt="">
+              <div class="portfolio-info position-absolute top-50 start-50 translate-middle">
+                <i class="bx bx-zoom-in"></i>
+              </div>
+            </div>
+          </a>
         </div>
-        <div class="col-lg-4 col-md-6 portfolio-item filter-card">
-          <img src="{{ asset('storage/' . $user->photo4) }}" class="img-fluid" alt="">
-          <div class="portfolio-info">
-            <a href="{{ asset('storage/' . $user->photo4) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title=""><i class="bx bx-plus"></i></a>
-          </div>
+        <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+          <a href="{{ asset('storage/' . $user->photo3) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="">
+            <div class="position-relative">
+              <img src="{{ asset('storage/' . $user->photo3) }}"  data-gallery="portfolioGallery" class="img-fluid" alt="">
+              <div class="portfolio-info position-absolute top-50 start-50 translate-middle">
+                <i class="bx bx-zoom-in"></i>
+              </div>
+            </div>
+          </a>
         </div>
-        <div class="col-lg-4 col-md-6 portfolio-item filter-web">
-          <img src="{{ asset('storage/' . $user->photo5) }}" class="img-fluid" alt="">
-          <div class="portfolio-info">
-            <a href="{{ asset('storage/' . $user->photo5) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title=""><i class="bx bx-plus"></i></a>
-          </div>
+        <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+          <a href="{{ asset('storage/' . $user->photo4) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="">
+            <div class="position-relative">
+              <img src="{{ asset('storage/' . $user->photo4) }}"  data-gallery="portfolioGallery" class="img-fluid" alt="">
+              <div class="portfolio-info position-absolute top-50 start-50 translate-middle">
+                <i class="bx bx-zoom-in"></i>
+              </div>
+            </div>
+          </a>
         </div>
-        <div class="col-lg-4 col-md-6 portfolio-item filter-web">
-          <img src="{{ asset('storage/' . $user->photo6) }}" class="img-fluid" alt="">
-          <div class="portfolio-info">
-            <a href="{{ asset('storage/' . $user->photo6) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title=""><i class="bx bx-plus"></i></a>
-          </div>
+        <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+          <a href="{{ asset('storage/' . $user->photo5) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="">
+            <div class="position-relative">
+              <img src="{{ asset('storage/' . $user->photo5) }}"  data-gallery="portfolioGallery" class="img-fluid" alt="">
+              <div class="portfolio-info position-absolute top-50 start-50 translate-middle">
+                <i class="bx bx-zoom-in"></i>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+          <a href="{{ asset('storage/' . $user->photo6) }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="">
+            <div class="position-relative">
+              <img src="{{ asset('storage/' . $user->photo6) }}"  data-gallery="portfolioGallery" class="img-fluid" alt="">
+              <div class="portfolio-info position-absolute top-50 start-50 translate-middle">
+                <i class="bx bx-zoom-in"></i>
+              </div>
+            </div>
+          </a>
         </div>
        
       </div>

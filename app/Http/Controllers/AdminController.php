@@ -64,49 +64,51 @@ class AdminController extends Controller
     }
 
 
-    public function blockUser($id)
-    {
-        // Récupérer l'utilisateur à bloquer
-        $user = User::find($id);
-    
-        // Vérifier si l'utilisateur en question est l'administrateur lui-même
-        if ($user->role === 'admin') {
-            return redirect()->route('utilisateurs')->withErrors(['error' => 'Vous ne pouvez pas bloquer l\'administrateur.']);
-        }
-    
-        // Changer le statut de l'utilisateur
-        $user->active = !$user->active;
-    
-        // Sauvegarder les modifications
-        $user->save();
-    
-        // Rediriger vers la page des utilisateurs
-        return redirect()->route('utilisateurs');
+    public function blockUser($id, $redirect)
+{
+    // Récupérer l'utilisateur à bloquer
+    $user = User::find($id);
+
+    // Vérifier si l'utilisateur en question est l'administrateur lui-même
+    if ($user->role === 'admin') {
+        return redirect()->route($redirect)->withErrors(['error' => 'Vous ne pouvez pas bloquer l\'administrateur.']);
     }
 
+    // Changer le statut de l'utilisateur
+    $user->active = false;
 
+    $user->save();
 
-   public function unblockUser($id)
+    // Rediriger vers la page des utilisateurs correspondante
+    return redirect()->route($redirect);
+}
+    
+public function unblockUser($id, $redirect)
 {
     // Récupérer l'utilisateur à débloquer
     $user = User::find($id);
 
     // Vérifier si l'utilisateur en question est l'administrateur lui-même
     if ($user->role === 'admin') {
-        return redirect()->route('utilisateurs')->withErrors(['error' => 'Vous ne pouvez pas débloquer l\'administrateur.']);
+        return redirect()->route($redirect)->withErrors(['error' => 'Vous ne pouvez pas débloquer l\'administrateur.']);
     }
 
     // Changer le statut de l'utilisateur
-    $user->active = !$user->active;
-
+    $user->active = true;
+    
+    // Si la colonne activated_at est nulle, mettre à jour avec la date actuelle
+    if (is_null($user->activated_at)) {
+        $user->activated_at = now();
+    }
+    
     // Sauvegarder les modifications
     $user->save();
 
-    // Rediriger vers la page des utilisateurs
-    return redirect()->route('utilisateurs');
+    // Rediriger vers la page des utilisateurs correspondante
+    return redirect()->route($redirect);
 }
 
-
+    
     // AdminController KaraokeUsers
     
 

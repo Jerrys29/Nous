@@ -7,7 +7,7 @@
         <div class="col-12">
           <div class="card mb-4">
             <div class="card-header pb-0">
-              <h6>Utilisateurs Karaoke</h6>
+              <h6>Comptes des utilisateurs Karaoke</h6>
             </div>
             <div class="card-body px-0 pt-0 pb-2">
               <div class="table-responsive p-0">
@@ -47,7 +47,7 @@
                             </span>
                         </td>
                         <td class="align-middle">
-                                <form method="post" action="{{ route('block.user', ['id' => $user->id]) }}">
+                        <form method="post" action="{{ route('block.user', ['id' => $user->id, 'redirect' => 'KaraokeUsers']) }}">
                                     @csrf
                                     @method('POST')
                                     @if($user->active)
@@ -56,7 +56,7 @@
                                         <button type="button" class="btn btn-danger btn-sm" disabled>Bloquer</button>
                                     @endif
                                 </form>
-                                <form method="post" action="{{ route('unblock.user', ['id' => $user->id]) }}">
+                                <form method="post" action="{{ route('unblock.user', ['id' => $user->id, 'redirect' => 'KaraokeUsers']) }}">
                                     @csrf
                                     @method('POST')
                                     @if(!$user->active)
