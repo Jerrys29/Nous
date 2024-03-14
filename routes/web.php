@@ -62,6 +62,7 @@ Route::post('/envoyerMessage', 'App\Http\Controllers\ChatController@envoyerMessa
 Route::get('/messages', 'App\Http\Controllers\ChatController@view')->name('messages');
 Route::get('/detail/{namesender}/{numero}','App\Http\Controllers\ChatController@viewDetail')->name('detail');
 
+Route::get('/search', 'App\Http\Controllers\NousController@search')->name('search');
 
 
 
@@ -166,3 +167,13 @@ Route::get('avis', function () {
 });
 Route::post('avis', 'App\Http\Controllers\NousController@avis')->name('avis.save');
 Route::get('avis', 'App\Http\Controllers\NousController@avisshow')->name('avis');
+
+
+Route::get('publicites/list','App\Http\Controllers\AdminController@index')->name('publicites');
+Route::get('publicites/{id}/view','App\Http\Controllers\AdminController@detailspub')->name('publicites.details');
+Route::post('publicites/create','App\Http\Controllers\AdminController@storepub')->name('publicites.create');
+Route::get('publicites/create','App\Http\Controllers\AdminController@createpub')->name('publicite.create.view');
+Route::get('publicites/{id}/edit','App\Http\Controllers\AdminController@editpub')->name('publicites.edit');
+Route::post('publicites/{id}/activate','App\Http\Controllers\AdminController@toggleStatuspub')->name('publicites.toggle');
+Route::post('publicites/{id}/update','App\Http\Controllers\AdminController@updatepub')->name('publicites.update');
+Route::get('publicite/details','App\Http\Controllers\AdminController@showpub')->name('detailspub');

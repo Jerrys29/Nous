@@ -65,7 +65,6 @@ class NousController extends Controller
         $birthdate = new DateTime($validatedData['birthdate']);
         $today = new DateTime('now');
         $age = $birthdate->diff($today)->y;
-        $cleanedNumero = preg_replace('/[^0-9]/', '',  $request->input('numero'));
 
         try {
             $userData = [
@@ -79,7 +78,7 @@ class NousController extends Controller
                 'mariatal_status' => $validatedData['mariatal_status'],
                 'hair_color' => $validatedData['hair_color'],
                 'eyes_color' => $validatedData['eyes_color'],
-                'numero' =>  $cleanedNumero,
+                'numero' => $validatedData['numero'],
                 'password' => Hash::make($validatedData['password']),
                 'origin_country' => $validatedData['origin_country'],
                 'role' => 'nous',
@@ -99,19 +98,23 @@ class NousController extends Controller
         return redirect()->route('login')->with('success', 'Inscription réussie! Vous pouvez maintenant vous connecter.');
     }
 
+
+
+
     public function edit(Request $request)
     {
         $user = Auth::user();
         if ($user) {
-            if ($user->role === 'nous') { // Utilisez l'opérateur de comparaison pour vérifier l'égalité
+            if ($user->role = 'nous') {
                 return view('Nous/edit', compact('user'));
             } else {
                 return view('Nous.login');
             }
         } else {
-            return redirect()->route('login')->with('error', 'Vous n\'avez pas de compte sur l\'espace Nous.');
+            return view('Nous.login');
         }
     }
+
 
     public function loginview()
     {
@@ -121,30 +124,19 @@ class NousController extends Controller
     public function login(Request $request)
     {
         $identifier = $request->input('numero');
-        $cleanedIdentifier = preg_replace('/[^0-9]/', '', $identifier); // Supprimer les caractères non numériques
-    
-        $field = filter_var($cleanedIdentifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'numero';
-    
+        $field = filter_var($identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'numero';
+
         $credentials = [
-            $field => $cleanedIdentifier,
+            $field => $identifier,
             'password' => $request->input('password'),
         ];
-    
+
         if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            // Vérifiez si l'utilisateur a le rôle nécessaire
-            if ($user->role === 'nous') {
-                return redirect()->route('edit');
-            } else {
-                // Redirigez l'utilisateur vers une autre page avec un message d'erreur
-                return redirect()->route('login')->with('error', 'Vous n\'avez pas de compte sur l\'espace Nous.');
-            }
+            return redirect()->route('edit');
         }
-    
+
         return back()->withErrors(['login' => 'Les informations d\'identification sont incorrectes.']);
     }
-    
-
 
     public function logout()
     {
@@ -152,45 +144,35 @@ class NousController extends Controller
 
         return redirect('/');
     }
-
     public function view()
     {
+        $results = null; // Initialiser la variable $results à null par défaut
+    
         if (auth()->check()) {
             $loggedInUser = auth()->user();
-
+    
             $users = User::whereNotNull('photo1')
                 ->where('role', 'nous')
                 ->where('active', 0)
-                ->where('id', '!=', $loggedInUser->id);
-
-            if ($loggedInUser->looking_for == 'lesdeux') {
-                $users->where(function ($query) use ($loggedInUser) {
-                    $query->where('looking_for', 'homme')
-                        ->orWhere('looking_for', 'femme');
-                });
-            } else {
-                $users->where('looking_for', $loggedInUser->looking_for);
-            }
-            if ($loggedInUser->interests) {
-                $users->where('interests', 'like', '%' . $loggedInUser->interests . '%');
-            }
-
-            $users = $users->get();
+                ->where('id', '!=', $loggedInUser->id)
+                ->get();
+    
             if ($users->isEmpty()) {
                 $fallbackUsers = User::whereNotNull('photo1')
                     ->where('role', 'nous')
                     ->where('looking_for', $loggedInUser->genre)
                     ->where('id', '!=', $loggedInUser->id)
                     ->get();
-
-                return view('Nous.profils', ['users' => $fallbackUsers]);
+    
+                return view('Nous.profils', compact('fallbackUsers', 'results')); // Passer également la variable $results à la vue
             }
-
-            return view('Nous.profils', ['users' => $users]);
+    
+            return view('Nous.profils', compact('users', 'results')); // Passer également la variable $results à la vue
         } else {
             return redirect()->route('login')->with('error', 'Vous devez être connecté pour accéder à cette page.');
         }
     }
+    
 
     public function detail($userId)
     {
@@ -264,19 +246,9 @@ class NousController extends Controller
                 Storage::delete($user->photo5);
                 $user->photo5 = null;
             } else {
-                return redirect()->back()->with('error', 'La photo 5 n\'existe pas.');
+                return redirect()->back()->with('error', 'La photo 1 n\'existe pas.');
             }
         }
-        if ($request->has('delete_photo6')) {
-            if ($user->photo6) {
-                Storage::delete($user->photo6);
-                $user->photo6 = null;
-            } else {
-                return redirect()->back()->with('error', 'La photo 6 n\'existe pas.');
-            }
-        }
-
-    
 
         if ($request->hasFile('photo1')) {
             $imagePath = $request->file('photo1')->store('photos', 'public');
@@ -299,11 +271,6 @@ class NousController extends Controller
             $imagePath = $request->file('photo5')->store('photos', 'public');
             $user->{'photo5'} = $imagePath;
         }
-        if ($request->hasFile('photo6')) {
-            $imagePath = $request->file('photo6')->store('photos', 'public');
-            $user->{'photo6'} = $imagePath;
-        }
-      
 
         $user->save();
 
@@ -359,31 +326,34 @@ class NousController extends Controller
 
 
     public function avis(Request $request)
-    {
-        // Validation des données du formulaire
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'phone' => 'required|string',
-            'comment' => 'required|string',
-        ]);
+{
+    // Validation des données du formulaire
+    $validatedData = $request->validate([
+        'name' => 'required|string',
+        'phone' => 'required|string',
+        'comment' => 'required|string',
+    ]);
 
-        // Supprimer les espaces dans le numéro de téléphone
-        $phone = str_replace(' ', '', $validatedData['phone']);
+    // Supprimer les espaces dans le numéro de téléphone
+    $phone = str_replace(' ', '', $validatedData['phone']);
 
-        // Créer un nouvel avis en utilisant le modèle Avis
-        $avis = Avis::create([
-            'name' => $validatedData['name'],
-            'phone' => $phone,
-            'comment' => $validatedData['comment'],
-        ]);
+    // Créer un nouvel avis en utilisant le modèle Avis
+    $avis = Avis::create([
+        'name' => $validatedData['name'],
+        'phone' => $phone,
+        'comment' => $validatedData['comment'],
+    ]);
 
-        // Rediriger l'utilisateur vers une autre page ou afficher un message de succès
-        return redirect()->route('avis')->with('success', 'Votre avis a été soumis avec succès ! Merci pour votre contribution.');
+    // Rediriger l'utilisateur vers une autre page ou afficher un message de succès
+    return redirect()->route('avis')->with('success', 'Votre avis a été soumis avec succès ! Merci pour votre contribution.');
+
+
     }
 
     public function avisshow()
     {
         return view('Avis.vis');
+        
     }
 
     public function storephoto1(Request $request)
@@ -399,7 +369,7 @@ class NousController extends Controller
 
         return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
     }
-
+    
     public function storephoto2(Request $request)
     {
         $user = User::find($request->user_id);
@@ -448,21 +418,6 @@ class NousController extends Controller
         return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
     }
 
-    public function storephoto6(Request $request)
-    {
-        $user = User::find($request->user_id);
-
-        if ($request->hasFile('photo6')) {
-            $imagePath = $request->file('photo6')->store('photos', 'public');
-            $user->{'photo6'} = $imagePath;
-        }
-
-        $user->save();
-
-        return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
-    }
-
-   
     public function updatenumero(Request $request, $id)
     {
         $validatedData = $request->validate([
@@ -501,6 +456,58 @@ class NousController extends Controller
         $user->update($validatedData);
         return redirect()->back()->with('success', 'Informations mises à jour avec succès.');
     }
-}
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $loggedInUser = auth()->user();
     
+        // Si l'utilisateur est authentifié, recherchez les utilisateurs correspondants
+        if ($loggedInUser) {
+            $users = User::whereNotNull('photo1')
+                ->where('role', 'nous')
+                ->where('active', 0)
+                ->where('id', '!=', $loggedInUser->id)
+                ->get();
+    
+            // Si aucun utilisateur correspondant n'est trouvé, recherchez les utilisateurs de secours
+            if ($users->isEmpty()) {
+                $fallbackUsers = User::whereNotNull('photo1')
+                    ->where('role', 'nous')
+                    ->where('looking_for', $loggedInUser->genre)
+                    ->where('id', '!=', $loggedInUser->id)
+                    ->get();
+    
+                return view('Nous.profils', ['users' => $fallbackUsers]);
+            }
+    
+            // Recherchez les utilisateurs correspondant à la requête de recherche
+            $results = User::whereNotNull('photo1')->where(function ($queryBuilder) use ($query) {
+                $queryBuilder->where('name', 'like', "%$query%")
+                             ->orWhere('pseudo', 'like', "%$query%")
+                             ->orWhere('town', 'like', "%$query%")
+                             ->orWhere('birthplace', 'like', "%$query%")
+                             ->orWhere('genre', 'like', "%$query%")
+                             ->orWhere('looking_for', 'like', "%$query%")
+                             ->orWhere('mariatal_status', 'like', "%$query%")
+                             ->orWhere('hair_color', 'like', "%$query%")
+                             ->orWhere('eyes_color', 'like', "%$query%")
+                             ->orWhere('origin_country', 'like', "%$query%")
+                             ->orWhere('age', 'like', "%$query%")
+                             ->orWhere('about', 'like', "%$query%")
+                             ->orWhere('interests', 'like', "%$query%");
+            })->get();
+            
+    
+            // Passez les résultats à votre vue
+            return view('Nous.profils', ['results' => $results, 'users' => $users, 'query' => $query]);
+        }
+    
+        // Si l'utilisateur n'est pas authentifié, redirigez-le vers la page de connexion
+        return redirect()->route('login')->with('error', 'Vous devez être connecté pour effectuer une recherche.');
+    }
+    
+    
+
+}
     
