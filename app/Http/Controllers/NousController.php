@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+
+use App\Models\Publicite;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View as FacadesView;
@@ -23,12 +25,14 @@ use Illuminate\Validation\Rule;
 
 class NousController extends Controller
 {
-
     public function index()
     {
         $messages = Discussion::all();
-        return view('Nous.index', compact('messages'));
+        $publicites = Publicite::where('statut', 1)->get(); // Récupérer les publicités avec un statut égal à 1 depuis la base de données
+        return view('Nous.index', compact('messages', 'publicites'));
     }
+    
+    
 
     public function inscription()
     {

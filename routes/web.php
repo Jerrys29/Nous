@@ -177,3 +177,4 @@ Route::get('publicites/{id}/edit','App\Http\Controllers\AdminController@editpub'
 Route::post('publicites/{id}/activate','App\Http\Controllers\AdminController@toggleStatuspub')->name('publicites.toggle');
 Route::post('publicites/{id}/update','App\Http\Controllers\AdminController@updatepub')->name('publicites.update');
 Route::get('publicite/details','App\Http\Controllers\AdminController@showpub')->name('detailspub');
+Route::get('/showpub', 'AdminController@showpub')->name('showpub');
