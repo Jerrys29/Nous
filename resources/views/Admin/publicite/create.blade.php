@@ -14,11 +14,11 @@
                         @csrf
                         <div class="form-group">
                             <label for="name" class="form-control-label">Nom de l'entreprise</label>
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Nom de la formation" required>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Nom de l'entreprise" required>
                         </div>
                         <div class="form-group">
                             <label for="offre" class="form-control-label">Titre de l'offre</label>
-                            <input type="text" class="form-control" id="offre" name="offre" placeholder="Titre de la formation" required>
+                            <input type="text" class="form-control" id="offre" name="offre" placeholder="Titre de l'entreprise" required>
                         </div>
                         <div class="form-group">
                             <label for="detail" class="form-control-label">Details</label>
@@ -27,7 +27,7 @@
                         <div class="row">
                             <div class="form-group col-md-6">
                                 <label for="logo" class="form-control-label">Logo de l'entreprise</label>
-                                <input type="file" class="form-control" id="logo" name="logo" accept="image/*" placeholder="Image de couverture">
+                                <input type="file" class="form-control" id="logo" name="logo" accept="image/*" placeholder="Logo">
                             </div>
                         </div>
                         <button type="submit" class="btn bg-gradient-primary w-100 my-4 mb-2">

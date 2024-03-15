@@ -230,16 +230,29 @@ public function unblockUser($id, $redirect)
         // Trouver la publicité correspondante
         $publicite = Publicite::findOrFail($id);
         
-        // Inverser la valeur de la propriété "active"
-        $publicite->update(['active' => !$publicite->statut]);
+        // Inverser la valeur de la propriété "statut"
+        $publicite->update(['statut' => !$publicite->statut]);
     
         // Rediriger avec un message de succès
         return redirect()->route('publicites')->with('success', 'Statut de la publicité modifié avec succès.');
     }
     
-    public function showpub()
+    public function search(Request $request)
     {
-        // Méthode pour afficher les détails de la publicité
+        $publicites = Publicite::query();
+
+        // Vérifie si une recherche est effectuée
+        if ($request->has('search')) {
+            $search = $request->search;
+            $publicites->where('name', 'like', "%$search%")
+                   ->orWhere('offre', 'like', "%$search%");
+        }
+
+        // Récupère les vidéos filtrées
+        $publicite = $publicites->get();
+
+        // Retourne les vidéos filtrées à la vue
+        return view('Admin.publicite.index', compact('publicites'));
     }
     
 }
