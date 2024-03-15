@@ -10,21 +10,26 @@
                     </div>
                     <div class="card-body pt-4 p-3">
                         <ul class="list-group">
-                            <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                                <div class="d-flex flex-column">
-                                    <h6 class="mb-3 text-sm">Oliver Liam</h6>
-                                    <span class="mb-2 text-xs">Message: <span class="text-dark font-weight-bold ms-sm-2">Viking Burritooooooooooooooooooooooo
-                                            ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-                                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo</span></span>
+                            <ul class="list-group">
+                                @foreach($derniersMessages as $message)
+                                <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                                    <div class="d-flex flex-column">
+                                        <h6 class="mb-3 text-sm">{{ $message->name_sender }}</h6>
+                                        <span class="mb-2 text-xs">Message: <span class="text-dark font-weight-bold ms-sm-2">{{ $message->message }}</span></span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-10"></div>
+                                        <div class="col-2">
+                                            <a href="/detail/{{ $message->name_sender }}/{{ $message->numero }}">
+                                                <button class="btn btn-danger">Répondre</button>
+                                            </a>
 
-                                </div>
-                                <a href="{{route('detail')}}">
-                                    <button id="toggleChat" class="btn btn-danger" style="margin-bottom: 40px;margin-top: 40px;">Répondre</button>
-                                </a>
+                                        </div>
+                                    </div>
+                                </li>
+                                @endforeach
 
-
-
-                            </li>
+                            </ul>
 
                         </ul>
                     </div>

@@ -1,13 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
-
 use App\Models\Like;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Avis;
-
+use App\Models\Publicite;
 use DateTime;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Contracts\View\View;
@@ -176,5 +174,72 @@ public function unblockUser($id, $redirect)
         return view('Admin/avis', compact('avisList'));
     }
 
+
+    public function index()
+    {
+        $publicites = Publicite::all();
+        return view('Admin.publicite.index', compact('publicites'));
+    }
+
+ 
+
+    public function createpub()
+    {
+        return view('Admin.publicite.create');
+    }
+
+    public function storepub(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'offre' => 'required|string',
+            'detail' => 'required|string',
+        ]);
+        if ($request->hasFile('logo')) {
+            $logoName = time() . '.' . $request->file('logo')->getClientOriginalExtension();
+            $request->file('logo')->move(public_path('logos'), $logoName); // Déplacement du fichier vers le dossier public/logos
+            $validatedData['logo'] = $logoName;
+        }
+        Publicite::create($validatedData);
+
+        return redirect()->route('publicites')->with('success', 'Publicité créée avec succès.');
+    }
+
+    public function editpub($id)
+    {
+        $publicite = Publicite::findOrFail($id);
+        return view('Admin.publicite.edit', compact('publicite'));
+    }
+
+    public function updatepub(Request $request, $id)
+    {
+        $publicite = Publicite::findOrFail($id);
+        if ($request->hasFile('logo')) {
+            $logoName = time() . '.' . $request->file('logo')->getClientOriginalExtension();
+            $request->file('logo')->move(public_path('logos'), $logoName); // Déplacement du fichier vers le dossier public/logos
+            $validatedData['logo'] = $logoName;
+        }
+        $publicite->update($request->all());
+
+        return redirect()->route('publicites')->with('success', 'Publicité mise à jour avec succès.');
+    }
+
+    public function toggleStatuspub($id)
+    {
+        // Trouver la publicité correspondante
+        $publicite = Publicite::findOrFail($id);
+        
+        // Inverser la valeur de la propriété "active"
+        $publicite->update(['active' => !$publicite->statut]);
+    
+        // Rediriger avec un message de succès
+        return redirect()->route('publicites')->with('success', 'Statut de la publicité modifié avec succès.');
+    }
+    
+    public function showpub()
+    {
+        // Méthode pour afficher les détails de la publicité
+    }
     
 }

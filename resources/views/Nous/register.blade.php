@@ -161,6 +161,8 @@
                                         <option value="homme">Homme</option>
                                         <option value="femme">Femme</option>
                                         <option value="lesdeux">Femme et Homme</option>
+                                        <option value="Amitie">Amitié</option>
+
                                     </select>
                                 </div>
                                 <span class="select-btn">

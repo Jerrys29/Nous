@@ -89,222 +89,268 @@
 
         <section id="user-profile" class="user-profile">
             <div class="container">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <h2>{{ $user->name }}</h2>
-                                <div class="user-images">
-                                    <div class="row">
-                                        <div class="col-4"> @if ($user->photo1)
-                                            <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo1) }}" alt="Photo 1">
-                                            @endif
-                                        </div>
-                                        <div class="col-4"> @if ($user->photo2)
-                                            <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo2) }}" alt="Photo 2">
-                                            @endif
-                                        </div>
-                                        <div class="col-4"> @if ($user->photo3)
-                                            <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo3) }}" alt="Photo 3">
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            @if ($user->photo4)
-                                            <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo4) }}" alt="Photo 4">
-                                            @endif
-                                        </div>
-                                        <div class="col-6"> @if ($user->photo5)
-                                            <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo5) }}" alt="Photo 5">
-                                            @endif
-                                        </div>
-                                    </div>
-                                    @if (!$user->photo1 && !$user->photo2 && !$user->photo3 && !$user->photo4 && !$user->photo5)
-                                    <p style="text-align: center;">Aucune photo disponible pour vous.Veuillez charger vos photos.</p>
-                                    @endif
-                                </div>
-
-                                <form action="{{ route('profile.photos.update') }}" method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    <input type="hidden" name="user_id" value="{{ $user->id }}">
-
-                                    <div class="form-group">
-                                        <label for="photo1" class="fw-bold">Changer la photo1</label>
-                                        <input type="file" class="form-control" id="photo1" name="photo1">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="delete_photo1" name="delete_photo1">
-                                            <label class="form-check-label btn btn-danger btn-sm" for="delete_photo1">Supprimer la photo1</label>
-                                        </div>
-                                    </div>
-                                    <br><br>
-                                    <div class="form-group">
-                                        <label for="photo2" class="fw-bold">Changer la photo2</label>
-                                        <input type="file" class="form-control" id="photo2" name="photo2">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="delete_photo2" name="delete_photo2">
-                                            <label class="form-check-label btn btn-danger btn-sm" for="delete_photo1">Supprimer la photo2</label>
-                                        </div>
-                                    </div>
-                                    <br><br>
-                                    <div class="form-group">
-                                        <label for="photo3" class="fw-bold">Changer la photo3</label>
-                                        <input type="file" class="form-control" id="photo3" name="photo3">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="delete_photo3" name="delete_photo3">
-                                            <label class="form-check-label btn btn-danger btn-sm" for="delete_photo1">Supprimer la photo3</label>
-                                        </div>
-                                    </div>
-                                    <br><br>
-                                    <div class="form-group">
-                                        <label for="photo4" class="fw-bold">Changer la photo4</label>
-                                        <input type="file" class="form-control" id="photo4" name="photo4">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="delete_photo4" name="delete_photo4">
-                                            <label class="form-check-label btn btn-danger btn-sm" for="delete_photo1">Supprimer la photo4</label>
-                                        </div>
-                                    </div>
-                                    <br><br>
-                                    <div class="form-group">
-                                        <label for="photo5">Changer la photo5</label>
-                                        <input type="file" class="form-control" id="photo5" name="photo5">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="delete_photo5" name="delete_photo5">
-                                            <label class="form-check-label btn btn-danger btn-sm" for="delete_photo1">Supprimer la photo5</label>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-8"></div>
-                                        <div class="col-4">
-                                            <button type="submit" class="get-started-btn scrollto">Valider</button>
-                                        </div>
-                                    </div>
-
-                                </form>
-
-                            </div>
+                <h2>{{ $user->name }}</h2>
+                <div class="user-images">
+                    <div class="row">
+                        @if ($user->photo1)
+                        <div class="col-lg-3 user-image-col mb-3">
+                            <img class="img-fluid" src="{{ asset('storage/' . $user->photo1) }}" alt="Photo 1">
                         </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <h2 style="margin-top: 3rem;">Informations Personnelles</h2>
-                                <form action="{{ route('profile.update') }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <div class="row">
-                                        <input type="hidden" name="user_id" value="{{ $user->id }}">
+                        @endif
 
-                                        <div class="col-lg-6"> <!-- Champ de numéro WhatsApp -->
-                                            <div class="mb-3">
-                                                <label for="numero" class="form-label fw-bold ">Numéro Whatsapp:</label>
-                                                <input type="text" class="form-control" id="numero" name="numero" value="{{ $user->numero }}">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="email" class="form-label fw-bold ">Adresse Email:</label>
-                                                <input type="text" class="form-control" id="email" name="email" value="{{ $user->email }}">
-                                            </div>
-
-
-                                            <!-- Champ de mot de passe -->
-                                            <div class="mb-3">
-                                                <label for="password" class="form-label">Mot de passe:</label>
-                                                <input type="password" class="form-control" id="password" name="password">
-                                            </div>
-
-                                            <!-- Champ de nom -->
-                                            <div class="mb-3">
-                                                <label for="name" class="form-label">Nom:</label>
-                                                <input type="text" class="form-control" id="name" name="name" value="{{ $user->name }}">
-                                            </div>
-
-                                            <!-- Champ de pseudo -->
-                                            <div class="mb-3">
-                                                <label for="pseudo" class="form-label">Pseudo:</label>
-                                                <input type="text" class="form-control" id="pseudo" name="pseudo" value="{{ $user->pseudo }}">
-                                            </div>
-
-                                            <!-- Champ d'âge -->
-                                            <div class="mb-3">
-                                                <label for="age" class="form-label">Âge:</label>
-                                                <input type="text" class="form-control" id="age" name="age" value="{{ $user->age }}">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="genre" class="form-label">Genre:</label>
-                                                <select class="form-select" id="genre" name="genre">
-                                                    <option value="homme" {{ $user->genre == 'homme' ? 'selected' : '' }}>Homme</option>
-                                                    <option value="femme" {{ $user->genre == 'femme' ? 'selected' : '' }}>Femme</option>
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="looking_for" class="form-label">Genre recherché:</label>
-                                                <select class="form-select" id="looking_for" name="looking_for">
-                                                    <option value="homme" {{ $user->looking_for == 'homme' ? 'selected' : '' }}>Homme</option>
-                                                    <option value="femme" {{ $user->looking_for == 'femme' ? 'selected' : '' }}>Femme</option>
-                                                    <option value="lesdeux" {{ $user->looking_for == 'autre' ? 'selected' : '' }}>Homme et Femme</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label for="town" class="form-label">Ville:</label>
-                                                <input type="text" class="form-control" id="town" name="town" value="{{ $user->town }}">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="origin_country" class="form-label">Pays d'origine:</label>
-                                                <input type="text" class="form-control" id="origin_country" name="origin_country" value="{{ $user->origin_country }}">
-                                            </div>
-
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label for="birthplace" class="form-label">Ville de naissance:</label>
-                                                <input type="text" class="form-control" id="birthplace" name="birthplace" value="{{ $user->birthplace }}">
-                                            </div>
-                                         
-                                            <div class="mb-3">
-                                                <label for="town" class="form-label">Ville:</label>
-                                                <input type="text" class="form-control" id="town" name="town" value="{{ $user->town }}">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="mariatal_status" class="form-label">Situation Matrimoniale:</label>
-                                                <input type="text" class="form-control" id="mariatal_status" name="mariatal_status" value="{{ $user->mariatal_status }}">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="hair_color" class="form-label">Couleur des cheveux:</label>
-                                                <input type="text" class="form-control" id="hair_color" name="hair_color" value="{{ $user->hair_color }}">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="eyes_color" class="form-label">Couleur des yeux</label>
-                                                <input type="text" class="form-control" id="eyes_color" name="eyes_color" value="{{ $user->eyes_color }}">
-                                            </div>
-                                            <!-- Champ d'À propos de moi -->
-                                            <div class="mb-3">
-                                                <label for="about" class="form-label">À propos de moi:</label>
-                                                <textarea class="form-control" id="about" name="about" rows="3">{{ $user->about }}</textarea>
-                                            </div>
-
-                                            <!-- Champ des centres d'intérêt -->
-                                            <div class="mb-3">
-                                                <label for="interests" class="form-label">Centres d'intérêt(séparés par des virgules):</label>
-                                                <input type="text" class="form-control" id="interests" name="interests" value="{{ $user->interests }}">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-8"></div>
-                                        <div class="col-4">
-                                            <button type="submit" class="get-started-btn scrollto">Enregistrer</button>
-                                        </div>
-                                    </div>
-                                  
-                                </form>
-
-
-                            </div>
+                        @if ($user->photo2)
+                        <div class="col-lg-3 user-image-col mb-3">
+                            <img class="img-fluid" src="{{ asset('storage/' . $user->photo2) }}" alt="Photo 2">
                         </div>
+                        @endif
+
+                        @if ($user->photo3)
+                        <div class="col-lg-3 user-image-col mb-3">
+                            <img class="img-fluid" src="{{ asset('storage/' . $user->photo3) }}" alt="Photo 3">
+                        </div>
+                        @endif
+
+                        @if ($user->photo4)
+                        <div class="col-lg-3 user-image-col mb-3">
+                            <img class="img-fluid" src="{{ asset('storage/' . $user->photo4) }}" alt="Photo 4">
+                        </div>
+                        @endif
+
+                        @if (!$user->photo1 && !$user->photo2 && !$user->photo3 && !$user->photo4 )
+                        <div class="col-lg-12 ">
+                            <p style="text-align: center;">Aucune photo disponible pour vous. Veuillez charger vos photos.</p>
+                        </div>
+                        @endif
                     </div>
                 </div>
+
+                <style>
+                    .user-images img {
+                        width: 200px;
+                        /* Largeur fixe de 200 pixels */
+                        height: auto;
+                        /* Hauteur automatique pour maintenir les proportions */
+                        object-fit: cover;
+                        /* Pour couvrir la zone de l'image */
+                    }
+
+                    .form-control {
+                        height: 45px;
+                        /* Ajustez cette valeur selon vos besoins */
+                        font-size: 108px;
+                        /* Ajustez cette valeur selon vos besoins */
+                    }
+             
+                </style>
+
+
+
+
+                <form action="{{ route('profile.photos.update') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="photo1" class="fw-bold">Changer la photo1</label>
+                                <input type="file" class=" form-control" style="font-size: 16px;"  id="photo1" name="photo1">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="delete_photo1" name="delete_photo1">
+                                    <label class="form-check-label btn btn-danger btn-sm" for="delete_photo1">Supprimer la photo1</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="photo2" class="fw-bold">Changer la photo2</label>
+                                <input type="file" class="form-control" style="font-size: 16px;" id="photo2" name="photo2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="delete_photo2" name="delete_photo2">
+                                    <label class="form-check-label btn btn-danger btn-sm" for="delete_photo2">Supprimer la photo2</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="photo3" class="fw-bold">Changer la photo3</label>
+                                <input type="file" class="form-control" style="font-size: 16px;" id="photo3" name="photo3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="delete_photo3" name="delete_photo3">
+                                    <label class="form-check-label btn btn-danger btn-sm" for="delete_photo3">Supprimer la photo3</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="photo4" class="fw-bold">Changer la photo4</label>
+                                <input type="file" class="form-control" style="font-size: 16px;"  id="photo4" name="photo4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="delete_photo4" name="delete_photo4">
+                                    <label class="form-check-label btn btn-danger btn-sm" for="delete_photo4">Supprimer la photo4</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Ajoutez des blocs similaires pour les autres photos -->
+
+                    <div class="row">
+                        <div class="col-md-8"></div>
+                        <div class="col-md-4">
+                            <button type="submit" class="get-started-btn scrollto" style="background-color: green;">Valider</button>
+                        </div>
+                    </div>
+                </form>
+
+
+
+
+
+                <h2 style="margin-top: 3rem;">Informations Personnelles</h2>
+                <form action="{{ route('profile.update') }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="row">
+                        <input type="hidden" name="user_id" value="{{ $user->id }}">
+
+                        <div class="col-lg-6">
+                            <div class="mb-3 row align-items-center">
+                                <label for="numero" class="col-sm-4 col-form-label fw-bold">Numéro Whatsapp:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" style="font-size: 16px;" id="numero" name="numero" value="{{ $user->numero }}">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label for="email" class="col-sm-4 col-form-label fw-bold">Adresse Email:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" style="font-size: 16px;" id="email" name="email" value="{{ $user->email }}">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label for="password" class="col-sm-4 col-form-label fw-bold">Mot de passe:</label>
+                                <div class="col-sm-8">
+                                    <input type="password" class="form-control" style="font-size: 16px;"  id="password" name="password">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label for="name" class="col-sm-4 col-form-label fw-bold">Nom:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" style="font-size: 16px;"  id="name" name="name" value="{{ $user->name }}">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label for="pseudo" class="col-sm-4 col-form-label fw-bold">Pseudo:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" style="font-size: 16px;"  id="pseudo" name="pseudo" value="{{ $user->pseudo }}">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label for="age" class="col-sm-4 col-form-label fw-bold">Âge:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" style="font-size: 16px;" id="age" name="age" value="{{ $user->age }}">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label for="genre" class="col-sm-4 col-form-label fw-bold">Genre:</label>
+                                <div class="col-sm-8">
+                                    <select class="form-select" id="genre" name="genre">
+                                        <option value="homme" {{ $user->genre == 'homme' ? 'selected' : '' }}>Homme</option>
+                                        <option value="femme" {{ $user->genre == 'femme' ? 'selected' : '' }}>Femme</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label for="looking_for" class="col-sm-4 col-form-label fw-bold">Genre recherché:</label>
+                                <div class="col-sm-8">
+                                    <select class="form-select" id="looking_for" name="looking_for">
+                                        <option value="homme" {{ $user->looking_for == 'homme' ? 'selected' : '' }}>Homme</option>
+                                        <option value="femme" {{ $user->looking_for == 'femme' ? 'selected' : '' }}>Femme</option>
+                                        <option value="lesdeux" {{ $user->looking_for == 'lesdeux' ? 'selected' : '' }}>Homme et Femme</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label for="town" class="col-sm-4 col-form-label fw-bold">Ville:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" style="font-size: 16px;" id="town" name="town" value="{{ $user->town }}">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label for="origin_country" class="col-sm-4 col-form-label fw-bold">Pays d'origine:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" style="font-size: 16px;"  id="origin_country" name="origin_country" value="{{ $user->origin_country }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3 row align-items-center">
+                                <label for="birthplace" class="col-sm-4 col-form-label fw-bold">Ville de naissance:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" style="font-size: 16px;"  id="birthplace" name="birthplace" value="{{ $user->birthplace }}">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label for="mariatal_status" class="col-sm-4 col-form-label fw-bold">Situation Matrimoniale:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" style="font-size: 16px;"  id="mariatal_status" name="mariatal_status" value="{{ $user->mariatal_status }}">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label for="hair_color" class="col-sm-4 col-form-label fw-bold">Couleur des cheveux:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" style="font-size: 16px;"  id="hair_color" name="hair_color" value="{{ $user->hair_color }}">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label for="eyes_color" class="col-sm-4 col-form-label fw-bold">Couleur des yeux:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" style="font-size: 16px;"  id="eyes_color" name="eyes_color" value="{{ $user->eyes_color }}">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label for="about" class="col-sm-4 col-form-label fw-bold">À propos de moi:</label>
+                                <div class="col-sm-8">
+                                    <textarea class="form-control" style="font-size: 16px;"  id="about" name="about" rows="3">{{ $user->about }}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label for="interests" class="col-sm-4 col-form-label fw-bold">Centres d'intérêt(séparés par des virgules):</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" style="font-size: 16px;"  id="interests" name="interests" value="{{ $user->interests }}">
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8"></div>
+                        <div class="col-md-4">
+                            <button type="submit" class="get-started-btn scrollto" style="background-color: green;">Valider</button>
+                        </div>
+                    </div>
+                </form>
             </div>
+
         </section>
     </main>
     @include('components.footer')

@@ -81,121 +81,163 @@
         @endif
       </div>
       <div class="container">
-        <div class="row">
-          <div class="col-lg-6">
-            <div class="card">
-              <div class="card-body">
-               
-                <div class="user-images">
-                  <div class="row">
-                    <div class="col-4"> @if ($user->photo1)
-                      <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo1) }}" alt="Photo 1">
-                      @endif
-                    </div>
-                    <div class="col-4"> @if ($user->photo2)
-                      <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo2) }}" alt="Photo 2">
-                      @endif
-                    </div>
-                    <div class="col-4"> @if ($user->photo3)
-                      <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo3) }}" alt="Photo 3">
-                      @endif
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-6">
-                      @if ($user->photo4)
-                      <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo4) }}" alt="Photo 4">
-                      @endif
-                    </div>
-                    <div class="col-6"> @if ($user->photo5)
-                      <img style="width: 200px;height:200px;object-fit: cover;  margin-right: 10px;" src="{{ asset('storage/' . $user->photo5) }}" alt="Photo 5">
-                      @endif
-                    </div>
-                  </div>
-                  <!-- Afficher un message si aucune photo n'est disponible -->
-                  @if (!$user->photo1 && !$user->photo2 && !$user->photo3 && !$user->photo4 && !$user->photo5)
-                  <p style="text-align: center;">Aucune photo disponible pour cet utilisateur.</p>
-                  @endif
-                </div>
+
+      <div class="user-images">
+    <div class="row">
+        @if ($user->photo1)
+        <div class="col-lg-3 user-image-col mb-3">
+            <img class="img-fluid" src="{{ asset('storage/' . $user->photo1) }}" alt="Photo 1">
+        </div>
+        @endif
+
+        @if ($user->photo2)
+        <div class="col-lg-3 user-image-col mb-3">
+            <img class="img-fluid" src="{{ asset('storage/' . $user->photo2) }}" alt="Photo 2">
+        </div>
+        @endif
+
+        @if ($user->photo3)
+        <div class="col-lg-3 user-image-col mb-3">
+            <img class="img-fluid" src="{{ asset('storage/' . $user->photo3) }}" alt="Photo 3">
+        </div>
+        @endif
+
+        @if ($user->photo4)
+        <div class="col-lg-3 user-image-col mb-3">
+            <img class="img-fluid" src="{{ asset('storage/' . $user->photo4) }}" alt="Photo 4">
+        </div>
+        @endif
+
+        @if (!$user->photo1 && !$user->photo2 && !$user->photo3 && !$user->photo4 )
+        <div class="col-lg-12  mb-3">
+            <p style="text-align: center;">Aucune photo disponible pour cet utilisateur.</p>
+        </div>
+        @endif
+    </div>
+</div>
 
 
-              </div>
+                <style>
+                    .user-images img {
+                        width: 200px;
+                        /* Largeur fixe de 200 pixels */
+                        height: auto;
+                        /* Hauteur automatique pour maintenir les proportions */
+                        object-fit: cover;
+                        /* Pour couvrir la zone de l'image */
+                    }
+
+                    .form-control {
+                        height: 45px;
+                        /* Ajustez cette valeur selon vos besoins */
+                        font-size: 108px;
+                        /* Ajustez cette valeur selon vos besoins */
+                    }
+             
+                </style>
+
+             
+        
+          <style>
+    .form-control,
+    .form-control-static {
+        font-size: 16px; /* Ajustez cette valeur selon vos besoins */
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-6">
+        <!-- Champ de numéro WhatsApp -->
+        <!-- Champ de nom -->
+        <div class="mb-3 row align-items-center">
+            <label for="name" class="col-sm-4 col-form-label fw-bold">Nom:</label>
+            <div class="col-sm-8">
+                <p class="form-control-static">{{ $user->name }}</p>
             </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-lg-6"> <!-- Champ de numéro WhatsApp -->
-
-                    <!-- Champ de nom -->
-                    <div class="mb-3">
-                      <label for="name" class="form-label fw-bold">Nom:</label>
-                      <p class="form-control-static">{{ $user->name }}</p>
-                    </div>
-
-                    <!-- Champ d'âge -->
-                    <div class="mb-3">
-                      <label for="age" class="form-label fw-bold">Âge:</label>
-                      <p class="form-control-static">{{ $user->age }}</p>
-                    </div>
-                    <div class="mb-3">
-                      <label for="genre" class="form-label fw-bold">Genre:</label>
-                      <p class="form-control-static">{{ $user->genre }}</p>
-                    </div>
-                    <div class="mb-3">
-                      <label for="looking_for" class="form-label fw-bold">Genre recherché:</label>
-                      <p class="form-control-static">{{ $user->looking_for }}</p>
-                    </div>
-
-                    <div class="mb-3">
-                      <label for="town" class="form-label fw-bold">Ville:</label>
-                      <p class="form-control-static">{{ $user->town }}</p>                
-                        </div>
-                    <div class="mb-3">
-                      <label for="origin_country" class="form-label fw-bold">Pays d'origine:</label>
-                      <p class="form-control-static">{{ $user->origin_country }}</p>                    </div>
-
-                  </div>
-                  <div class="col-lg-6">
-                    <div class="mb-3">
-                      <label for="birthplace" class="form-label fw-bold">Ville de naissance:</label>
-                      <p class="form-control-static">{{ $user->birthplace }}</p>
-                    </div>
-                    <div class="mb-3">
-                      <label for="town" class="form-label fw-bold">Ville:</label>
-                      <p class="form-control-static">{{ $user->town }}</p>
-                                    </div>
-
-                    <div class="mb-3">
-                      <label for="mariatal_status" class="form-label fw-bold">Situation Matrimoniale:</label>
-                      <p class="form-control-static">{{ $user->mariatal_status }}</p>                    </div>
-                    <div class="mb-3">
-                      <label for="hair_color" class="form-label fw-bold">Couleur des cheveux:</label>
-                      <p class="form-control-static">{{ $user->hair_color }}</p>                    </div>
-                    <div class="mb-3">
-                      <label for="eyes_color" class="form-label fw-bold">Couleur des yeux</label>
-                      <p class="form-control-static">{{ $user->eyes_color }}</p>                    </div>
-                    <!-- Champ d'À propos de moi -->
-                    <div class="mb-3">
-                      <label for="about" class="form-label fw-bold">À propos de cet utilisateur:</label>
-                      <p class="form-control-static">{{ $user->about }}</p>                    </div>
-
-                    <!-- Champ des centres d'intérêt -->
-                    <div class="mb-3">
-                      <label for="interests" class="form-label fw-bold">Centres d'intérêt</label>
-                      <p class="form-control-static">{{ $user->interests }}</p> 
-                                       </div>
-                  </div>
-                </div>
-
-              </div>
-
-              </form>
-
-
+        </div>
+        <!-- Champ d'âge -->
+        <div class="mb-3 row align-items-center">
+            <label for="age" class="col-sm-4 col-form-label fw-bold">Âge:</label>
+            <div class="col-sm-8">
+                <p class="form-control-static">{{ $user->age }}</p>
             </div>
-          </div>
+        </div>
+        <div class="mb-3 row align-items-center">
+            <label for="genre" class="col-sm-4 col-form-label fw-bold">Genre:</label>
+            <div class="col-sm-8">
+                <p class="form-control-static">{{ $user->genre }}</p>
+            </div>
+        </div>
+        <div class="mb-3 row align-items-center">
+            <label for="looking_for" class="col-sm-4 col-form-label fw-bold">Genre recherché:</label>
+            <div class="col-sm-8">
+                <p class="form-control-static">{{ $user->looking_for }}</p>
+            </div>
+        </div>
+        <div class="mb-3 row align-items-center">
+            <label for="town" class="col-sm-4 col-form-label fw-bold">Ville:</label>
+            <div class="col-sm-8">
+                <p class="form-control-static">{{ $user->town }}</p>
+            </div>
+        </div>
+        <div class="mb-3 row align-items-center">
+            <label for="origin_country" class="col-sm-4 col-form-label fw-bold">Pays d'origine:</label>
+            <div class="col-sm-8">
+                <p class="form-control-static">{{ $user->origin_country }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="mb-3 row align-items-center">
+            <label for="birthplace" class="col-sm-4 col-form-label fw-bold">Ville de naissance:</label>
+            <div class="col-sm-8">
+                <p class="form-control-static">{{ $user->birthplace }}</p>
+            </div>
+        </div>
+        <div class="mb-3 row align-items-center">
+            <label for="town" class="col-sm-4 col-form-label fw-bold">Ville:</label>
+            <div class="col-sm-8">
+                <p class="form-control-static">{{ $user->town }}</p>
+            </div>
+        </div>
+        <div class="mb-3 row align-items-center">
+            <label for="mariatal_status" class="col-sm-4 col-form-label fw-bold">Situation Matrimoniale:</label>
+            <div class="col-sm-8">
+                <p class="form-control-static">{{ $user->mariatal_status }}</p>
+            </div>
+        </div>
+        <div class="mb-3 row align-items-center">
+            <label for="hair_color" class="col-sm-4 col-form-label fw-bold">Couleur des cheveux:</label>
+            <div class="col-sm-8">
+                <p class="form-control-static">{{ $user->hair_color }}</p>
+            </div>
+        </div>
+        <div class="mb-3 row align-items-center">
+            <label for="eyes_color" class="col-sm-4 col-form-label fw-bold">Couleur des yeux:</label>
+            <div class="col-sm-8">
+                <p class="form-control-static">{{ $user->eyes_color }}</p>
+            </div>
+        </div>
+        <!-- Champ d'À propos de moi -->
+        <div class="mb-3 row align-items-center">
+            <label for="about" class="col-sm-4 col-form-label fw-bold">À propos de cet utilisateur:</label>
+            <div class="col-sm-8">
+                <p class="form-control-static">{{ $user->about }}</p>
+            </div>
+        </div>
+        <!-- Champ des centres d'intérêt -->
+        <div class="mb-3 row align-items-center">
+            <label for="interests" class="col-sm-4 col-form-label fw-bold">Centres d'intérêt</label>
+            <div class="col-sm-8">
+                <p class="form-control-static">{{ $user->interests }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
         </div>
       </div>
     </div>
