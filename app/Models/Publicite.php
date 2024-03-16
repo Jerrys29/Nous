@@ -16,4 +16,6 @@ class Publicite extends Model
         'detail', 
         'statut', 
     ];
+
+   
 }

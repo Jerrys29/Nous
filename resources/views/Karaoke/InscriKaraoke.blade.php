@@ -36,8 +36,8 @@
                 <div class="booking-image">
                     <!-- Remplacez l'image par le texte -->
                     <div class="booking-text text-center text-white">
-                        <h1 style="text-align: center;">Bienvenu dans l’espace Karaoké</h1>
-                        <p style="font-size: 22px; margin-top: 12rem;">Le lieu des rencontres les plus fun. Vos données personnelles sont en sécurité avec nous. Votre identité ou pseudo et vos photos seront affichés sur votre profil.</p>
+                        <h1 style="text-align: center;font-size:3rem;">Bienvenu dans l’espace Karaoké</h1>
+                        <p style="font-size:1.9rem; margin-top: 5rem;">Le lieu des rencontres les plus fun. Vos données personnelles sont en sécurité avec nous. Votre identité ou pseudo et vos photos seront affichés sur votre profil.</p>
                     </div>
                 </div>
                 <div class="booking-form">
@@ -45,7 +45,7 @@
                         <!-- Première étape -->
                         @csrf
                         <div class="form-step" id="step-1">
-                            <h2>INSCRIVEZ-VOUS MAINTENANT</h2>
+                            <h1>INSCRIVEZ-VOUS MAINTENANT</h1>
                             <div class="form-group form-input">
                                 <input type="text" name="name" id="first_name" class="input-text" placeholder="Nom & Prénom" required>
                             </div>
@@ -71,7 +71,7 @@
     
                         <!-- Deuxième étape -->
                         <div class="form-step" id="step-2" style="display: none;">
-                            <h2>Fin Inscription</h2>
+                            <h1>Fin Inscription</h1>
 
                             <div class="form-group form-input">
                                 <input type="text" name="pseudo" id="first_pseudo" class="input-text" placeholder="Pseudo" required>
@@ -144,7 +144,7 @@
     
                     
                     </form>
-                    <a href="{{('/connection')}}"> <p class="w-100 text-center">&mdash; ou Se connecter &mdash;</p></a>
+                    <a href="{{('/connection')}}"> <h4 class="w-100 text-center">&mdash; ou Se connecter &mdash;</h4></a>
 
                 </div>
             </div>

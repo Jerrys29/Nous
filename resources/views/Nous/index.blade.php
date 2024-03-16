@@ -54,6 +54,9 @@
     position: relative;
   }
 
+  
+  
+
 </style>
 
 <section id="hero" class="d-flex align-items-center">
@@ -106,48 +109,83 @@
   </section><!-- End About Section -->
 
   
-  <!-- Modal pour afficher les détails des publicités -->
-  <div id="advertisementModal" class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Publicités</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-            <ol class="carousel-indicators">
-              @foreach($publicites as $index => $publicite)
-              <li data-target="#carouselExampleIndicators" data-slide-to="{{ $index }}" class="{{ $index == 0 ? 'active' : '' }}"></li>
-              @endforeach
-            </ol>
-            <div class="carousel-inner">
-              @foreach($publicites as $index => $publicite)
-              <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                <img class="d-block w-100" src="{{ asset('logos/' . $publicite->logo) }}" alt="{{ $publicite->name }}">
-                <div class="carousel-caption d-none d-md-block">
-                  <h5>{{ $publicite->name }}</h5>
-                  <p>{{ $publicite->offre }}</p>
+<!-- Modal pour afficher les détails des publicités -->
+<div id="advertisementModal" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-sm" role="document"> <!-- Ajout de la classe modal-sm -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" >Publicités</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="3000">
+          <!-- <ol class="carousel-indicators">
+            @foreach($publicites as $index => $publicite)
+            <li data-target="#carouselExampleIndicators" data-slide-to="{{ $index }}" class="{{ $index == 0 ? 'active' : '' }}"></li>
+            @endforeach
+          </ol> -->
+          <div class="carousel-inner">
+            @foreach($publicites as $index => $publicite)
+            <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+              <!-- Ligne pour l'image -->
+              <div class="row">
+                <div class="col text-center">
+                  <img class="d-block w-100" src="{{ asset('logos/' . $publicite->logo) }}" alt="{{ $publicite->name }}">
                 </div>
               </div>
-              @endforeach
+              <!-- Ligne pour le texte et le bouton -->
+              <div class="row">
+                <div class="col text-center">
+                  <h5> <strong>{{ $publicite->name }}</strong></h5>
+                  <p>{{ $publicite->offre }}</p>
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#advertisementDetailModal{{ $index }}">Détail</button>
+                </div>
+              </div>
             </div>
-            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="sr-only">Next</span>
-            </a>
+            @endforeach
           </div>
+          <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
         </div>
-        
       </div>
     </div>
   </div>
+</div>
+
+    <!-- Second modal pour afficher les détails de la publicité -->
+    @foreach($publicites as $index => $publicite)
+    <div class="modal fade" id="advertisementDetailModal{{ $index }}" tabindex="-1" role="dialog" aria-labelledby="advertisementDetailModal{{ $index }}Label" aria-hidden="true">
+      <div class="modal-dialog modal-sm" role="document"> <!-- Ajout de la classe modal-sm -->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="advertisementDetailModal{{ $index }}Label">Détails de la publicité</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="row">
+                <div class="col text-center">
+                  <img class="d-block w-100" src="{{ asset('logos/' . $publicite->logo) }}" alt="{{ $publicite->name }}">
+                </div>
+              </div>
+          <div class="modal-body">
+          <h5> <strong>{{ $publicite->name }}</strong></h5>
+            <h5>{{ $publicite->offre }}</h5>
+            <p style="font-size:large;">{{ $publicite->detail }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    @endforeach
+
 
   <button id="toggleChat" class="btn btn-danger" style="margin-bottom: 40px;margin-top: 40px;">Discuter</button>
   <script>
@@ -325,5 +363,20 @@
   $(document).ready(function() {
     $('#advertisementModal').modal('show');
   });
+  // Fonction pour précharger une image en arrière-plan
+function preloadImage(url) {
+    var img = new Image();
+    img.src = url;
+}
+
+// Précharger les images suivantes dans le carrousel
+$('.carousel').on('slide.bs.carousel', function () {
+    var nextSlide = $(this).find('.carousel-item.active').next('.carousel-item');
+    if (nextSlide.length > 0) {
+        var imgUrl = nextSlide.find('img').attr('src');
+        preloadImage(imgUrl);
+    }
+});
+
 </script>
 @endsection
