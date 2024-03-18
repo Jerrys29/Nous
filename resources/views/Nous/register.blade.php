@@ -21,6 +21,12 @@
 </head>
 
 <body>
+    <style>
+.birthdate::-webkit-calendar-picker-indicator {
+    filter: invert(100%);
+}
+
+    </style>
     <!-- Affichage du message d'erreur global -->
     @if($errors->any())
     <div class="alert alert-danger">
@@ -32,7 +38,7 @@
         <div class="container">
             <div class="booking-content">
                 <div class="booking-image">
-                    <img class="booking-img" src="assets/img/form-img.jpg" alt="Image de réservation" style="height: 100%;">
+                    <img class="booking-img" src="{{ asset('assets/img/Accueil.jpg') }}" alt="Image de réservation" style="height: 100%;">
                 </div>
                 <div class="booking-form">
                     <form id="booking-form" method="post" action="{{ route('inscription.store') }}">
