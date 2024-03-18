@@ -17,11 +17,11 @@
                             ENREGISTRER VOUS POUR DISCUTER
                             <div class="form-group" style="margin-top: 1rem;">
                                 <label for="nom" class="form-label">Nom</label>
-                                <input type="text" name="name" class="form-control" id="name" placeholder="Entrez votre nom complet" required style="font-size:1rem;">
+                                <input type="text" name="name" class="form-control" id="name" placeholder="Entrez votre nom complet" required style="font-size:1rem; border: 4px solid #F0F0F0; text-align: center;">
                             </div>
                             <div class="form-group">
                                 <label for="numero" class="form-label">Numéro</label>
-                                <input type="text" name="numero" class="form-control" id="numero" placeholder="Entrez votre numéro" required>
+                                <input type="text" name="numero" class="form-control" id="numero" placeholder="Entrez votre numéro" required style="font-size:1rem; border: 4px solid #F0F0F0;text-align: center;">
                             </div>
                             <button type="submit" id="submitBtn" class="btn btn-primary">Enregistrer</button>
                         </form>

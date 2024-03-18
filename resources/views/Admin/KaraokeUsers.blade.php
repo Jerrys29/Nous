@@ -47,25 +47,31 @@
                             </span>
                         </td>
                         <td class="align-middle">
-                        <form method="post" action="{{ route('block.user', ['id' => $user->id, 'redirect' => 'KaraokeUsers']) }}">
-                                    @csrf
-                                    @method('POST')
-                                    @if($user->active)
-                                        <button type="submit" class="btn btn-danger btn-sm">Bloquer</button>
-                                    @else
-                                        <button type="button" class="btn btn-danger btn-sm" disabled>Bloquer</button>
-                                    @endif
-                                </form>
-                                <form method="post" action="{{ route('unblock.user', ['id' => $user->id, 'redirect' => 'KaraokeUsers']) }}">
-                                    @csrf
-                                    @method('POST')
-                                    @if(!$user->active)
-                                        <button type="submit" class="btn btn-success btn-sm">Débloquer</button>
-                                    @else
-                                        <button type="button" class="btn btn-success btn-sm" disabled>Débloquer</button>
-                                    @endif
-                                </form>
-                            </td>
+                            <form method="post" action="{{ route('block.user', ['id' => $user->id, 'redirect' => 'KaraokeUsers']) }}">
+                                @csrf
+                                @method('POST')
+                                @if($user->active)
+                                    <button type="submit" class="btn btn-danger btn-sm">Bloquer</button>
+                                @else
+                                    <button type="button" class="btn btn-danger btn-sm" disabled>Bloquer</button>
+                                @endif
+                            </form>
+                            <form method="post" action="{{ route('unblock.user', ['id' => $user->id, 'redirect' => 'KaraokeUsers']) }}">
+                                @csrf
+                                @method('POST')
+                                @if(!$user->active)
+                                    <button type="submit" class="btn btn-success btn-sm">Débloquer</button>
+                                @else
+                                    <button type="button" class="btn btn-success btn-sm" disabled>Débloquer</button>
+                                @endif
+                            </form>
+                            <form id="delete-form-{{ $user->id }}" method="post" action="{{ route('delete.user', ['id' => $user->id, 'redirect' => 'KaraokeUsers']) }}" style="display: none;">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                            <button type="button" class="btn btn-primary btn-sm" onclick="confirmDelete({{ $user->id }})">Supprimer</button>
+                        </td>
+
                     </tr>
                 @endforeach
             </tbody>
@@ -97,5 +103,13 @@
 
         resetTimer(); // Initialise le minuteur lors du chargement de la page
     </script>
+    <script>
+            function confirmDelete(userId) {
+                if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
+                    document.getElementById('delete-form-' + userId).submit();
+                }
+            }
+    </script>
+
 
 @endsection

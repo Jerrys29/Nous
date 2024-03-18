@@ -66,8 +66,8 @@
     <main id="main">
     @if(!$user->photo1)
         <div class="alert alert-warning" role="alert">
-            Attention : Veuillez sélectionner une image pour la première photo.
-        </div>
+        Attention : Veuillez ajouter vos photos de profil.
+         </div>
 
         @endif
         <div class="container">
@@ -196,7 +196,7 @@
                     @method('PUT')
                     <div class="modal-body">
                         <label for="editField">Nouvelle valeur:</label>
-                        <input type="text" name="name" value="{{ $user->name }}" class="form-control" required>
+                        <input type="text" name="name" value="{{ $user->name }}" class="form-control" required style="font-size: 4rem;">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
@@ -639,6 +639,25 @@
 
         resetTimer(); // Initialise le minuteur lors du chargement de la page
     </script>
+    <script>
+    var inactivityTimeout = 30 * 60 * 1000; // 30 minutes d'inactivité
+
+    var timeout;
+
+    function resetTimer() {
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            window.location.href = "{{ route('login') }}";
+        }, inactivityTimeout);
+    }
+
+    document.addEventListener('mousemove', resetTimer);
+    document.addEventListener('keypress', resetTimer);
+    document.addEventListener('scroll', resetTimer);
+
+    resetTimer(); // Initialise le minuteur lors du chargement de la page
+</script>
+
 
 </body>
 

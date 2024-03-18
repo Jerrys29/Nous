@@ -255,4 +255,21 @@ public function unblockUser($id, $redirect)
         return view('Admin.publicite.index', compact('publicites'));
     }
     
+
+    public function deleteUser($id, $redirect)
+    {
+        // Récupérer l'utilisateur à supprimer
+        $user = User::find($id);
+
+        // Vérifier si l'utilisateur en question est l'administrateur lui-même
+        if ($user->role === 'admin') {
+            return redirect()->route($redirect)->withErrors(['error' => 'Vous ne pouvez pas supprimer l\'administrateur.']);
+        }
+
+        // Supprimer l'utilisateur
+        $user->delete();
+
+        // Rediriger vers la page des utilisateurs correspondante
+        return redirect()->route($redirect)->with('success', 'L\'utilisateur a été supprimé avec succès.');
+    }
 }
