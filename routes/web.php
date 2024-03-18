@@ -178,3 +178,4 @@ Route::post('publicites/{id}/activate','App\Http\Controllers\AdminController@tog
 Route::post('publicites/{id}/update','App\Http\Controllers\AdminController@updatepub')->name('publicites.update');
 Route::get('publicite/details','App\Http\Controllers\AdminController@showpub')->name('detailspub');
 Route::get('publicites/search','App\Http\Controllers\AdminController@search')->name('searchpub');
+   ?>

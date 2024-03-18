@@ -67,6 +67,10 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js" defer></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js" defer></script>
 <script src="https://cdn.kkiapay.me/k.js" defer></script>
+<!-- Inclure jQuery (requis pour Bootstrap JavaScript) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- Inclure Bootstrap JavaScript -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 </html>

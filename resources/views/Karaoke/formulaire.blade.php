@@ -17,7 +17,7 @@
                             ENREGISTRER VOUS POUR DISCUTER
                             <div class="form-group" style="margin-top: 1rem;">
                                 <label for="nom" class="form-label">Nom</label>
-                                <input type="text" name="name" class="form-control" id="name" placeholder="Entrez votre nom complet" required>
+                                <input type="text" name="name" class="form-control" id="name" placeholder="Entrez votre nom complet" required style="font-size:1rem;">
                             </div>
                             <div class="form-group">
                                 <label for="numero" class="form-label">Numéro</label>
