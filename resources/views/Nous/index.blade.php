@@ -54,13 +54,13 @@
     position: relative;
   }
 
-  
   .modal-image {
     height: 18rem; /* Remplacez 200px par la hauteur désirée */
 
     object-fit: cover; /* Pour conserver les proportions et couvrir la zone */
 }
 
+  
 
 </style>
 
@@ -113,6 +113,7 @@
     </div>
   </section><!-- End About Section -->
 
+  
 
   @if($publicites->count() > 0)
     <!-- Modal pour afficher les détails des publicités -->
@@ -260,8 +261,6 @@
       var flagsContainer = document.querySelector('.scrolling-flags-container');
       flagsContainer.style.animation = animation; // Redémarre l'animation
     }
-
-    
   </script>
 
   <section class="chatbox">
@@ -387,6 +386,7 @@ $('.carousel').on('slide.bs.carousel', function () {
 });
 
 </script>
+
 <script>
     $(document).ready(function(){
         // Supprimer cette ligne pour empêcher la fermeture automatique du modal
@@ -403,18 +403,8 @@ $('.carousel').on('slide.bs.carousel', function () {
     $(document).ready(function(){
         // Ajouter un gestionnaire d'événement au clic sur le bouton de fermeture de la page
         $('.close').on('click', function() {
-            $('advertisementDetailModal').modal('hide');
+            $('#advertisementDetailModal').modal('hide');
         });
     });
 </script>
-
-
-<!-- CSS Bootstrap -->
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- JavaScript Bootstrap (jQuery doit être inclus avant Bootstrap) -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 @endsection

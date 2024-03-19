@@ -71,7 +71,7 @@
 								</div> -->
 	            </div>
 	          </form>
-	         <a href="{{('/inscription')}}"> <p class="w-100 text-center">&mdash; ou S'inscrire &mdash;</p></a>
+	         <a href="{{('/inscription')}}" id="preload-link"> <p class="w-100 text-center">&mdash; ou S'inscrire &mdash;</p></a>
 	          
 		      </div>
 				</div>

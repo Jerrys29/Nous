@@ -1,26 +1,6 @@
 <div class="min-height-300 bg-primary position-absolute w-100"></div>
 <!-- Navbar -->
-<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur" data-scroll="false">
-  <div class="container-fluid py-1 px-3">
 
-    <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-      <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-        <div class="input-group">
-          <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-          <input type="text" class="form-control" id="searchInput" placeholder="Type here..." oninput="search()">
-        </div>
-      </div>
-     
-    </div>
-  </div>
-  <form method="POST" action="{{ route('Deco') }}">
-                @csrf
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-danger btn-block">Déconnexion</button>
-                </div>
-            </form>
-</nav>
-<!-- End Navbar -->
 <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 " id="sidenav-main">
 
     <hr class="horizontal dark mt-0">
@@ -151,4 +131,29 @@
         resetTimer(); // Initialise le minuteur lors du chargement de la page
     </script>
 </aside>
+<main class="main-content position-relative border-radius-lg ">
+<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur" data-scroll="false">
+  <div class="container-fluid py-1 px-3">
+
+    <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+      <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+        <div class="input-group">
+          <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+          <input type="text" class="form-control" id="searchInput" placeholder="Type here..." oninput="search()">
+        </div>
+      </div>
+     
+    </div>
+  </div>
+  <form method="POST" action="{{ route('Deco') }}">
+                @csrf
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-danger btn-block">Déconnexion</button>
+                </div>
+            </form>
+</nav>
+</main>
+
+<!-- End Navbar -->
+
  
