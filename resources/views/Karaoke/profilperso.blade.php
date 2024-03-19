@@ -66,8 +66,8 @@
     <main id="main">
     @if(!$user->photo1)
         <div class="alert alert-warning" role="alert">
-        Attention : Veuillez ajouter vos photos de profil.
-        </div>
+        Attention : Veuillez ajouter vos photos de profil. La première photo sera votre photo de profil.
+            </div>
 
         @endif
         
@@ -78,12 +78,12 @@
                     <div class="col-lg-6">
                         <h2>{{ $user->pseudo }}</h2>
                         <div class="user-images">
-                            <img src="{{ asset('storage/' . $user->photo1) }}" alt="User Photo 1">
-                            <img src="{{ asset('storage/' . $user->photo2) }}" alt="User Photo 2">
-                            <img src="{{ asset('storage/' . $user->photo3) }}" alt="User Photo 3">
-                            <img src="{{ asset('storage/' . $user->photo4) }}" alt="User Photo 4">
-                            <img src="{{ asset('storage/' . $user->photo5) }}" alt="User Photo 5">
-                            <img src="{{ asset('storage/' . $user->photo6) }}" alt="User Photo 6">
+                            <img src="{{ asset('storage/' . $user->photo1) }}" alt=" Photo de profil ">
+                            <img src="{{ asset('storage/' . $user->photo2) }}" alt="Photo 2">
+                            <img src="{{ asset('storage/' . $user->photo3) }}" alt=" Photo 3">
+                            <img src="{{ asset('storage/' . $user->photo4) }}" alt=" Photo 4">
+                            <img src="{{ asset('storage/' . $user->photo5) }}" alt=" Photo 5">
+                            <img src="{{ asset('storage/' . $user->photo6) }}" alt=" Photo 6">
 
                         </div>
                         <div class="text-center">
@@ -213,7 +213,7 @@
                     <div class="modal-body">
 
                         <div class="image-container">
-                            <img src="{{ asset('storage/' . $user->photo1) }}" alt="Image 1" class="image-cropper" data-image-index="1">
+                            <img src="{{ asset('storage/' . $user->photo1) }}" alt="Photo de profil" class="image-cropper" data-image-index="1">
                             <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="1">
                                 Choisir une image
                                 <input type="file" name="photo1" class="image-input" style="display:none;">
@@ -233,7 +233,7 @@
                     <div class="modal-body">
 
                         <div class="image-container">
-                            <img src="{{ asset('storage/' . $user->photo2) }}" alt="Image 2" class="image-cropper" data-image-index="2">
+                            <img src="{{ asset('storage/' . $user->photo2) }}" alt="photo 2" class="image-cropper" data-image-index="2">
                             <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="2">
                                 Choisir une image
                                 <input type="file" name="photo2" class="image-input" style="display:none;">
@@ -253,7 +253,7 @@
                     <div class="modal-body">
 
                         <div class="image-container">
-                            <img src="{{ asset('storage/' . $user->photo3) }}" alt="Image 3" class="image-cropper" data-image-index="3">
+                            <img src="{{ asset('storage/' . $user->photo3) }}" alt="photo 3" class="image-cropper" data-image-index="3">
                             <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="3">
                                 Choisir une image
                                 <input type="file" name="photo3" class="image-input" style="display:none;">
@@ -272,7 +272,7 @@
                     <div class="modal-body">
 
                         <div class="image-container">
-                            <img src="{{ asset('storage/' . $user->photo4) }}" alt="Image 1" class="image-cropper" data-image-index="4">
+                            <img src="{{ asset('storage/' . $user->photo4) }}" alt="photo 4" class="image-cropper" data-image-index="4">
                             <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="4">
                                 Choisir une image
                                 <input type="file" name="photo4" class="image-input" style="display:none;">
@@ -291,7 +291,7 @@
                     <div class="modal-body">
 
                         <div class="image-container">
-                            <img src="{{ asset('storage/' . $user->photo5) }}" alt="Image 5" class="image-cropper" data-image-index="5">
+                            <img src="{{ asset('storage/' . $user->photo5) }}" alt="photo 5" class="image-cropper" data-image-index="5">
                             <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="5">
                                 Choisir une image
                                 <input type="file" name="photo5" class="image-input" style="display:none;">
@@ -312,7 +312,7 @@
                     <div class="modal-body">
 
                         <div class="image-container">
-                            <img src="{{ asset('storage/' . $user->photo6) }}" alt="Image 6" class="image-cropper" data-image-index="6">
+                            <img src="{{ asset('storage/' . $user->photo6) }}" alt="photo 6" class="image-cropper" data-image-index="6">
                             <label class="btn btn-secondary btn-sm edit-image-btn" data-image-index="6">
                                 Choisir une image
                                 <input type="file" name="photo6" class="image-input" style="display:none;">

@@ -5,42 +5,37 @@
 
 <div class="container" id="ok">
   <div class="row">
-    <div class="col-12" style="margin-top: -4rem; margin-bottom:3rem;">
+    <div class="col-12" style="margin-top: -4rem; margin-bottom:4rem;" >
       <div class="scrolling-flags-container" onmouseover="stopAnimation()" onmouseout="startAnimation()" style="margin-top: 4rem; margin-bottom: -2rem;">
-        @for ($i = 1; $i <= 56; $i++) <img src="{{ asset('assets/img/drap/' . $i . '.png') }}" alt="Drapeau {{ $i }}" class="flag-image">
-          @endfor
+        @for ($i = 1; $i <= 56; $i++)
+        <img src="{{ asset('assets/img/drap/' . $i . '.png') }}" alt="Drapeau {{ $i }}" class="flag-image">
+        @endfor
       </div>
     </div>
-  </div>
+   </div>
 </div>
 
 <style>
-  .modal-backdrop {
-    backdrop-filter: blur(5px);
-    /* Utilisez backdrop-filter pour appliquer un effet de flou */
-  }
-
+   .modal-backdrop {
+        backdrop-filter: blur(5px); /* Utilisez backdrop-filter pour appliquer un effet de flou */
+    }
   .scrolling-flags-container {
     flex-wrap: nowrap;
     display: flex;
     justify-content: center;
     margin-top: 2rem;
-    animation: scroll 30s linear infinite;
-    /* Réduire la durée de l'animation */
+    animation: scroll 30s linear infinite; /* Réduire la durée de l'animation */
   }
 
   .flag-image {
-    width: 5%;
-    /* Utilisation d'un pourcentage pour la taille des drapeaux */
+    width: 5%; /* Utilisation d'un pourcentage pour la taille des drapeaux */
     height: auto;
-    margin: 5px;
-    /* Ajoutez de la marge entre les images */
+    margin: 5px; /* Ajoutez de la marge entre les images */
   }
 
   @media screen and (max-width: 768px) {
     .flag-image {
-      width: 10%;
-      /* Réduisez la taille des images pour les écrans plus petits */
+      width: 10%; /* Réduisez la taille des images pour les écrans plus petits */
     }
   }
 
@@ -48,10 +43,8 @@
     0% {
       transform: translateX(0);
     }
-
     100% {
-      transform: translateX(calc(-50px * 28));
-      /* Réduire le nombre de drapeaux à défiler */
+      transform: translateX(calc(-50px * 28)); /* Réduire le nombre de drapeaux à défiler */
     }
   }
 
@@ -65,109 +58,26 @@
   .modal-image {
     height: 18rem; /* Remplacez 200px par la hauteur désirée */
 
-    object-fit: cover; /* Pour conserver les proportions et couvrir la zone */
+    object-fit: cover; /* Pour conserver les proportions et couvrir la zone */
 }
 
-
 </style>
+
 <section id="hero" class="d-flex align-items-center">
-  <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img src="{{ asset('assets/slides/1.jpg') }}" class="d-block w-100" alt="...">
-        <div class="carousel-caption" >
-          <h1>Meilleur site de rencontres au Bénin et dans la sous-région. </h1>
-          <h2>Faites une expérience exceptionnelle, rencontrez les meilleures personnes et vivez pleinement vos rencontres.</h2>
-          <a href="{{('/profils')}}" class="btn-get-started scrollto">Trouvez votre partenaire</a>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <img src="{{ asset('assets/slides/2.jpg') }}" class="d-block w-100" alt="...">
-        <div class="carousel-caption">
-          <h1>Meilleur site de rencontres au Bénin et dans la sous-région. </h1>
-          <h2>Faites une expérience exceptionnelle, rencontrez les meilleures personnes et vivez pleinement vos rencontres.</h2>
-          <a href="{{('/profils')}}" class="btn-get-started scrollto">Trouvez votre partenaire</a>
-        </div>
 
-      </div>
-      <div class="carousel-item">
-        <img src="{{ asset('assets/slides/4.jpg') }}" class="d-block w-100" alt="...">
-        <div class="carousel-caption">
-          <h1>Meilleur site de rencontres au Bénin et dans la sous-région. </h1>
-          <h2>Faites une expérience exceptionnelle, rencontrez les meilleures personnes et vivez pleinement vos rencontres.</h2>
-          <a href="{{('/profils')}}" class="btn-get-started scrollto">Trouvez votre partenaire</a>
-        </div>
+  <!-- ======= Header ======= -->
 
+  <div class="container" data-aos="zoom-out" data-aos-delay="100">
+    <div class="row">
+      <div class="col-xl-6">
+        <h1>Meilleur site de rencontres au Bénin et dans la sous-région. </h1>
+        <h2>Faites une expérience exceptionnelle, rencontrez les meilleures personnes et vivez pleinement vos rencontres.</h2>
+        <a href="{{('/profils')}}" class="btn-get-started scrollto">Trouvez votre partenaire</a>
       </div>
-      <div class="carousel-item">
-        <img src="{{ asset('assets/slides/5.jpg') }}" class="d-block w-100" alt="...">
-        <div class="carousel-caption">
-          <h1>Meilleur site de rencontres au Bénin et dans la sous-région. </h1>
-          <h2>Faites une expérience exceptionnelle, rencontrez les meilleures personnes et vivez pleinement vos rencontres.</h2>
-          <a href="{{('/profils')}}" class="btn-get-started scrollto">Trouvez votre partenaire</a>
-        </div>
-
-      </div>
-      <div class="carousel-item">
-        <img src="{{ asset('assets/slides/6.jpg') }}" class="d-block w-100" alt="...">
-        <div class="carousel-caption">
-          <h1>Meilleur site de rencontres au Bénin et dans la sous-région. </h1>
-          <h2>Faites une expérience exceptionnelle, rencontrez les meilleures personnes et vivez pleinement vos rencontres.</h2>
-          <a href="{{('/profils')}}" class="btn-get-started scrollto">Trouvez votre partenaire</a>
-        </div>
-
-      </div>
-      <div class="carousel-item">
-        <img src="{{ asset('assets/slides/7.jpg') }}" class="d-block w-100" alt="...">
-        <div class="carousel-caption">
-          <h1>Meilleur site de rencontres au Bénin et dans la sous-région. </h1>
-          <h2>Faites une expérience exceptionnelle, rencontrez les meilleures personnes et vivez pleinement vos rencontres.</h2>
-          <a href="{{('/profils')}}" class="btn-get-started scrollto">Trouvez votre partenaire</a>
-        </div>
-     
-
-      </div>
-      <div class="carousel-item">
-        <img src="{{ asset('assets/slides/8.jpg') }}" class="d-block w-100" alt="...">
-        <div class="carousel-caption">
-          <h1>Meilleur site de rencontres au Bénin et dans la sous-région. </h1>
-          <h2>Faites une expérience exceptionnelle, rencontrez les meilleures personnes et vivez pleinement vos rencontres.</h2>
-          <a href="{{('/profils')}}" class="btn-get-started scrollto">Trouvez votre partenaire</a>
-        </div>
-
-      </div>
-      <!-- Ajoutez les autres éléments de diapositives si nécessaire -->
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Précédent</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Suivant</span>
-    </button>
   </div>
+
 </section><!-- End Hero -->
-
-
-<!-- Ajoutez Swiper.js -->
-<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
-<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-
-<!-- Initialisez Swiper.js -->
-<script>
-  var swiper = new Swiper('.swiper-container', {
-    effect: 'fade',
-    autoplay: {
-      delay: 5000, // 5 secondes entre chaque diapositive
-    },
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-  });
-</script>
-
 
 <main id="main">
 
@@ -201,8 +111,6 @@
 
     </div>
   </section><!-- End About Section -->
-
-
   @if($publicites->count() > 0)
     <!-- Modal pour afficher les détails des publicités -->
     <div id="advertisementModal" class="modal" tabindex="-1" role="dialog">
@@ -281,8 +189,7 @@
 </div>
 @endforeach
 
-
-  <button id="toggleChat" class="btn btn-danger" style="margin-bottom: 40px;margin-top: 40px;">Discuter</button>
+  
   <script>
     // Script pour afficher/masquer la section chatbox
     $(document).ready(function() {
@@ -338,7 +245,7 @@
     });
 
     var animation; // Variable pour stocker l'animation
-
+  
     function stopAnimation() {
       var flagsContainer = document.querySelector('.scrolling-flags-container');
       animation = flagsContainer.style.animation; // Sauvegarde l'animation actuelle
@@ -349,8 +256,6 @@
       var flagsContainer = document.querySelector('.scrolling-flags-container');
       flagsContainer.style.animation = animation; // Redémarre l'animation
     }
-
-    
   </script>
 
   <section class="chatbox">
@@ -461,20 +366,22 @@
     $('#advertisementModal').modal('show');
   });
   // Fonction pour précharger une image en arrière-plan
-  function preloadImage(url) {
+function preloadImage(url) {
     var img = new Image();
     img.src = url;
-  }
+}
 
-  // Précharger les images suivantes dans le carrousel
-  $('.carousel').on('slide.bs.carousel', function() {
+// Précharger les images suivantes dans le carrousel
+$('.carousel').on('slide.bs.carousel', function () {
     var nextSlide = $(this).find('.carousel-item.active').next('.carousel-item');
     if (nextSlide.length > 0) {
-      var imgUrl = nextSlide.find('img').attr('src');
-      preloadImage(imgUrl);
+        var imgUrl = nextSlide.find('img').attr('src');
+        preloadImage(imgUrl);
     }
-  });
+});
+
 </script>
+
 <script>
     $(document).ready(function(){
         // Supprimer cette ligne pour empêcher la fermeture automatique du modal
@@ -491,18 +398,8 @@
     $(document).ready(function(){
         // Ajouter un gestionnaire d'événement au clic sur le bouton de fermeture de la page
         $('.close').on('click', function() {
-            $('advertisementDetailModal').modal('hide');
+            $('#advertisementDetailModal').modal('hide');
         });
     });
 </script>
-
-
-<!-- CSS Bootstrap -->
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- JavaScript Bootstrap (jQuery doit être inclus avant Bootstrap) -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 @endsection

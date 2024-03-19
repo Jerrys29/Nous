@@ -28,6 +28,7 @@
                 </div>
                 <div class="booking-form">
                     <form id="booking-form">
+                        
                         <!-- Première étape -->
                         <div class="img-logo">
                             <img class="booking-img" src="assets/img/NOUS.png" alt="Image de nous" style="height: 100px;width: 100px;">

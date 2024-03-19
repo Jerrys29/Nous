@@ -27,14 +27,6 @@
   <link href="{{asset('assets/vendor/remixicon/remixicon.css')}}" rel="stylesheet">
   <link href="{{asset('assets/vendor/swiper/swiper-bundle.min.css')}}" rel="stylesheet">
   <link rel="stylesheet" href="{{asset('assets/css/style.css')}}">
-  <link rel="preload" href="{{ asset('assets/slides/1.jpg') }}" as="image">
-  <link rel="preload" href="{{ asset('assets/slides/2.jpg') }}" as="image">
-  <link rel="preload" href="{{ asset('assets/slides/3.jpg') }}" as="image">
-  <link rel="preload" href="{{ asset('assets/slides/4.jpg') }}" as="image">
-  <link rel="preload" href="{{ asset('assets/slides/5.jpg') }}" as="image">
-  <link rel="preload" href="{{ asset('assets/slides/6.jpg') }}" as="image">
-  <link rel="preload" href="{{ asset('assets/slides/7.jpg') }}" as="image">
-  <link rel="preload" href="{{ asset('assets/slides/8.jpg') }}" as="image">
 
 </head>
 <body>

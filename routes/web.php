@@ -144,7 +144,7 @@ Route::get('admin', function () {
 // });
 
 Route::get('KaraokeUsers', 'App\Http\Controllers\AdminController@showAllKaraokeUsers')->name('KaraokeUsers');
-Route::get('NousUsers', 'App\Http\Controllers\AdminController@showAllNousUsers')->name('Noussers');
+Route::get('NousUsers', 'App\Http\Controllers\AdminController@showAllNousUsers')->name('NousUsers');
 
 
 Route::get('LokKaraokeUsers', 'App\Http\Controllers\AdminController@showLokKaraokeUsers')->name('LokKaraokeUsers');
@@ -179,4 +179,10 @@ Route::post('publicites/{id}/activate','App\Http\Controllers\AdminController@tog
 Route::post('publicites/{id}/update','App\Http\Controllers\AdminController@updatepub')->name('publicites.update');
 Route::get('publicite/details','App\Http\Controllers\AdminController@showpub')->name('detailspub');
 Route::get('publicites/search','App\Http\Controllers\AdminController@search')->name('searchpub');
+
+// Route::get('/mot-de-passe-oublie', 'App\Http\Controllers\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+// Route::post('/mot-de-passe-oublie', 'App\Http\Controllers\ForgotPasswordController@sendResetLinkEmail')->name('password.number');
+// Route::get('/reinitialiser-mot-de-passe', 'App\Http\Controllers\ForgotPasswordController@showResetForm')->name('password.reset');
+// Route::post('/reinitialiser-mot-de-passe', 'App\Http\Controllers\ForgotPasswordController@sreset')->name('password.update');
+
    ?>

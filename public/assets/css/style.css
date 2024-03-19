@@ -365,105 +365,83 @@ h6 {
 .navbar-mobile .dropdown>.dropdown-active {
   display: block;
 }
+
 /*--------------------------------------------------------------
 # Hero Section
 --------------------------------------------------------------*/
 #hero {
-  height: 100vh; /* Définit la hauteur de la section hero comme 100% de la hauteur de la fenêtre */
-  overflow: hidden; /* Pour éviter le défilement vertical */
+  width: 100%;
+  height: 100vh;
+  background: url("../img/accueilbackground.jpg") top center no-repeat;
+  background-size: cover;
   position: relative;
+  padding-top: 82px;
 }
 
-/* Styles pour le carousel-caption */
-.carousel-caption {
+#hero:before {
+  content: "";
+  background: rgba(0, 0, 0, 0.6);
   position: absolute;
   bottom: 0;
+  top: 0;
   left: 0;
   right: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* Ajoute un fond semi-transparent */
-  padding: 20px; /* Ajuste la marge intérieure pour le contenu */
-  color: #fff; /* Couleur du texte */
-  text-align: center; /* Centre le texte horizontalement */
 }
 
-/* Styles pour le texte */
-.carousel-caption h1 {
-  font-size: 24px; /* Taille de police pour le titre */
-  margin-bottom: 10px; /* Marge en bas pour le titre */
+#hero h1 {
+  margin: 0;
+  font-size: 48px;
+  font-weight: 700;
+  color: #fff;
 }
 
-.carousel-caption h2 {
-  font-size: 18px; /* Taille de police pour le sous-titre */
-  margin-bottom: 10px; /* Marge en bas pour le sous-titre */
+#hero h2 {
+  color: #fff;
+  margin: 10px 0 0 0;
+  font-size: 24px;
 }
 
-.carousel-caption .btn-get-started {
-  display: inline-block; /* Affiche le bouton en ligne */
-  font-size: 16px; /* Taille de police pour le bouton */
-  padding: 10px 20px; /* Ajuste les rembourrages du bouton */
-  background-color: #e03a3c; /* Couleur de fond du bouton */
-  border: 2px solid #e03a3c; /* Bordure du bouton */
-  border-radius: 4px; /* Rayon de bordure pour arrondir les coins */
-  color: #fff; /* Couleur du texte du bouton */
-  text-decoration: none; /* Supprime la décoration du texte du bouton */
+.btn-get-started {
+  font-family: "Raleway", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: 1px;
+  display: inline-block;
+  padding: 10px 30px;
+  border-radius: 4px;
+  transition: 0.5s;
+  margin-top: 30px;
+  color: #fff;
+  background: #e03a3c;
+  border: 2px solid #e03a3c;
 }
 
-.carousel-caption .btn-get-started:hover {
-  background-color: transparent; /* Change la couleur de fond au survol */
-  color: #fff; /* Change la couleur du texte au survol */
+#hero .btn-get-started:hover {
+  background: transparent;
+  border-color: #fff;
 }
 
-/* Styles pour les écrans de petite taille */
-@media (max-width: 576px) {
+@media (max-width: 768px) {
   #hero {
-    height: auto; /* Hauteur automatique pour les petits écrans */
+    text-align: center;
+    padding-top: 58px;
   }
 
-  .carousel-caption {
-    padding: 10px; /* Ajuster la marge intérieure pour les petits écrans */
-    margin-bottom: 0; /* Supprimer la marge en bas */
+  #hero h1 {
+    font-size: 28px;
   }
 
-  .carousel-caption h1 {
-    font-size: 14px; /* Taille de police réduite pour les petits écrans */
-    margin-bottom: 15px; /* Ajouter une marge en bas */
-  }
-
-  .carousel-caption h2 {
-    font-size: 10px; /* Taille de police réduite pour les petits écrans */
-    margin-bottom: 15px; /* Ajouter une marge en bas */
-  }
-
-  .carousel-caption .btn-get-started {
-    font-size: 10px; /* Taille de police réduite pour les petits écrans */
-    margin-bottom: 10px; /* Ajouter une marge en haut */
+  #hero h2 {
+    font-size: 18px;
+    line-height: 24px;
   }
 }
 
-/* Styles pour les écrans de grande taille */
-@media (min-width: 768px) {
-  .carousel-caption {
-    padding: 10px; /* Ajuster la marge intérieure pour les petits écrans */
-    margin-bottom: 130px; /* Supprimer la marge en bas */
-  }
-
-  .carousel-caption h1 {
-    font-size: 28px; /* Taille de police pour les grands écrans */
-    margin-bottom: 10px; /* Ajouter une marge en bas */
-  }
-
-  .carousel-caption h2 {
-    font-size: 18px; /* Taille de police pour les grands écrans */
-    margin-bottom: 10px; /* Ajouter une marge en bas */
-  }
-
-  .carousel-caption .btn-get-started {
-    font-size: 16px; /* Taille de police pour les grands écrans */
-    margin-bottom: 20px; /* Ajouter une marge en haut */
+@media (max-height: 500px) {
+  #hero {
+    height: 120vh;
   }
 }
-
-
 
 /*--------------------------------------------------------------
 # Sections General
