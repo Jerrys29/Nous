@@ -124,6 +124,7 @@
           <h2>Faites une expérience exceptionnelle, rencontrez les meilleures personnes et vivez pleinement vos rencontres.</h2>
           <a href="{{('/profils')}}" class="btn-get-started scrollto">Trouvez votre partenaire</a>
         </div>
+     
 
       </div>
       <div class="carousel-item">
