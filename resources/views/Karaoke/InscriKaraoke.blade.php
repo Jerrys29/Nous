@@ -227,6 +227,19 @@
 
         resetTimer(); // Initialise le minuteur lors du chargement de la page
     </script>
+    <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('preload-link').addEventListener('click', function() {
+                    var img = new Image();
+                    img.src = 'public/assets/img/back2.jpg'; // Remplacez "chemin_vers_votre_image.jpg" par le chemin de votre image
+                    // Vous pouvez également définir une fonction à exécuter une fois l'image préchargée, par exemple :
+                    img.onload = function() {
+                        console.log("Image préchargée !");
+                    };
+                });
+            });
+            </script>
+
 </body>
 </html>
 

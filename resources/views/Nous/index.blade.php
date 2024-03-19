@@ -180,7 +180,7 @@
             <h5><strong>Offre :</strong></h5>
             <p>{{ $publicite->offre }}</p>
             <h5><strong>Détails :</strong></h5>
-            <p>{{ $publicite->detail }}</p>
+            <p>{!! $publicite->detail !!}</p>
           </div>
         </div>
       </div>

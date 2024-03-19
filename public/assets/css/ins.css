@@ -3,6 +3,7 @@ display-flex, .booking-content {
   display: flex;
   display: -webkit-flex; }
 
+<<<<<<< HEAD
 /* @extend list-type-ulli; */
 list-type-ulli, ul {
   list-style-type: none;
@@ -240,6 +241,13 @@ body {
 
 .booking-form {
   width: 50%;
+=======
+    .kbody {
+      background-image: url(../img/back2.jpg);
+      background-size: cover;
+      background-position: center;
+  }
+>>>>>>> 883e396c9ee42edb807b1bdeddec9f0840b7a829
   
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px; }

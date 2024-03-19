@@ -22,7 +22,7 @@
                         </div>
                         <div class="form-group">
                             <label for="detail" class="form-control-label">Details</label>
-                            <textarea class="form-control" id="detail" name="detail" placeholder="Details" required>{{ $publicite->detail }}</textarea>
+                            <textarea class="form-control" id="detail" name="detail" placeholder="Details" required>{{(strip_tags($publicite->detail)) }}</textarea>
                         </div>
                         <div class="row">
                             <div class="form-group col-md-6">
