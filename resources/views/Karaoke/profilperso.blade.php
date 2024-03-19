@@ -66,7 +66,7 @@
     <main id="main">
     @if(!$user->photo1)
         <div class="alert alert-warning" role="alert">
-            Attention : Veuillez sélectionner une image pour la première photo.
+        Attention : Veuillez ajouter vos photos de profil.
         </div>
 
         @endif
@@ -113,7 +113,7 @@
                                             @method('PUT')
                                             <div class="modal-body">
                                                 <label for="editField">Nouvelle valeur:</label>
-                                                <input type="text" name="pseudo" value="{{ $user->pseudo }}" class="form-control" required>
+                                                <input type="text" name="pseudo" value="{{ $user->pseudo }}" class="form-control" required required style="font-size: 20px;">
 
                                             </div>
                                             <div class="modal-footer">
@@ -142,7 +142,7 @@
                                             @method('PUT')
                                             <div class="modal-body">
                                                 <label for="editField">Nouvelle valeur:</label>
-                                                <input type="text" id="editField" name="numero" class="form-control">
+                                                <input type="text" id="editField" name="numero" class="form-control" required style="font-size: 20px;">
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
@@ -172,7 +172,7 @@
                                             @method('PUT')
                                             <div class="modal-body">
                                                 <label for="editField">Nouvelle valeur:</label>
-                                                <input type="text" name="name" value="{{ $user->name }}" class="form-control" required>
+                                                <input type="text" name="name" value="{{ $user->name }}" class="form-control" required style="font-size: 20px;">
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
@@ -602,6 +602,7 @@
 
         resetTimer(); // Initialise le minuteur lors du chargement de la page
     </script>
+    
 
 </body>
 

@@ -60,6 +60,15 @@
     overflow: hidden;
     position: relative;
   }
+
+  
+  .modal-image {
+    height: 18rem; /* Remplacez 200px par la hauteur désirée */
+
+    object-fit: cover; /* Pour conserver les proportions et couvrir la zone */
+}
+
+
 </style>
 <section id="hero" class="d-flex align-items-center">
   <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
@@ -193,82 +202,83 @@
   </section><!-- End About Section -->
 
 
-  <!-- Modal pour afficher les détails des publicités -->
-  <div id="advertisementModal" class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-sm" role="document"> <!-- Ajout de la classe modal-sm -->
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Publicités</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="3000">
-            <!-- <ol class="carousel-indicators">
-            @foreach($publicites as $index => $publicite)
-            <li data-target="#carouselExampleIndicators" data-slide-to="{{ $index }}" class="{{ $index == 0 ? 'active' : '' }}"></li>
-            @endforeach
-          </ol> -->
-            <div class="carousel-inner">
-              @foreach($publicites as $index => $publicite)
-              <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                <!-- Ligne pour l'image -->
-                <div class="row">
-                  <div class="col text-center">
-                    <img class="d-block w-100" src="{{ asset('logos/' . $publicite->logo) }}" alt="{{ $publicite->name }}">
-                  </div>
-                </div>
-                <!-- Ligne pour le texte et le bouton -->
-                <div class="row">
-                  <div class="col text-center">
-                    <h5> <strong>{{ $publicite->name }}</strong></h5>
-                    <p>{{ $publicite->offre }}</p>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#advertisementDetailModal{{ $index }}">Détail</button>
-                  </div>
-                </div>
-              </div>
-              @endforeach
-            </div>
-            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="sr-only">Next</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  @if($publicites->count() > 0)
+    <!-- Modal pour afficher les détails des publicités -->
+    <div id="advertisementModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm" role="document"> <!-- Ajout de la classe modal-sm -->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Publicités</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
 
-  <!-- Second modal pour afficher les détails de la publicité -->
-  @foreach($publicites as $index => $publicite)
-  <div class="modal fade" id="advertisementDetailModal{{ $index }}" tabindex="-1" role="dialog" aria-labelledby="advertisementDetailModal{{ $index }}Label" aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document"> <!-- Ajout de la classe modal-sm -->
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="advertisementDetailModal{{ $index }}Label">Détails de la publicité</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="row">
-          <div class="col text-center">
-            <img class="d-block w-100" src="{{ asset('logos/' . $publicite->logo) }}" alt="{{ $publicite->name }}">
+          </div>
+          <div class="modal-body">
+            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="3000">
+              <div class="carousel-inner">
+                @foreach($publicites as $index => $publicite)
+                <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                  <!-- Ligne pour l'image -->
+                  <div class="row">
+                    <div class="col text-center">
+                      <img class="d-block w-100 modal-image" src="{{ asset('logos/' . $publicite->logo) }}" alt="{{ $publicite->name }}">
+                    </div>
+                  </div>
+                  <!-- Ligne pour le texte et le bouton -->
+                  <div class="row">
+                    <div class="col text-center">
+                      <h5><strong>{{ $publicite->name }}</strong></h5>
+                      <p>{{ $publicite->offre }}</p>
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#advertisementDetailModal{{ $index }}">Détail</button>
+                    </div>
+                  </div>
+                </div>
+                @endforeach
+              </div>
+              <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+              </a>
+              <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+              </a>
+            </div>
           </div>
         </div>
-        <div class="modal-body">
-          <h5> <strong>{{ $publicite->name }}</strong></h5>
-          <h5>{{ $publicite->offre }}</h5>
-          <p style="font-size:large;">{{ $publicite->detail }}</p>
+      </div>
+    </div>
+@endif
+
+<!-- Second modal pour afficher les détails de la publicité -->
+@foreach($publicites as $index => $publicite)
+<div class="modal fade" id="advertisementDetailModal{{ $index }}" tabindex="-1" role="dialog" aria-labelledby="advertisementDetailModal{{ $index }}Label" aria-hidden="true">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="advertisementDetailModal{{ $index }}Label">{{ $publicite->name }}</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4">
+            <img class="d-block w-100 mb-3" src="{{ asset('logos/' . $publicite->logo) }}" alt="{{ $publicite->name }}">
+          </div>
+          <div class="col-md-8">
+            <h5><strong>Offre :</strong></h5>
+            <p>{{ $publicite->offre }}</p>
+            <h5><strong>Détails :</strong></h5>
+            <p>{{ $publicite->detail }}</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  @endforeach
+</div>
+@endforeach
 
 
   <button id="toggleChat" class="btn btn-danger" style="margin-bottom: 40px;margin-top: 40px;">Discuter</button>
@@ -338,6 +348,8 @@
       var flagsContainer = document.querySelector('.scrolling-flags-container');
       flagsContainer.style.animation = animation; // Redémarre l'animation
     }
+
+    
   </script>
 
   <section class="chatbox">
@@ -462,4 +474,34 @@
     }
   });
 </script>
+<script>
+    $(document).ready(function(){
+        // Supprimer cette ligne pour empêcher la fermeture automatique du modal
+        // $('#advertisementModal').modal('hide');
+        
+        // Ajouter un gestionnaire d'événement au clic sur le bouton Close
+        $('.close').on('click', function() {
+            $('#advertisementModal').modal('hide');
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function(){
+        // Ajouter un gestionnaire d'événement au clic sur le bouton de fermeture de la page
+        $('.close').on('click', function() {
+            $('advertisementDetailModal').modal('hide');
+        });
+    });
+</script>
+
+
+<!-- CSS Bootstrap -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- JavaScript Bootstrap (jQuery doit être inclus avant Bootstrap) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 @endsection

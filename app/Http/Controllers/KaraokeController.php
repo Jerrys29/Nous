@@ -190,22 +190,15 @@ class KaraokeController extends Controller
     public function showAllKaraokeProfiles()
     {
         // Récupérer tous les utilisateurs ayant le rôle "karaoke" et dont le compte est activé
-        // avec au moins un profil et au moins une photo associée
+        // avec au moins un profil
         $users = User::where('role', 'karaoke')
                     ->where('active', 1)
-                    ->where(function ($query) {
-                        // Vérifier s'il y a au moins une photo non nulle
-                        $query->whereNotNull('photo1')
-                              ->orWhereNotNull('photo2')
-                              ->orWhereNotNull('photo3')
-                              ->orWhereNotNull('photo4')
-                              ->orWhereNotNull('photo5');
-                    })
                     ->get();
         
         // Passer les données à la vue
         return view('Karaoke.index', compact('users'));
     }
+    
     
     
     
