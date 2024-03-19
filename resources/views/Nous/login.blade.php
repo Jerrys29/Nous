@@ -34,7 +34,7 @@
     <div class="container">
         <div class="booking-content">
             <div class="booking-image">
-                <img class="booking-img" src="{{ asset('assets/img/connexion.jpg') }}" alt="Image de réservation" style="height: 100%;">
+                <img class="booking-img" src="{{ asset('assets/slides/5.jpg') }}" alt="Image de réservation" style="height: 100%;">
             </div>
             <div class="booking-form">
                 <form id="booking-form" method="post" action="{{ route('login') }}">

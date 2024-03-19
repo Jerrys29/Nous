@@ -5,37 +5,42 @@
 
 <div class="container" id="ok">
   <div class="row">
-    <div class="col-12" style="margin-top: -4rem; margin-bottom:4rem;" >
+    <div class="col-12" style="margin-top: -4rem; margin-bottom:3rem;">
       <div class="scrolling-flags-container" onmouseover="stopAnimation()" onmouseout="startAnimation()" style="margin-top: 4rem; margin-bottom: -2rem;">
-        @for ($i = 1; $i <= 56; $i++)
-        <img src="{{ asset('assets/img/drap/' . $i . '.png') }}" alt="Drapeau {{ $i }}" class="flag-image">
-        @endfor
+        @for ($i = 1; $i <= 56; $i++) <img src="{{ asset('assets/img/drap/' . $i . '.png') }}" alt="Drapeau {{ $i }}" class="flag-image">
+          @endfor
       </div>
     </div>
-   </div>
+  </div>
 </div>
 
 <style>
-   .modal-backdrop {
-        backdrop-filter: blur(5px); /* Utilisez backdrop-filter pour appliquer un effet de flou */
-    }
+  .modal-backdrop {
+    backdrop-filter: blur(5px);
+    /* Utilisez backdrop-filter pour appliquer un effet de flou */
+  }
+
   .scrolling-flags-container {
     flex-wrap: nowrap;
     display: flex;
     justify-content: center;
     margin-top: 2rem;
-    animation: scroll 30s linear infinite; /* Réduire la durée de l'animation */
+    animation: scroll 30s linear infinite;
+    /* Réduire la durée de l'animation */
   }
 
   .flag-image {
-    width: 5%; /* Utilisation d'un pourcentage pour la taille des drapeaux */
+    width: 5%;
+    /* Utilisation d'un pourcentage pour la taille des drapeaux */
     height: auto;
-    margin: 5px; /* Ajoutez de la marge entre les images */
+    margin: 5px;
+    /* Ajoutez de la marge entre les images */
   }
 
   @media screen and (max-width: 768px) {
     .flag-image {
-      width: 10%; /* Réduisez la taille des images pour les écrans plus petits */
+      width: 10%;
+      /* Réduisez la taille des images pour les écrans plus petits */
     }
   }
 
@@ -43,8 +48,10 @@
     0% {
       transform: translateX(0);
     }
+
     100% {
-      transform: translateX(calc(-50px * 28)); /* Réduire le nombre de drapeaux à défiler */
+      transform: translateX(calc(-50px * 28));
+      /* Réduire le nombre de drapeaux à défiler */
     }
   }
 
@@ -53,27 +60,104 @@
     overflow: hidden;
     position: relative;
   }
-
-  
-  
-
 </style>
-
 <section id="hero" class="d-flex align-items-center">
-
-  <!-- ======= Header ======= -->
-
-  <div class="container" data-aos="zoom-out" data-aos-delay="100">
-    <div class="row">
-      <div class="col-xl-6">
-        <h1>Meilleur site de rencontres au Bénin et dans la sous-région. </h1>
-        <h2>Faites une expérience exceptionnelle, rencontrez les meilleures personnes et vivez pleinement vos rencontres.</h2>
-        <a href="{{('/profils')}}" class="btn-get-started scrollto">Trouvez votre partenaire</a>
+  <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="{{ asset('assets/slides/1.jpg') }}" class="d-block w-100" alt="...">
+        <div class="carousel-caption" >
+          <h1>Meilleur site de rencontres au Bénin et dans la sous-région. </h1>
+          <h2>Faites une expérience exceptionnelle, rencontrez les meilleures personnes et vivez pleinement vos rencontres.</h2>
+          <a href="{{('/profils')}}" class="btn-get-started scrollto">Trouvez votre partenaire</a>
+        </div>
       </div>
-    </div>
-  </div>
+      <div class="carousel-item">
+        <img src="{{ asset('assets/slides/2.jpg') }}" class="d-block w-100" alt="...">
+        <div class="carousel-caption">
+          <h1>Meilleur site de rencontres au Bénin et dans la sous-région. </h1>
+          <h2>Faites une expérience exceptionnelle, rencontrez les meilleures personnes et vivez pleinement vos rencontres.</h2>
+          <a href="{{('/profils')}}" class="btn-get-started scrollto">Trouvez votre partenaire</a>
+        </div>
 
+      </div>
+      <div class="carousel-item">
+        <img src="{{ asset('assets/slides/4.jpg') }}" class="d-block w-100" alt="...">
+        <div class="carousel-caption">
+          <h1>Meilleur site de rencontres au Bénin et dans la sous-région. </h1>
+          <h2>Faites une expérience exceptionnelle, rencontrez les meilleures personnes et vivez pleinement vos rencontres.</h2>
+          <a href="{{('/profils')}}" class="btn-get-started scrollto">Trouvez votre partenaire</a>
+        </div>
+
+      </div>
+      <div class="carousel-item">
+        <img src="{{ asset('assets/slides/5.jpg') }}" class="d-block w-100" alt="...">
+        <div class="carousel-caption">
+          <h1>Meilleur site de rencontres au Bénin et dans la sous-région. </h1>
+          <h2>Faites une expérience exceptionnelle, rencontrez les meilleures personnes et vivez pleinement vos rencontres.</h2>
+          <a href="{{('/profils')}}" class="btn-get-started scrollto">Trouvez votre partenaire</a>
+        </div>
+
+      </div>
+      <div class="carousel-item">
+        <img src="{{ asset('assets/slides/6.jpg') }}" class="d-block w-100" alt="...">
+        <div class="carousel-caption">
+          <h1>Meilleur site de rencontres au Bénin et dans la sous-région. </h1>
+          <h2>Faites une expérience exceptionnelle, rencontrez les meilleures personnes et vivez pleinement vos rencontres.</h2>
+          <a href="{{('/profils')}}" class="btn-get-started scrollto">Trouvez votre partenaire</a>
+        </div>
+
+      </div>
+      <div class="carousel-item">
+        <img src="{{ asset('assets/slides/7.jpg') }}" class="d-block w-100" alt="...">
+        <div class="carousel-caption">
+          <h1>Meilleur site de rencontres au Bénin et dans la sous-région. </h1>
+          <h2>Faites une expérience exceptionnelle, rencontrez les meilleures personnes et vivez pleinement vos rencontres.</h2>
+          <a href="{{('/profils')}}" class="btn-get-started scrollto">Trouvez votre partenaire</a>
+        </div>
+
+      </div>
+      <div class="carousel-item">
+        <img src="{{ asset('assets/slides/8.jpg') }}" class="d-block w-100" alt="...">
+        <div class="carousel-caption">
+          <h1>Meilleur site de rencontres au Bénin et dans la sous-région. </h1>
+          <h2>Faites une expérience exceptionnelle, rencontrez les meilleures personnes et vivez pleinement vos rencontres.</h2>
+          <a href="{{('/profils')}}" class="btn-get-started scrollto">Trouvez votre partenaire</a>
+        </div>
+
+      </div>
+      <!-- Ajoutez les autres éléments de diapositives si nécessaire -->
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Précédent</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Suivant</span>
+    </button>
+  </div>
 </section><!-- End Hero -->
+
+
+<!-- Ajoutez Swiper.js -->
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+<!-- Initialisez Swiper.js -->
+<script>
+  var swiper = new Swiper('.swiper-container', {
+    effect: 'fade',
+    autoplay: {
+      delay: 5000, // 5 secondes entre chaque diapositive
+    },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+  });
+</script>
+
 
 <main id="main">
 
@@ -108,83 +192,83 @@
     </div>
   </section><!-- End About Section -->
 
-  
-<!-- Modal pour afficher les détails des publicités -->
-<div id="advertisementModal" class="modal" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-sm" role="document"> <!-- Ajout de la classe modal-sm -->
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" >Publicités</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="3000">
-          <!-- <ol class="carousel-indicators">
+
+  <!-- Modal pour afficher les détails des publicités -->
+  <div id="advertisementModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document"> <!-- Ajout de la classe modal-sm -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Publicités</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="3000">
+            <!-- <ol class="carousel-indicators">
             @foreach($publicites as $index => $publicite)
             <li data-target="#carouselExampleIndicators" data-slide-to="{{ $index }}" class="{{ $index == 0 ? 'active' : '' }}"></li>
             @endforeach
           </ol> -->
-          <div class="carousel-inner">
-            @foreach($publicites as $index => $publicite)
-            <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-              <!-- Ligne pour l'image -->
-              <div class="row">
-                <div class="col text-center">
-                  <img class="d-block w-100" src="{{ asset('logos/' . $publicite->logo) }}" alt="{{ $publicite->name }}">
+            <div class="carousel-inner">
+              @foreach($publicites as $index => $publicite)
+              <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                <!-- Ligne pour l'image -->
+                <div class="row">
+                  <div class="col text-center">
+                    <img class="d-block w-100" src="{{ asset('logos/' . $publicite->logo) }}" alt="{{ $publicite->name }}">
+                  </div>
+                </div>
+                <!-- Ligne pour le texte et le bouton -->
+                <div class="row">
+                  <div class="col text-center">
+                    <h5> <strong>{{ $publicite->name }}</strong></h5>
+                    <p>{{ $publicite->offre }}</p>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#advertisementDetailModal{{ $index }}">Détail</button>
+                  </div>
                 </div>
               </div>
-              <!-- Ligne pour le texte et le bouton -->
-              <div class="row">
-                <div class="col text-center">
-                  <h5> <strong>{{ $publicite->name }}</strong></h5>
-                  <p>{{ $publicite->offre }}</p>
-                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#advertisementDetailModal{{ $index }}">Détail</button>
-                </div>
-              </div>
+              @endforeach
             </div>
-            @endforeach
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+            </a>
           </div>
-          <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-          </a>
-          <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-          </a>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-    <!-- Second modal pour afficher les détails de la publicité -->
-    @foreach($publicites as $index => $publicite)
-    <div class="modal fade" id="advertisementDetailModal{{ $index }}" tabindex="-1" role="dialog" aria-labelledby="advertisementDetailModal{{ $index }}Label" aria-hidden="true">
-      <div class="modal-dialog modal-sm" role="document"> <!-- Ajout de la classe modal-sm -->
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="advertisementDetailModal{{ $index }}Label">Détails de la publicité</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+  <!-- Second modal pour afficher les détails de la publicité -->
+  @foreach($publicites as $index => $publicite)
+  <div class="modal fade" id="advertisementDetailModal{{ $index }}" tabindex="-1" role="dialog" aria-labelledby="advertisementDetailModal{{ $index }}Label" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document"> <!-- Ajout de la classe modal-sm -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="advertisementDetailModal{{ $index }}Label">Détails de la publicité</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="row">
+          <div class="col text-center">
+            <img class="d-block w-100" src="{{ asset('logos/' . $publicite->logo) }}" alt="{{ $publicite->name }}">
           </div>
-          <div class="row">
-                <div class="col text-center">
-                  <img class="d-block w-100" src="{{ asset('logos/' . $publicite->logo) }}" alt="{{ $publicite->name }}">
-                </div>
-              </div>
-          <div class="modal-body">
+        </div>
+        <div class="modal-body">
           <h5> <strong>{{ $publicite->name }}</strong></h5>
-            <h5>{{ $publicite->offre }}</h5>
-            <p style="font-size:large;">{{ $publicite->detail }}</p>
-          </div>
+          <h5>{{ $publicite->offre }}</h5>
+          <p style="font-size:large;">{{ $publicite->detail }}</p>
         </div>
       </div>
     </div>
-    @endforeach
+  </div>
+  @endforeach
 
 
   <button id="toggleChat" class="btn btn-danger" style="margin-bottom: 40px;margin-top: 40px;">Discuter</button>
@@ -243,7 +327,7 @@
     });
 
     var animation; // Variable pour stocker l'animation
-  
+
     function stopAnimation() {
       var flagsContainer = document.querySelector('.scrolling-flags-container');
       animation = flagsContainer.style.animation; // Sauvegarde l'animation actuelle
@@ -364,19 +448,18 @@
     $('#advertisementModal').modal('show');
   });
   // Fonction pour précharger une image en arrière-plan
-function preloadImage(url) {
+  function preloadImage(url) {
     var img = new Image();
     img.src = url;
-}
+  }
 
-// Précharger les images suivantes dans le carrousel
-$('.carousel').on('slide.bs.carousel', function () {
+  // Précharger les images suivantes dans le carrousel
+  $('.carousel').on('slide.bs.carousel', function() {
     var nextSlide = $(this).find('.carousel-item.active').next('.carousel-item');
     if (nextSlide.length > 0) {
-        var imgUrl = nextSlide.find('img').attr('src');
-        preloadImage(imgUrl);
+      var imgUrl = nextSlide.find('img').attr('src');
+      preloadImage(imgUrl);
     }
-});
-
+  });
 </script>
 @endsection
