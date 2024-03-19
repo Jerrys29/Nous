@@ -65,8 +65,9 @@
 									  <span class="checkmark"></span>
 									</label>
 								</div>
-								<!-- <div class="w-50 text-md-right">
-									<a href="#" style="color: #fff">Mot de passe oublié</a>
+								<!-- <div class="w-100 text-md-right">
+									<a href=""> <p class="w-100 "> Mot de passe oublié? </p></a>
+
 								</div> -->
 	            </div>
 	          </form>
@@ -126,4 +127,3 @@ function togglePassword() {
 
 	</body>
 </html>
-

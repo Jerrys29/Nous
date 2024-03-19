@@ -6,41 +6,48 @@
     <div class="container">
       <div class="row">
         @foreach ($users as $user)
-              <div class="col-lg-3 mb-4">
-                <a href="{{ url('/Karaokeprofils/' . $user->id) }}" style="text-decoration: none; color: inherit;">
-                  <div class="card h-100 custom-card d-flex justify-content-center align-items-center"> <!-- Ajoutez les classes Bootstrap pour centrer le contenu -->
-                    <div style="width: 100%; height: 18rem; overflow: hidden;">
-                      @if ($user->photo1)
-                        <img src="{{ asset('storage/' . $user->photo1) }}" class="card-img-top" style="object-fit: cover; width: 100%; height: 100%;" alt="Profile Image {{ $user->id }}">
-                      @else
-                        <!-- Icône d'utilisateur par défaut -->
-                        <i class="bi bi-person-fill" style="font-size: 15rem;"></i>
-                      @endif
-                    </div>
-                    <div class="card-body text-center">
-                      <h5 class="card-title">{{ $user->pseudo }}</h5>
-                      <div class="like-container">
-                        @if (auth()->user() && auth()->user()->paiement == 0)
-                          <a href="{{ url('/visiteur/' . $user->id) }}" target="_blank">
-                            <button type="button" class="btn btn-success">
-                              <i class="bi bi-whatsapp whatsapp-icon launch"></i> Discuter
-                            </button>
-                          </a> 
-                        @else
-                          <a href="{{ url('/visiteur/' . $user->id) }}" target="_blank">
-                            <button type="button" class="btn btn-success">
-                              <i class="bi bi-whatsapp whatsapp-icon launch"></i> Discuter
-                            </button>
-                          </a> 
-                        @endif
-                      </div>
-                    </div>
+          <div class="col-lg-3 mb-4">
+            <a href="{{ url('/Karaokeprofils/' . $user->id) }}" style="text-decoration: none; color: inherit;">
+              <div class="card h-100 custom-card d-flex justify-content-center align-items-center">
+                <div style="width: 100%; height: 18rem; overflow: hidden;">
+                  <!-- Vérifie les cinq champs de photos et affiche la première photo valide -->
+                  @if ($user->photo1 && Storage::disk('public')->exists($user->photo1))
+                    <img src="{{ asset('storage/' . $user->photo1) }}" class="card-img-top" style="object-fit: cover; width: 100%; height: 100%;" alt="Profile Image {{ $user->id }}">
+                  @elseif ($user->photo2 && Storage::disk('public')->exists($user->photo2))
+                    <img src="{{ asset('storage/' . $user->photo2) }}" class="card-img-top" style="object-fit: cover; width: 100%; height: 100%;" alt="Profile Image {{ $user->id }}">
+                  @elseif ($user->photo3 && Storage::disk('public')->exists($user->photo3))
+                    <img src="{{ asset('storage/' . $user->photo3) }}" class="card-img-top" style="object-fit: cover; width: 100%; height: 100%;" alt="Profile Image {{ $user->id }}">
+                  @elseif ($user->photo4 && Storage::disk('public')->exists($user->photo4))
+                    <img src="{{ asset('storage/' . $user->photo4) }}" class="card-img-top" style="object-fit: cover; width: 100%; height: 100%;" alt="Profile Image {{ $user->id }}">
+                  @elseif ($user->photo5 && Storage::disk('public')->exists($user->photo5))
+                    <img src="{{ asset('storage/' . $user->photo5) }}" class="card-img-top" style="object-fit: cover; width: 100%; height: 100%;" alt="Profile Image {{ $user->id }}">
+                  @else
+                    <!-- Icône d'utilisateur par défaut si aucune photo n'est trouvée -->
+                    <i class="bi bi-person-fill" style="font-size: 15rem;"></i>
+                  @endif
+                </div>
+                <div class="card-body text-center">
+                  <h5 class="card-title">{{ $user->pseudo }}</h5>
+                  <div class="like-container">
+                    @if (auth()->user() && auth()->user()->paiement == 0)
+                      <a href="{{ url('/visiteur/' . $user->id) }}" target="_blank">
+                        <button type="button" class="btn btn-success">
+                          <i class="bi bi-whatsapp whatsapp-icon launch"></i> Discuter
+                        </button>
+                      </a> 
+                    @else
+                      <a href="{{ url('/visiteur/' . $user->id) }}" target="_blank">
+                        <button type="button" class="btn btn-success">
+                          <i class="bi bi-whatsapp whatsapp-icon launch"></i> Discuter
+                        </button>
+                      </a> 
+                    @endif
                   </div>
-                </a>
+                </div>
               </div>
-            @endforeach
-
-
+            </a>
+          </div>
+        @endforeach
       </div>
     </div>
   </section>
@@ -70,7 +77,6 @@
 .custom-card .btn {
   width: 100%;
 }
-
 </style>
 
 @endsection

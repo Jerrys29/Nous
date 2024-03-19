@@ -32,7 +32,7 @@
                         </a>
                 </li>
         <li class="nav-item">
-                        <a class="nav-link" href="{{'utilisateurs'}}">
+                        <a class="nav-link" href="{{route('utilisateurs')}}">
                             <span class="ms-2">Visiteurs</span>
                         </a>
                     </li>
@@ -52,12 +52,12 @@
                         
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{'NousUsers'}}">
+                        <a class="nav-link" href="{{route('NousUsers')}}">
                             <span class="ms-2">Nous</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{'KaraokeUsers'}}">
+                        <a class="nav-link" href="{{route('KaraokeUsers')}}">
                             <span class="ms-2">Karaoke</span>
                         </a>
                     </li>
