@@ -42,7 +42,7 @@
                         </td>
                         
                         <td class="align-middle">
-                        <form method="post" action="{{ route('block.user', ['id' => $user->id, 'redirect' => 'Noussers']) }}">
+                        <form method="post" action="{{ route('blockNous.User', ['id' => $user->id, 'redirect' => 'NousUsers']) }}">
                                     @csrf
                                     @method('POST')
                                     @if(!$user->active)

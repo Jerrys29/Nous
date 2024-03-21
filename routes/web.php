@@ -154,6 +154,9 @@ Route::get('avisadmin', 'App\Http\Controllers\AdminController@showavis')->name('
 
 Route::post('block/user/{id}/{redirect}', 'App\Http\Controllers\AdminController@blockUser')->name('block.user');
 Route::post('/unblock/user/{id}/{redirect}', 'App\Http\Controllers\AdminController@unblockUser')->name('unblock.user');
+
+Route::post('blockNousUser/user/{id}/{redirect}', 'App\Http\Controllers\AdminController@blockNousUser')->name('blockNous.User');
+Route::post('/unblockNousUser/user/{id}/{redirect}', 'App\Http\Controllers\AdminController@unblockNousUser')->name('unblockNous.User');
 // Route::post('/delete/user/{id}/{redirect}', 'App\Http\Controllers\AdminController@deleteUser')->name('delete.user');
 
 

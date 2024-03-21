@@ -272,4 +272,58 @@ public function unblockUser($id, $redirect)
         // Rediriger vers la page des utilisateurs correspondante
         return redirect()->route($redirect)->with('success', 'L\'utilisateur a été supprimé avec succès.');
     }
+
+    public function blockNousUser($id, $redirect)
+{
+    // Récupérer l'utilisateur à bloquer
+    $user = User::find($id);
+
+    // Vérifier si l'utilisateur en question est l'administrateur lui-même
+    if ($user->role === 'admin') {
+        return redirect()->route($redirect)->withErrors(['error' => 'Vous ne pouvez pas bloquer l\'administrateur.']);
+    }
+
+    // Rediriger si l'utilisateur n'a pas le rôle "nous"
+    if ($user->role !== 'nous') {
+        return redirect()->route($redirect)->withErrors(['error' => 'Cet utilisateur n\'a pas le rôle "nous".']);
+    }
+
+    // Changer le statut de l'utilisateur à non actif
+    $user->active = false;
+    $user->save();
+
+    // Rediriger vers la page des utilisateurs correspondante
+    return redirect()->route($redirect);
+}
+
+public function unblockNousUser($id, $redirect)
+{
+    // Récupérer l'utilisateur à débloquer
+    $user = User::find($id);
+
+    // Vérifier si l'utilisateur en question est l'administrateur lui-même
+    if ($user->role === 'admin') {
+        return redirect()->route($redirect)->withErrors(['error' => 'Vous ne pouvez pas débloquer l\'administrateur.']);
+    }
+
+    // Rediriger si l'utilisateur n'a pas le rôle "nous"
+    if ($user->role !== 'nous') {
+        return redirect()->route($redirect)->withErrors(['error' => 'Cet utilisateur n\'a pas le rôle "nous".']);
+    }
+
+    // Changer le statut de l'utilisateur à actif
+    $user->active = true;
+
+    // Si la colonne activated_at est nulle, mettre à jour avec la date actuelle
+    if (is_null($user->activated_at)) {
+        $user->activated_at = now();
+    }
+
+    // Sauvegarder les modifications
+    $user->save();
+
+    // Rediriger vers la page des utilisateurs correspondante
+    return redirect()->route($redirect);
+}
+
 }
