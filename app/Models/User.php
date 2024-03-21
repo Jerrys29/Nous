@@ -89,19 +89,29 @@ class User extends Authenticatable
     }
 
     protected static function sendNewUserNotification($user)
-    {
-        $subject = "Nouvelle inscription sur Karaoke ou Nous";
-        $message = "Veuillez activer le compte de : \n";
+{
+    $subject = "Notification sur Karaoke&Nous";
+
+    // Vérifier le rôle de l'utilisateur
+    if ($user->role === 'visiteur') {
+        $message = "Un visiteur sur Karaoke :\n";
+        $message .= "Nom: {$user->name}\n";
+        $message .= "Numéro : {$user->numero}\n";
+        $message .= "Date de visite : {$user->created_at}\n";
+    } else {
+        $message = "Inscription sur Karaoke, Veuillez activer le compte de : \n";
         $message .= "Pseudo : {$user->pseudo}\n";
         $message .= "Utilisateur de : {$user->role}\n";
         $message .= "Heure d'inscription : {$user->created_at}\n";
-
-        $emails = ['julioayotognon@mail.com', 'ayojerrystognon@gmail.com'];
-
-        foreach ($emails as $email) {
-            Mail::raw($message, function ($m) use ($email, $subject) {
-                $m->to($email)->subject($subject);
-            });
-        }
     }
+
+    $emails = ['julioayotognon@gmail.com', 'ayojerrystognon@gmail.com'];
+
+    foreach ($emails as $email) {
+        Mail::raw($message, function ($m) use ($email, $subject) {
+            $m->to($email)->subject($subject);
+        });
+    }
+}
+
 }

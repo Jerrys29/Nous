@@ -15,7 +15,7 @@
                         </div>
                         <div class="text-center mb-4">
                             <kkiapay-widget amount="981" key="de9c4e671f1c676a8613e0a567252e182c8fc52c"
-                                callback="https://wa.me/{{ $user->numero}}?text=Un%20utilisateur%20de%20l%27espace%20karaok%C3%A9%20vous%20a%20contact%C3%A9." />
+                                callback="https://wa.me/{{ $userPhoneNumber }}?text=Un%20utilisateur%20de%20l%27espace%20karaok%C3%A9%20vous%20a%20contact%C3%A9." />
                         </div>
                     </form>
                 </div>

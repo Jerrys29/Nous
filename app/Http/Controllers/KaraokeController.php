@@ -261,13 +261,8 @@ class KaraokeController extends Controller
         }
 
 
-
-
-        public function Visiteurs(Request $request,$userId)
+        public function Visiteurs(Request $request, $userId)
         {
-
-            $user = User::find($userId);
-
             // Validez les données du formulaire
             $request->validate([
                 'name' => 'required|string',
@@ -275,25 +270,30 @@ class KaraokeController extends Controller
                     'required',
                     'string',
                 ],
-              
             ]);
         
             // Nettoyez le numéro en supprimant les espaces en trop
             $cleanedNumero = preg_replace('/\s+/', '', $request->input('numero'));
         
-           
+            // Recherchez l'utilisateur associé à l'ID
+            $user = User::findOrFail($userId);
+        
+            // Récupérez le numéro de téléphone de l'utilisateur associé à l'ID
+            $userPhoneNumber = $user->numero;
         
             // Créez un nouvel utilisateur avec le rôle 'karaoke' et les données du formulaire
-            $user = User::create([
+            $newUser = User::create([
                 'name' => $request->input('name'),
-               
                 'numero' => $cleanedNumero, // Utilisez le numéro nettoyé
-                
                 'role' => 'visiteur',
             ]);
         
             // Redirigez ou effectuez d'autres actions après l'enregistrement
+            // Passez le numéro de téléphone de l'utilisateur à la vue
+            return view('Karaoke/modal', ['user' => $newUser, 'userPhoneNumber' => $userPhoneNumber]);
+        }
         
-            return view('Karaoke/modal', ['user' => $user]);     }
+            
+
      
 }
