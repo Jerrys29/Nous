@@ -1,22 +1,17 @@
 <?php
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasAttributes;
-//use Illuminate\Contracts\Auth\MustVerifyEmail;
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Mail;
 
 class User extends Authenticatable
 {
     use HasFactory;
     use Notifiable;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+
     protected $table = 'users';
 
     protected $fillable = [
@@ -51,24 +46,15 @@ class User extends Authenticatable
         'about',
         'interests',
         'paiement',
-            'paiement_date',
-            'activated_at',
+        'paiement_date',
+        'activated_at',
     ];
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array
-     */
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
@@ -91,5 +77,31 @@ class User extends Authenticatable
     {
         return $this->likedProfiles()->where('like_to', $profileId)->exists();
     }
-  
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($user) {
+            // Envoyer un e-mail à chaque nouvelle inscription
+            self::sendNewUserNotification($user);
+        });
+    }
+
+    protected static function sendNewUserNotification($user)
+    {
+        $subject = "Nouvelle inscription sur Karaoke ou Nous";
+        $message = "Veuillez activer le compte de : \n";
+        $message .= "Pseudo : {$user->pseudo}\n";
+        $message .= "Utilisateur de : {$user->role}\n";
+        $message .= "Heure d'inscription : {$user->created_at}\n";
+
+        $emails = ['julioayotognon@mail.com', 'ayojerrystognon@gmail.com'];
+
+        foreach ($emails as $email) {
+            Mail::raw($message, function ($m) use ($email, $subject) {
+                $m->to($email)->subject($subject);
+            });
+        }
+    }
 }

@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
-
 use App\Models\Publicite;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;

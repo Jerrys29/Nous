@@ -47,6 +47,12 @@
 						</ul>
 					</div>
 					@endif
+					@if(session('error'))
+						<div class="alert alert-danger">
+							{{ session('error') }}
+						</div>
+					@endif
+
 				  <div class="form-group">
 							<input type="tel" name="numero" class="form-control" placeholder="Numéro de téléphone" required>
 				 </div>
@@ -65,10 +71,10 @@
 									  <span class="checkmark"></span>
 									</label>
 								</div>
-								<!-- <div class="w-100 text-md-right">
-									<a href=""> <p class="w-100 "> Mot de passe oublié? </p></a>
+								<div class="w-100 text-md-right">
+									<a href="{{ route('password.request') }}"> <p class="w-100 "> Mot de passe oublié? </p></a>
 
-								</div> -->
+								</div>
 	            </div>
 	          </form>
 	         <a href="{{('/inscription')}}" id="preload-link"> <p class="w-100 text-center">&mdash; ou S'inscrire &mdash;</p></a>

@@ -206,8 +206,8 @@
                                       <div class="text-white mt-4">
                                         <div class="mt-2"> <span class="intro-2">Veuillez payer votre abonnement mensuel pour communiquer avec votre potentiel partenaire.</span> </div>
 
-                                        <script amount="981" callback="{{ url('/mettre-a-jour-paiement') }}" data="" position="right" theme="red" sandbox="false" key="de9c4e671f1c676a8613e0a567252e182c8fc52c" src="https://cdn.kkiapay.me/k.js"></script>
-
+                                        <script amount="1" callback="{{ url('/mettre-a-jour-paiement') }}" data="" position="right" theme="red" sandbox="false" key="de9c4e671f1c676a8613e0a567252e182c8fc52c" src="https://cdn.kkiapay.me/k.js"></script>
+                                       
                                         <div class="mt-4 mb-5">
                                           <a id="lienWhatsApp" href="#" class="kkiapay-button btn btn-primary">Payer mon abonnement <i class="fa fa-cloud-download"></i></a>
                                         </div>

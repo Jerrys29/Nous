@@ -1,4 +1,4 @@
-  @extends('templates.admin')
+@extends('templates.admin')
 @section('document')
   <main class="main-content position-relative border-radius-lg ">
    
@@ -65,11 +65,7 @@
                                     <button type="button" class="btn btn-success btn-sm" disabled>Débloquer</button>
                                 @endif
                             </form>
-                            <form id="delete-form-{{ $user->id }}" method="post" action="{{ route('delete.user', ['id' => $user->id, 'redirect' => 'KaraokeUsers']) }}" style="display: none;">
-                                @csrf
-                                @method('DELETE')
-                            </form>
-                            <button type="button" class="btn btn-primary btn-sm" onclick="confirmDelete({{ $user->id }})">Supprimer</button>
+                           
                         </td>
 
                     </tr>

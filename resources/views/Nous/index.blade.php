@@ -16,9 +16,7 @@
 </div>
 
 <style>
-   .modal-backdrop {
-        backdrop-filter: blur(5px); /* Utilisez backdrop-filter pour appliquer un effet de flou */
-    }
+  
   .scrolling-flags-container {
     flex-wrap: nowrap;
     display: flex;
@@ -53,13 +51,73 @@
     overflow: hidden;
     position: relative;
   }
-
-  
-  .modal-image {
-    height: 18rem; /* Remplacez 200px par la hauteur désirée */
-
-    object-fit: cover; /* Pour conserver les proportions et couvrir la zone */
+  .modal-bottom-right {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    animation: slideInFromBottomRight 0.5s forwards;
 }
+.modal-bottom-right {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    animation: slideInFromBottomRight 0.5s forwards;
+}
+
+.modal-body {
+    max-height: calc(100vh - 100px); /* La hauteur maximale du corps du modal sera la hauteur de la fenêtre moins la marge supérieure et inférieure */
+    overflow-y: auto; /* Ajoutez une barre de défilement vertical si le contenu dépasse la hauteur maximale */
+}
+
+@keyframes slideInFromBottomRight {
+    from {
+        transform: translate(100%, 100%);
+    }
+    to {
+        transform: translate(0, 0);
+    }
+}
+
+.modal-content {
+    box-shadow: none; /* Supprime l'effet de flou en arrière-plan */
+}
+
+.modal-header {
+    justify-content: flex-end; /* Place le contenu du header à droite */
+}
+
+.close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 10px;
+}
+
+.modal-body {
+    max-height: calc(100vh - 100px); /* La hauteur maximale du corps du modal sera la hauteur de la fenêtre moins la marge supérieure et inférieure */
+    overflow-y: auto; /* Ajoutez une barre de défilement vertical si le contenu dépasse la hauteur maximale */
+}
+
+@keyframes slideInFromBottomRight {
+    from {
+        transform: translate(100%, 100%);
+    }
+    to {
+        transform: translate(0, 0);
+    }
+}
+
+.modal-bottom-right {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    animation: slideInFromBottomRight 0.5s forwards;
+}
+.modal-backdrop {
+    /* Supprime le fond obscurci */
+    background-color: transparent !important;
+}
+
 
 </style>
 
@@ -111,54 +169,75 @@
 
     </div>
   </section><!-- End About Section -->
+  
   @if($publicites->count() > 0)
     <!-- Modal pour afficher les détails des publicités -->
     <div id="advertisementModal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-sm" role="document"> <!-- Ajout de la classe modal-sm -->
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Publicités</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-
-          </div>
-          <div class="modal-body">
-            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="3000">
-              <div class="carousel-inner">
-                @foreach($publicites as $index => $publicite)
-                <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                  <!-- Ligne pour l'image -->
-                  <div class="row">
-                    <div class="col text-center">
-                      <img class="d-block w-100 modal-image" src="{{ asset('logos/' . $publicite->logo) }}" alt="{{ $publicite->name }}">
+        <div class="modal-dialog modal-sm modal-bottom-right" role="document"> <!-- Ajout de la classe modal-bottom-right -->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 mb-3 ">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle overflow-hidden mr-3" style="width:5rem; height: 5rem;" id="advertisementLogoContainer"> <!-- Augmentation de la taille du cercle -->
+                                    <img class="w-100" id="advertisementLogo" src="" alt="">
+                                </div>
+                                <div>
+                                    <h5><strong id="advertisementName"></strong></h5>
+                                    <p id="advertisementOffer"></p>
+                                    <!-- Utilisation d'une boucle foreach pour générer un bouton "Détail" pour chaque publicité -->
+                                    @foreach($publicites as $index => $publicite)
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#advertisementDetailModal{{ $index }}">Détail</button>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <!-- Ligne pour le texte et le bouton -->
-                  <div class="row">
-                    <div class="col text-center">
-                      <h5><strong>{{ $publicite->name }}</strong></h5>
-                      <p>{{ $publicite->offre }}</p>
-                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#advertisementDetailModal{{ $index }}">Détail</button>
-                    </div>
-                  </div>
                 </div>
-                @endforeach
-              </div>
-              <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-              </a>
-              <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-              </a>
             </div>
-          </div>
         </div>
-      </div>
     </div>
 @endif
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var publicites = @json($publicites);
+        var index = 0;
+        var modal = document.getElementById('advertisementModal');
+
+        function afficherModal() {
+            modal.style.display = 'block';
+            document.getElementById('advertisementLogo').setAttribute('src', "{{ asset('logos/') }}/" + publicites[index].logo);
+            document.getElementById('advertisementLogo').setAttribute('alt', publicites[index].name);
+            document.getElementById('advertisementName').innerText = publicites[index].name;
+            document.getElementById('advertisementOffer').innerText = publicites[index].offre;
+
+            // Masquer tous les boutons "Détail" sauf celui associé à la publicité actuelle
+            var detailButtons = document.querySelectorAll('[data-target^="#advertisementDetailModal"]');
+            detailButtons.forEach(function(button, buttonIndex) {
+                if (buttonIndex === index) {
+                    button.style.display = 'block';
+                } else {
+                    button.style.display = 'none';
+                }
+            });
+
+            index = (index + 1) % publicites.length;
+            setTimeout(function() {
+                modal.style.display = 'none';
+                setTimeout(afficherModal, 3000); // Réapparition après 3 secondes
+            }, 3000);
+        }
+
+        afficherModal(); // Démarre le processus
+    });
+</script>
+
+
+
+
 
 <!-- Second modal pour afficher les détails de la publicité -->
 @foreach($publicites as $index => $publicite)
@@ -359,47 +438,32 @@
       });
   </script> -->
 </main><!-- End #main -->
-
 <script>
-  // Afficher le modal au chargement de la page
-  $(document).ready(function() {
-    $('#advertisementModal').modal('show');
-  });
-  // Fonction pour précharger une image en arrière-plan
-function preloadImage(url) {
-    var img = new Image();
-    img.src = url;
-}
+    $(document).ready(function() {
+        // Ecouteur d'événements sur le bouton "Détail"
+        $('button[data-target^="#advertisementDetailModal"]').click(function() {
+            var targetModalId = $(this).data('target'); // Récupérer l'ID du modal cible
+            $(targetModalId).modal('show'); // Ouvrir le modal correspondant
+        });
 
-// Précharger les images suivantes dans le carrousel
-$('.carousel').on('slide.bs.carousel', function () {
-    var nextSlide = $(this).find('.carousel-item.active').next('.carousel-item');
-    if (nextSlide.length > 0) {
-        var imgUrl = nextSlide.find('img').attr('src');
-        preloadImage(imgUrl);
-    }
-});
+        // Afficher le modal au chargement de la page
+        $('#advertisementModal').modal('show');
 
-</script>
+        // Fonction pour précharger une image en arrière-plan
+        function preloadImage(url) {
+            var img = new Image();
+            img.src = url;
+        }
 
-<script>
-    $(document).ready(function(){
-        // Supprimer cette ligne pour empêcher la fermeture automatique du modal
-        // $('#advertisementModal').modal('hide');
-        
-        // Ajouter un gestionnaire d'événement au clic sur le bouton Close
-        $('.close').on('click', function() {
-            $('#advertisementModal').modal('hide');
+        // Précharger les images suivantes dans le carrousel
+        $('.carousel').on('slide.bs.carousel', function () {
+            var nextSlide = $(this).find('.carousel-item.active').next('.carousel-item');
+            if (nextSlide.length > 0) {
+                var imgUrl = nextSlide.find('img').attr('src');
+                preloadImage(imgUrl);
+            }
         });
     });
 </script>
 
-<script>
-    $(document).ready(function(){
-        // Ajouter un gestionnaire d'événement au clic sur le bouton de fermeture de la page
-        $('.close').on('click', function() {
-            $('#advertisementDetailModal').modal('hide');
-        });
-    });
-</script>
 @endsection
