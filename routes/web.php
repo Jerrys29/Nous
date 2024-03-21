@@ -180,9 +180,11 @@ Route::post('publicites/{id}/update','App\Http\Controllers\AdminController@updat
 Route::get('publicite/details','App\Http\Controllers\AdminController@showpub')->name('detailspub');
 Route::get('publicites/search','App\Http\Controllers\AdminController@search')->name('searchpub');
 
-// Route::get('/mot-de-passe-oublie', 'App\Http\Controllers\ForgotPasswordController@showLinkRequestForm')->name('password.request');
-// Route::post('/mot-de-passe-oublie', 'App\Http\Controllers\ForgotPasswordController@sendResetLinkEmail')->name('password.number');
-// Route::get('/reinitialiser-mot-de-passe', 'App\Http\Controllers\ForgotPasswordController@showResetForm')->name('password.reset');
-// Route::post('/reinitialiser-mot-de-passe', 'App\Http\Controllers\ForgotPasswordController@sreset')->name('password.update');
+Route::get('/mot-de-passe-oublie', 'App\Http\Controllers\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+Route::post('/mot-de-passe-oublie', 'App\Http\Controllers\ForgotPasswordController@sendResetLinkEmail')->name('password.number');
+Route::get('/reinitialiser-mot-de-passe/{id}', 'App\Http\Controllers\ForgotPasswordController@showResetForm')->name('password.reset');
+Route::post('/reinitialiser-mot-de-passe/{id}', 'App\Http\Controllers\ForgotPasswordController@resetPassword')->name('password.update');
+Route::get('/sendsms', 'App\Http\Controllers\ForgotPasswordController@sendsms')->name('sendsms');
+Route::post('/verify-code', 'App\Http\Controllers\ForgotPasswordController@verifyCode')->name('verify.code');
 
    ?>
