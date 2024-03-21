@@ -12,7 +12,7 @@
                             <i class="fa fa-info-circle"></i> L'accès à la discussion est payante(1000FCFA) <br>
 
                         </div>
-                        <form action="{{ route('paiementV', ['id' => $userId]) }}" method="POST" class="p-4 p-md-5 border rounded">
+                        <form action="{{ route('paiementV', ['id' => $userId]) }}" method="post" class="p-4 p-md-5 border rounded">
                             @csrf
                             ENREGISTRER VOUS POUR DISCUTER
                             <div class="form-group" style="margin-top: 1rem;">
