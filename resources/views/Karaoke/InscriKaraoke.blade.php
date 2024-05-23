@@ -44,8 +44,11 @@
                     <form action="{{ route('filleinscrip') }}" method="POST" id="booking-form">
                         <!-- Première étape -->
                         @csrf
+                        
                         <div class="form-step" id="step-1">
                             <h1>INSCRIVEZ-VOUS MAINTENANT</h1>
+                            <div id="error-message" class="error-message">Vous devez avoir au moins 18 ans pour vous inscrire.</div>
+
                             <div class="form-group form-input">
                                 <input type="text" name="name" id="first_name" class="input-text" placeholder="Nom & Prénom" required>
                             </div>
@@ -239,6 +242,23 @@
                 });
             });
             </script>
+            {{-- restriction d'age  --}}
+             <script>
+                document.getElementById('signup-form').addEventListener('submit', function(event) {
+                  const birthdate = new Date(document.getElementById('birthdate').value);
+                  const today = new Date();
+                  const age = today.getFullYear() - birthdate.getFullYear();
+                  const monthDifference = today.getMonth() - birthdate.getMonth();
+                  if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthdate.getDate())) {
+                    age--;
+                  }
+            
+                  if (age < 18) {
+                    event.preventDefault();
+                    document.getElementById('error-message').style.display = 'block';
+                  }
+                });
+              </script>
 
 </body>
 </html>

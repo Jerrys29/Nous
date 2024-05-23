@@ -29,10 +29,10 @@
 			
 				<div class="col-md-6 col-lg-4">
 				@if(session('success'))
-				<div id="alert-message" class="alert alert-success">
-					{{ session('success') }}
-				</div>
-			@endif
+					<div id="alert-message" class="alert alert-success">
+						{{ session('success') }}
+					</div>
+				@endif
 					<div class="login-wrap p-0">
 		      	
 		      	<form method="POST"  action="{{route('logins') }}" class="signin-form">
@@ -72,7 +72,7 @@
 									</label>
 								</div>
 								<div class="w-100 text-md-right">
-									<a href="{{ route('password.request') }}"> <p class="w-100 "> Mot de passe oublié? </p></a>
+									<a href="{{ route('mdp') }}"> <p class="w-100 "> Mot de passe oublié? </p></a>
 
 								</div>
 	            </div>

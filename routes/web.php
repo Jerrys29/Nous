@@ -190,4 +190,11 @@ Route::post('/reinitialiser-mot-de-passe/{id}', 'App\Http\Controllers\ForgotPass
 Route::get('/sendsms', 'App\Http\Controllers\ForgotPasswordController@sendsms')->name('sendsms');
 Route::post('/verify-code', 'App\Http\Controllers\ForgotPasswordController@verifyCode')->name('verify.code');
 
+
+//karaokeforgetpassword
+
+Route::get('/number', 'App\Http\Controllers\ForgetPasswordController@forgetpassword')->name('mdp');
+
+
+
    ?>
