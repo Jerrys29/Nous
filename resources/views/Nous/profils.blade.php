@@ -77,36 +77,42 @@
                                     <div class="col-md-6">
                                       <div class="text-white mt-4">
                                         <div class="mt-2"> <span class="intro-2">Veuillez payer votre abonnement mensuel pour communiquer avec votre potentiel partenaire.</span> </div>
-                                        <kkiapay-widget amount="1" key="de9c4e671f1c676a8613e0a567252e182c8fc52c" callback="{{ url('/mettre-a-jour-paiement') }}" theme="red" />
+                                        <kkiapay-widget amount="981" key="de9c4e671f1c676a8613e0a567252e182c8fc52c" callback="{{ url('/mettre-a-jour-paiement') }}" theme="red" />
                                         <div class="mt-4 mb-5">
                                           <a id="lienWhatsApp" href="#" class="kkiapay-button btn btn-primary">Payer mon abonnement <i class="fa fa-cloud-download"></i></a>
                                         </div>
 
+
                                         <script>
                                           document.getElementById('lienWhatsApp').addEventListener('click', function(event) {
-                                            // Empêcher la redirection immédiate
                                             event.preventDefault();
 
-                                            // Stocker une indication du début de la redirection dans le stockage local
-                                            localStorage.setItem('redirectionInProgress', 'true');
+                                            // Activer le widget Kkiapay
+                                            Kkiapay.activateWidget();
+                                          });
 
-                                            // Effectuer la requête Ajax pour déclencher le paiement avec Kkiapay
-                                            var xhr = new XMLHttpRequest();
-                                            xhr.open('GET', '{{ url("/effectuer-paiement") }}', true);
-                                            xhr.onreadystatechange = function() {
-                                              if (xhr.readyState === XMLHttpRequest.DONE) {
-                                                if (xhr.status === 200) {
-                                                  console.log('Paiement Kkiapay effectué avec succès.');
-                                                  localStorage.removeItem('redirectionInProgress');
-                                                  // Redirection vers la route "profils"
-                                                  window.location.href = "{{ route('profils') }}";
-                                                } else {
-                                                  console.error('Échec du paiement Kkiapay. Status:', xhr.status);
+                                          // Écouter le callback de Kkiapay une fois que le paiement est effectué avec succès
+                                          window.addEventListener('kkiapayCallback', function(event) {
+                                            var paiementReussi = event.detail.success;
+
+                                            if (paiementReussi) {
+                                              // Effectuer la requête Ajax pour mettre à jour le paiement avec Kkiapay
+                                              var xhr = new XMLHttpRequest();
+                                              xhr.open('GET', '{{ url("/mettre-a-jour-paiement") }}', true);
+                                              xhr.onreadystatechange = function() {
+                                                if (xhr.readyState === XMLHttpRequest.DONE) {
+                                                  if (xhr.status === 200) {
+                                                    // Redirection vers la route "profils"
+                                                    window.location.href = "{{ route('profils') }}";
+                                                  } else {
+                                                    console.error('Échec de la mise à jour du paiement. Status:', xhr.status);
+                                                  }
                                                 }
-
-                                              }
-                                            };
-                                            xhr.send();
+                                              };
+                                              xhr.send();
+                                            } else {
+                                              console.error('Échec du paiement Kkiapay.');
+                                            }
                                           });
                                         </script>
                                       </div>
@@ -139,11 +145,19 @@
             @endif
 
             <h2>Autres utilisateurs :</h2>
-            @foreach ($users as $user)
             <div class="col-lg-4 mb-3">
               <a href="{{ url('/profil/' . $user->id) }}" style="text-decoration: none; color: inherit; cursor: auto;">
                 <div class="card">
-                  <img src="{{ asset('storage/' . $user->photo1) }}" class="card-img card-img-top img-fluid" alt="Profile Image {{ $user->id }}" style="object-fit: cover; height: 100%;">
+                  @if ($user->photo1)
+                  <div style="overflow: hidden; height: 200px;">
+                    <img src="{{ asset('storage/' . $user->photo1) }}" class="card-img card-img-top img-fluid" alt="Profile Image {{ $user->id }}" style="object-fit: cover; height: 100%; width: 400px;">
+                  </div>
+                  @else
+                  <!-- Icône d'utilisateur par défaut si aucune photo n'est trouvée -->
+                  <div style="overflow: hidden; height: 200px;">
+                    <img src="{{ asset('assets/img/person-fill.svg') }}" class="card-img card-img-top img-fluid" alt="Profile Image {{ $user->id }}" style="object-fit: cover; height: 100%; width: 400px;">
+                  </div>
+                  @endif
                   <div class="card-body">
 
 
@@ -196,43 +210,42 @@
                                     <div class="col-md-6">
                                       <div class="text-white mt-4">
                                         <div class="mt-2"> <span class="intro-2">Veuillez payer votre abonnement mensuel pour communiquer avec votre potentiel partenaire.</span> </div>
-
-                                        <script amount="1" callback="{{ url('/mettre-a-jour-paiement') }}" data="" position="right" theme="red" sandbox="false" key="de9c4e671f1c676a8613e0a567252e182c8fc52c" src="https://cdn.kkiapay.me/k.js"></script>
-
+                                        <kkiapay-widget amount="981" key="de9c4e671f1c676a8613e0a567252e182c8fc52c" callback="{{ url('/mettre-a-jour-paiement') }}" theme="red" />
                                         <div class="mt-4 mb-5">
                                           <a id="lienWhatsApp" href="#" class="kkiapay-button btn btn-primary">Payer mon abonnement <i class="fa fa-cloud-download"></i></a>
                                         </div>
 
+
                                         <script>
                                           document.getElementById('lienWhatsApp').addEventListener('click', function(event) {
-                                            // Empêcher la redirection immédiate
                                             event.preventDefault();
 
-                                            // Stocker une indication du début de la redirection dans le stockage local
-                                            localStorage.setItem('redirectionInProgress', 'true');
+                                            // Activer le widget Kkiapay
+                                            Kkiapay.activateWidget();
+                                          });
 
-                                            // Effectuer la requête Ajax pour déclencher le paiement avec Kkiapay
-                                            var xhr = new XMLHttpRequest();
-                                            xhr.open('GET', '{{ url("/effectuer-paiement") }}', true);
-                                            xhr.onreadystatechange = function() {
-                                              if (xhr.readyState === XMLHttpRequest.DONE) {
-                                                if (xhr.status === 200) {
-                                                  console.log('Paiement Kkiapay effectué avec succès.');
-                                                  localStorage.removeItem('redirectionInProgress');
-                                                  var numeroWhatsApp = '{{ $user->numero }}';
-                                                  var urlWhatsApp = 'https://wa.me/' + numeroWhatsApp;
-                                                  console.log('URL WhatsApp:', urlWhatsApp);
+                                          // Écouter le callback de Kkiapay une fois que le paiement est effectué avec succès
+                                          window.addEventListener('kkiapayCallback', function(event) {
+                                            var paiementReussi = event.detail.success;
 
-                                                  // Simuler un clic sur le lien créé
-                                                  var lienWhatsApp = document.getElementById('lienWhatsApp');
-                                                  lienWhatsApp.href = urlWhatsApp;
-                                                  lienWhatsApp.click();
-                                                } else {
-                                                  console.error('Échec du paiement Kkiapay. Status:', xhr.status);
+                                            if (paiementReussi) {
+                                              // Effectuer la requête Ajax pour mettre à jour le paiement avec Kkiapay
+                                              var xhr = new XMLHttpRequest();
+                                              xhr.open('GET', '{{ url("/mettre-a-jour-paiement") }}', true);
+                                              xhr.onreadystatechange = function() {
+                                                if (xhr.readyState === XMLHttpRequest.DONE) {
+                                                  if (xhr.status === 200) {
+                                                    // Redirection vers la route "profils"
+                                                    window.location.href = "{{ route('profils') }}";
+                                                  } else {
+                                                    console.error('Échec de la mise à jour du paiement. Status:', xhr.status);
+                                                  }
                                                 }
-                                              }
-                                            };
-                                            xhr.send();
+                                              };
+                                              xhr.send();
+                                            } else {
+                                              console.error('Échec du paiement Kkiapay.');
+                                            }
                                           });
                                         </script>
 
@@ -263,6 +276,9 @@
               </a>
             </div>
             @endforeach
+
+            {{ $users->links() }}
+
           </div>
           <script>
             $(document).ready(function() {

@@ -7,6 +7,7 @@ use App\Models\Like;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Avis;
+use App\Models\Notification;
 use DateTime;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Contracts\View\View;
@@ -154,18 +155,16 @@ class NousController extends Controller
         if (auth()->check()) {
             $loggedInUser = auth()->user();
     
-            $users = User::whereNotNull('photo1')
-                ->where('role', 'nous')
+            $users = User::where('role', 'nous')
                 ->where('active', 0)
                 ->where('id', '!=', $loggedInUser->id)
-                ->get();
+                ->paginate(3); // Utiliser paginate() pour paginer les résultats
     
             if ($users->isEmpty()) {
-                $fallbackUsers = User::whereNotNull('photo1')
-                    ->where('role', 'nous')
+                $fallbackUsers = User::where('role', 'nous')
                     ->where('looking_for', $loggedInUser->genre)
                     ->where('id', '!=', $loggedInUser->id)
-                    ->get();
+                    ->paginate(6); // Utiliser paginate() pour paginer les résultats
     
                 return view('Nous.profils', compact('fallbackUsers', 'results')); // Passer également la variable $results à la vue
             }
@@ -283,26 +282,25 @@ class NousController extends Controller
     public function likeProfile($profile_id)
     {
         $user = auth()->user();
-
+    
         $like = new Like([
             'liked_by' => $user->id,
             'like_to' => $profile_id,
-        ]);
+            'message' => $user->name . ' a aimé votre profil.',
 
+        ]);
+    
         $like->save();
         $profileOwner = User::find($profile_id);
-        if ($profileOwner) {
-            $notification = auth()->user()->name . ' a aimé votre profil.';
-            Session::push("notifications_{$profileOwner->id}", $notification);
-        }
+        
         return redirect()->back();
     }
+    
 
     public function unlikeProfile($profileId)
     {
         $user = auth()->user();
-        $users = User::whereNotNull('photo1')
-            ->where('looking_for', '=', $user->genre)
+        $users = User::where('looking_for', '=', $user->genre)
             ->where('role', '=', 'nous')
             ->where('interests', 'like', '%' . $user->interests . '%')
             ->where('id', '!=', $user->id)
@@ -322,11 +320,16 @@ class NousController extends Controller
                 'paiement' => 1,
                 'paiement_date' => now()
             ]);
-            return redirect()->back();
+            // Renvoyer une réponse JSON pour indiquer que le paiement a été réussi
+            return response()->json(['paiementReussi' => true], 200)
+                        ->header('Location', route('profils')); // Redirection vers la route 'profils'
+                      
+
         }
+        // Renvoyer une réponse JSON en cas d'échec du paiement
         return response()->json(['paiementReussi' => false], 400);
     }
-
+    
 
     public function avis(Request $request)
 {
@@ -467,16 +470,14 @@ class NousController extends Controller
     
         // Si l'utilisateur est authentifié, recherchez les utilisateurs correspondants
         if ($loggedInUser) {
-            $users = User::whereNotNull('photo1')
-                ->where('role', 'nous')
+            $users = User::where('role', 'nous')
                 ->where('active', 0)
                 ->where('id', '!=', $loggedInUser->id)
                 ->get();
     
             // Si aucun utilisateur correspondant n'est trouvé, recherchez les utilisateurs de secours
             if ($users->isEmpty()) {
-                $fallbackUsers = User::whereNotNull('photo1')
-                    ->where('role', 'nous')
+                $fallbackUsers = User::where('role', 'nous')
                     ->where('looking_for', $loggedInUser->genre)
                     ->where('id', '!=', $loggedInUser->id)
                     ->get();
@@ -485,7 +486,7 @@ class NousController extends Controller
             }
     
             // Recherchez les utilisateurs correspondant à la requête de recherche
-            $results = User::whereNotNull('photo1')->where(function ($queryBuilder) use ($query) {
+            $results = User::where(function ($queryBuilder) use ($query) {
                 $queryBuilder->where('name', 'like', "%$query%")
                              ->orWhere('pseudo', 'like', "%$query%")
                              ->orWhere('town', 'like', "%$query%")
@@ -509,8 +510,15 @@ class NousController extends Controller
         // Si l'utilisateur n'est pas authentifié, redirigez-le vers la page de connexion
         return redirect()->route('login')->with('error', 'Vous devez être connecté pour effectuer une recherche.');
     }
+
+    public function showNotifications()
+    {
+        // Récupérer les notifications de l'utilisateur connecté depuis la base de données
+        $notifications = Like::where('like_to', auth()->user()->id)->get();
     
-    
+        // Retourner la vue avec les notifications récupérées
+        return view('Nous.notifications', ['notifications' => $notifications]);
+    }
 
 }
     
