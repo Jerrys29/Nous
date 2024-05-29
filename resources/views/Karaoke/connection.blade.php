@@ -35,7 +35,7 @@
 				@endif
 					<div class="login-wrap p-0">
 		      	
-		      	<form method="POST"  action="{{route('logins') }}" class="signin-form">
+		      	<form method="post"  action="{{route('logins') }}" class="signin-form">
 				  @csrf
 					<!-- Display error messages -->
 					@if ($errors->any())
@@ -120,7 +120,7 @@ function togglePassword() {
         function resetTimer() {
             clearTimeout(timeout);
             timeout = setTimeout(function() {
-              window.location.href = "{{ route('login') }}";
+              window.location.href = "{{ route('connection') }}";
             }, inactivityTimeout);
         }
 

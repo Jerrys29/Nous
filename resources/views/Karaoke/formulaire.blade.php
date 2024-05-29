@@ -40,7 +40,7 @@
         function resetTimer() {
             clearTimeout(timeout);
             timeout = setTimeout(function() {
-              window.location.href = "{{ route('login') }}";
+              window.location.href = "{{ route('connection') }}";
             }, inactivityTimeout);
         }
 

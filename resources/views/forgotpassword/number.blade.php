@@ -82,6 +82,8 @@
   </style>
 </head>
 <body>
+  <form  method="get" action="{{route('check')}}" >
+    @csrf
   <div class="subscribe">
     <p>Mot de passe oublié ? </p>
     <div>
@@ -89,7 +91,9 @@
     </div>
     <input placeholder="Numéro whatsapp " class="subscribe-input" name="numero" id="numero" type="tel" >
     <br>
-    <div class="submit-btn">Enrégistrer</div>
+    {{-- <div class="submit-btn">Enrégistrer</div>  --}}
+    <button type="submit" class="submit-btn"> Valider</button>
   </div>
+</form>
 </body>
 </html>

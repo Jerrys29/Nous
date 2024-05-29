@@ -195,6 +195,11 @@ Route::post('/verify-code', 'App\Http\Controllers\ForgotPasswordController@verif
 
 Route::get('/number', 'App\Http\Controllers\ForgetPasswordController@forgetpassword')->name('mdp');
 
+Route::get('/checknumber', 'App\Http\Controllers\ForgetPasswordController@checknumber')->name('check');
+Route::get('/quiz/{numero}', 'App\Http\Controllers\ForgetPasswordController@showQuiz')->name('quiz.show');
+Route::post('/verify-information',  'App\Http\Controllers\ForgetPasswordController@verifyInformation')->name('verify.information');
 
+Route::get('/password/reset/{id}',  'App\Http\Controllers\ForgetPasswordController@showResetForm')->name('password.reset');
+Route::post('/password/reset', 'App\Http\Controllers\ForgetPasswordController@resetPassword')->name('password.update');
 
    ?>

@@ -212,24 +212,7 @@
             });
         }
     </script>
-    <script>
-        var inactivityTimeout = 30 * 60 * 1000;
-
-        var timeout;
-
-        function resetTimer() {
-            clearTimeout(timeout);
-            timeout = setTimeout(function() {
-              window.location.href = "{{ route('login') }}";
-            }, inactivityTimeout);
-        }
-
-        document.addEventListener('mousemove', resetTimer);
-        document.addEventListener('keypress', resetTimer);
-        document.addEventListener('scroll', resetTimer);
-
-        resetTimer(); // Initialise le minuteur lors du chargement de la page
-    </script>
+    
     <script>
             document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('preload-link').addEventListener('click', function() {
@@ -259,6 +242,24 @@
                   }
                 });
               </script>
+              <script>
+                var inactivityTimeout = 30 * 60 * 1000;
+        
+                var timeout;
+        
+                function resetTimer() {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(function() {
+                      window.location.href = "{{ route('connection') }}";
+                    }, inactivityTimeout);
+                }
+        
+                document.addEventListener('mousemove', resetTimer);
+                document.addEventListener('keypress', resetTimer);
+                document.addEventListener('scroll', resetTimer);
+        
+                resetTimer(); // Initialise le minuteur lors du chargement de la page
+            </script>
 
 </body>
 </html>
