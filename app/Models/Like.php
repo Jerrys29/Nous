@@ -21,6 +21,7 @@ class Like extends Authenticatable
     protected $fillable = [
         'like_to',
         'liked_by',
+        'message',
     ];
 
     public function liker()

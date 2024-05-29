@@ -8,33 +8,9 @@
           <li><a class="nav-link scrollto active" href="{{('/profils')}}">Trouver votre partenaire</a></li>
           @if(auth()->check() && auth()->user()->role === 'nous')
           <a href="{{ url('/edit') }}" class="get-started-btn scrollto" style="color: white;">Mon profil</a>
+          <a href="{{ url('/notification') }}" class="get-started-btn scrollto" style="color: white;">Notifications</a>
 
           <li class="dropdown">
-            <a href="#"><span>Notifications</span> <i class="bi bi-chevron-down"></i></a>
-            <ul>
-              @if (Session::has('notifications_' . auth()->user()->id))
-              @php
-              $alreadyNotifiedUsers = [];
-              @endphp
-
-              @foreach (Session::get('notifications_' . auth()->user()->id) as $notification)
-              @php
-              preg_match('/(.+) a aimé votre profil/', $notification, $matches);
-              $likerName = isset($matches[1]) ? $matches[1] : null;
-              // Fetch the user by name and get the ID
-              $liker = App\Models\User::where('name', $likerName)->first();
-              $likerId = $liker ? $liker->id : null;
-              @endphp
-              @if ($likerId && !in_array($likerId, $alreadyNotifiedUsers))
-              <li><a href="{{ url('/profil/' . $likerId) }}">{{ $notification }} <br>
-                  Veuillez consulter son profil.</a></li>
-              @php
-              $alreadyNotifiedUsers[] = $likerId;
-              @endphp
-              @endif
-              @endforeach
-              @endif
-            </ul>
             <form method="POST" action="{{ route('logout') }}">
               @csrf
               <button type="submit" class="get-started-btn scrollto">Déconnexion</button>

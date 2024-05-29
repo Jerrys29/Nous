@@ -14,9 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('profils', function () {
-    return view('Nous/profils');
-});
 
 Route::get('register', function () {
     return view('Nous/register');
@@ -47,6 +44,7 @@ Route::post('/store-images3', 'App\Http\Controllers\NousController@storephoto3')
 Route::post('/store-images4', 'App\Http\Controllers\NousController@storephoto4')->name('store-images4')->middleware('web');
 Route::post('/store-images5', 'App\Http\Controllers\NousController@storephoto5')->name('store-images5')->middleware('web');
 Route::post('/store-images6', 'App\Http\Controllers\NousController@storephoto6')->name('store-images6')->middleware('web');
+Route::get('/notification', 'App\Http\Controllers\NousController@showNotifications')->name('notification');
 
 Route::post('/like-profile/{profile_id}', 'App\Http\Controllers\NousController@likeProfile')->name('like-profile');
 Route::post('/unlike-profile/{profile_id}', 'App\Http\Controllers\NousController@unlikeProfile')->name('unlike-profile');
