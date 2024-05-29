@@ -8,10 +8,10 @@
       <div class="row">
         <!-- User Profile Cards -->
         <div class="col-lg-12">
-        <form action="{{ route('search') }}" method="GET" class="search-form">
-    <input type="text" name="query" placeholder="Entrez votre critère de recherche..." class="search-input">
-    <button type="submit" class="search-button">Rechercher</button>
-</form>
+          <form action="{{ route('search') }}" method="GET" class="search-form">
+            <input type="text" name="query" placeholder="Entrez votre critère de recherche..." class="search-input">
+            <button type="submit" class="search-button">Rechercher</button>
+          </form>
 
 
           <!-- Affichage des résultats de recherche -->
@@ -77,9 +77,7 @@
                                     <div class="col-md-6">
                                       <div class="text-white mt-4">
                                         <div class="mt-2"> <span class="intro-2">Veuillez payer votre abonnement mensuel pour communiquer avec votre potentiel partenaire.</span> </div>
-
-                                        <script amount="981" callback="{{ url('/mettre-a-jour-paiement') }}" data="" position="right" theme="red" sandbox="false" key="de9c4e671f1c676a8613e0a567252e182c8fc52c" src="https://cdn.kkiapay.me/k.js"></script>
-
+                                        <kkiapay-widget amount="1" key="de9c4e671f1c676a8613e0a567252e182c8fc52c" callback="{{ url('/mettre-a-jour-paiement') }}" theme="red" />
                                         <div class="mt-4 mb-5">
                                           <a id="lienWhatsApp" href="#" class="kkiapay-button btn btn-primary">Payer mon abonnement <i class="fa fa-cloud-download"></i></a>
                                         </div>
@@ -100,24 +98,17 @@
                                                 if (xhr.status === 200) {
                                                   console.log('Paiement Kkiapay effectué avec succès.');
                                                   localStorage.removeItem('redirectionInProgress');
-                                                  var numeroWhatsApp = '{{ $result->numero }}';
-                                                  var urlWhatsApp = 'https://wa.me/' + numeroWhatsApp;
-                                                  console.log('URL WhatsApp:', urlWhatsApp);
-
-                                                  // Simuler un clic sur le lien créé
-                                                  var lienWhatsApp = document.getElementById('lienWhatsApp');
-                                                  lienWhatsApp.href = urlWhatsApp;
-                                                  lienWhatsApp.click();
+                                                  // Redirection vers la route "profils"
+                                                  window.location.href = "{{ route('profils') }}";
                                                 } else {
                                                   console.error('Échec du paiement Kkiapay. Status:', xhr.status);
                                                 }
+
                                               }
                                             };
                                             xhr.send();
                                           });
                                         </script>
-
-
                                       </div>
                                     </div>
                                   </div>
@@ -206,7 +197,7 @@
                                       <div class="text-white mt-4">
                                         <div class="mt-2"> <span class="intro-2">Veuillez payer votre abonnement mensuel pour communiquer avec votre potentiel partenaire.</span> </div>
 
-                                        <script amount="981" callback="{{ url('/mettre-a-jour-paiement') }}" data="" position="right" theme="red" sandbox="false" key="de9c4e671f1c676a8613e0a567252e182c8fc52c" src="https://cdn.kkiapay.me/k.js"></script>
+                                        <script amount="1" callback="{{ url('/mettre-a-jour-paiement') }}" data="" position="right" theme="red" sandbox="false" key="de9c4e671f1c676a8613e0a567252e182c8fc52c" src="https://cdn.kkiapay.me/k.js"></script>
 
                                         <div class="mt-4 mb-5">
                                           <a id="lienWhatsApp" href="#" class="kkiapay-button btn btn-primary">Payer mon abonnement <i class="fa fa-cloud-download"></i></a>

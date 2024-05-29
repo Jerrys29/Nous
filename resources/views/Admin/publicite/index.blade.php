@@ -43,7 +43,8 @@
                                     <tr>
                                         <td>{{ $publicite->name }}</td>
                                         <td>{{ Str::limit($publicite->offre, 20) }}</td>
-                                        <td>{{ Str::limit($publicite->detail, 20) }}</td>
+                                        <td>{{ Str::limit(strip_tags($publicite->detail), 20) }}</td>
+
 
                                         <td>    
                                             <span class="badge bg-gradient-{{ $publicite->statut == 1 ? 'success' : 'danger' }}">

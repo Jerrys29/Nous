@@ -1,4 +1,4 @@
-  @extends('templates.admin')
+@extends('templates.admin')
 @section('document')
   <main class="main-content position-relative border-radius-lg ">
    

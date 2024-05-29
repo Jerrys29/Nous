@@ -6,8 +6,10 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "erusev/parsedown": "^1.7",
         "google/cloud-translate": "^1.17",
         "guzzlehttp/guzzle": "^7.2",
+        "intervention/image": "^3.5",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8"

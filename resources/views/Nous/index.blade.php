@@ -259,7 +259,7 @@
             <h5><strong>Offre :</strong></h5>
             <p>{{ $publicite->offre }}</p>
             <h5><strong>Détails :</strong></h5>
-            <p>{{ $publicite->detail }}</p>
+            <p>{!! $publicite->detail !!}</p>
           </div>
         </div>
       </div>
@@ -268,8 +268,7 @@
 </div>
 @endforeach
 
-
-  <button id="toggleChat" class="btn btn-danger" style="margin-bottom: 40px;margin-top: 40px;">Discuter</button>
+  
   <script>
     // Script pour afficher/masquer la section chatbox
     $(document).ready(function() {

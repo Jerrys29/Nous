@@ -16,8 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View as FacadesView;
-
-
+use Parsedown;
 
 class AdminController extends Controller
 {
@@ -188,6 +187,8 @@ public function unblockUser($id, $redirect)
         return view('Admin.publicite.create');
     }
 
+
+
     public function storepub(Request $request)
     {
         $validatedData = $request->validate([
@@ -196,15 +197,24 @@ public function unblockUser($id, $redirect)
             'offre' => 'required|string',
             'detail' => 'required|string',
         ]);
+    
+        // Convertir le Markdown en HTML
+        $parsedown = new Parsedown();
+        $htmlDetail = $parsedown->text($validatedData['detail']);
+    
         if ($request->hasFile('logo')) {
             $logoName = time() . '.' . $request->file('logo')->getClientOriginalExtension();
             $request->file('logo')->move(public_path('logos'), $logoName); // Déplacement du fichier vers le dossier public/logos
             $validatedData['logo'] = $logoName;
         }
+    
+        // Enregistrer les données avec le détail converti en HTML
+        $validatedData['detail'] = $htmlDetail;
         Publicite::create($validatedData);
-
+    
         return redirect()->route('publicites')->with('success', 'Publicité créée avec succès.');
     }
+    
 
     public function editpub($id)
     {
@@ -215,16 +225,31 @@ public function unblockUser($id, $redirect)
     public function updatepub(Request $request, $id)
     {
         $publicite = Publicite::findOrFail($id);
-        if ($request->hasFile('logo')) {
+    
+        // Valider les données de la requête
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'logo' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'offre' => 'required|string',
+            'detail' => 'required|string',
+        ]);
+        $parsedown = new Parsedown();
+        $htmlDetail = $parsedown->text($validatedData['detail']);
+        // Si un nouveau logo est téléchargé, enregistrer et mettre à jour le chemin du logo
+            if ($request->hasFile('logo')) {
             $logoName = time() . '.' . $request->file('logo')->getClientOriginalExtension();
             $request->file('logo')->move(public_path('logos'), $logoName); // Déplacement du fichier vers le dossier public/logos
             $validatedData['logo'] = $logoName;
         }
-        $publicite->update($request->all());
-
+    
+    
+        $validatedData['detail'] = $htmlDetail;
+        $publicite->update($validatedData);
+    
+        // Retourner une redirection avec un message de succès
         return redirect()->route('publicites')->with('success', 'Publicité mise à jour avec succès.');
     }
-
+    
     public function toggleStatuspub($id)
     {
         // Trouver la publicité correspondante

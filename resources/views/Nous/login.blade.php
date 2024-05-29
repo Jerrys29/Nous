@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulaire d'Inscription</title>
+    <title>Formulaire de Connexion</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <!-- Favicons -->
     <link href="assets/img/nous_logo.png" rel="icon">
@@ -18,7 +18,12 @@
 </head>
 
 <body>
+<style>
+.birthdate::-webkit-calendar-picker-indicator {
+    filter: invert(100%);
+}
 
+    </style>
 @if(session('error'))
     <div class="alert alert-danger">
         {{ session('error') }}
@@ -29,7 +34,7 @@
     <div class="container">
         <div class="booking-content">
             <div class="booking-image">
-                <img class="booking-img" src="assets/img/form-img.jpg" alt="Image de réservation" style="height: 100%;">
+                <img class="booking-img" src="{{ asset('assets/slides/5.jpg') }}" alt="Image de réservation" style="height: 100%;">
             </div>
             <div class="booking-form">
                 <form id="booking-form" method="post" action="{{ route('login') }}">
