@@ -184,6 +184,37 @@
                             </div>
                         </div>
 
+
+
+                        <div class="mb-3">
+                            <label>
+                                <h5>Ville:</h5>
+                            </label>
+                            <span id="usertown">{{ $user->town }}</span>
+                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#edittown" onclick="editInformation('usertown')">Modifier</button>
+                            <div class="modal fade" id="edittown" tabindex="-1" aria-labelledby="edittownLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="edittownLabel">Modifier l'information</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form method="post" action="{{ route('update-town', ['id' => $user->id]) }}">
+                                            @csrf
+                                            @method('Post')
+                                            <div class="modal-body">
+                                                <label for="editField">Nouvelle valeur:</label>
+                                                <input type="text" name="town" value="{{ $user->town }}" class="form-control" required style="font-size: 20px;">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quitter</button>
+                                                <button type="submit" class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         
                         </div>
                         

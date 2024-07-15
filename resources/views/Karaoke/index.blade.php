@@ -28,6 +28,8 @@
                 </div>
                 <div class="card-body text-center">
                   <h5 class="card-title">{{ $user->pseudo }}</h5>
+                  <!-- Affiche la ville de l'utilisateur -->
+                  <p class="card-text">{{ $user->town }}</p>
                   <div class="like-container">
                     @if (auth()->user() && auth()->user()->paiement == 0)
                       <a href="{{ url('/visiteur/' . $user->id) }}" target="_blank">
@@ -58,6 +60,7 @@
   border: 1px solid #dee2e6;
   border-radius: 10px;
   transition: transform 0.3s ease-in-out;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .custom-card:hover {
@@ -71,6 +74,12 @@
 
 .custom-card .card-title {
   font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.custom-card .card-text {
+  font-size: 14px;
+  color: #6c757d;
   margin-bottom: 10px;
 }
 

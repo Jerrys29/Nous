@@ -170,6 +170,23 @@ class KaraokeController extends Controller
         return redirect()->back()->with('success', 'Numéro mis à jour avec succès.');
     }
 
+    public function updatetown(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'town' => 'required|string',
+        ]);
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'Utilisateur non trouvé.');
+        }
+
+        $user->update($validatedData);
+
+        return redirect()->back()->with('success', 'Numéro mis à jour avec succès.');
+    }
+
     public function updatePseudo(Request $request, $id)
     {
         $validatedData = $request->validate([

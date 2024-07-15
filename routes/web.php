@@ -32,6 +32,7 @@ Route::put('/profile/update', 'App\Http\Controllers\NousController@update')->nam
 Route::post('/profile/photos/update', 'App\Http\Controllers\NousController@updatePhotos')->name('profile.photos.update');
 
 Route::put('/update-name/{id}', 'App\Http\Controllers\NousController@updatename')->name('update-name');
+
 Route::put('/update-numero/{id}', 'App\Http\Controllers\NousController@updatenumero')->name('update-numero');
 Route::put('/update-password/{id}', 'App\Http\Controllers\NousController@updatepassword')->name('update-password');
 Route::put('/update-pseudo/{id}', 'App\Http\Controllers\NousController@updatepseudo')->name('update-pseudo');
@@ -120,6 +121,9 @@ Route::post('/karaoke/update-numero/{id}', 'App\Http\Controllers\KaraokeControll
 Route::post('/karaoke/update-pseudo/{id}', 'App\Http\Controllers\KaraokeController@updatPseudo')->name('update_pseudo');
 Route::post('/visiteurs/{id}','App\Http\Controllers\KaraokeController@Visiteurs')->name('paiementV');
 
+Route::post('/karaoke/update-town/{id}','App\Http\Controllers\KaraokeController@updatetown')->name('update-town');
+
+
 
 //profile view
 
@@ -155,7 +159,7 @@ Route::post('/unblock/user/{id}/{redirect}', 'App\Http\Controllers\AdminControll
 
 Route::post('blockNousUser/user/{id}/{redirect}', 'App\Http\Controllers\AdminController@blockNousUser')->name('blockNous.User');
 Route::post('/unblockNousUser/user/{id}/{redirect}', 'App\Http\Controllers\AdminController@unblockNousUser')->name('unblockNous.User');
-// Route::post('/delete/user/{id}/{redirect}', 'App\Http\Controllers\AdminController@deleteUser')->name('delete.user');
+Route::post('/delete/user/{id}/{redirect}', 'App\Http\Controllers\AdminController@deleteUser')->name('delete.user');
 
 
 

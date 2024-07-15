@@ -105,7 +105,7 @@ class User extends Authenticatable
         $message .= "Heure d'inscription : {$user->created_at}\n";
     }
 
-    $emails = ['julioayotognon@gmail.com', 'ayojerrystognon@gmail.com'];
+    $emails = ['julioayotognon@gmail.com', 'ulrichabihona@gmail.com'];
 
     foreach ($emails as $email) {
         Mail::raw($message, function ($m) use ($email, $subject) {
