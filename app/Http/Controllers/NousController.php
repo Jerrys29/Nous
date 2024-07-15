@@ -40,6 +40,68 @@ class NousController extends Controller
     }
 
 
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'email' => 'nullable|email|unique:users,email',
+            'pseudo' => 'required|string',
+            'town' => 'required|string',
+            'birthdate' => [
+                'required',
+                'date',
+                'before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
+            ],
+            'birthplace' => 'required|string',
+            'genre' => 'required|string',
+            'looking_for' => 'required|string',
+            'mariatal_status' => 'required|string',
+            'hair_color' => 'required|string',
+            'eyes_color' => 'required|string',
+            'numero' => [
+                'required',
+                'string',
+                Rule::unique('users', 'numero')
+            ],
+            'password' => 'required|string',
+            'origin_country' => 'required|string',
+        ]);
+
+        $birthdate = new DateTime($validatedData['birthdate']);
+        $today = new DateTime('now');
+        $age = $birthdate->diff($today)->y;
+
+        try {
+            $userData = [
+                'name' => $validatedData['name'],
+                'pseudo' => $validatedData['pseudo'],
+                'town' => $validatedData['town'],
+                'birthdate' => $validatedData['birthdate'],
+                'birthplace' => $validatedData['birthplace'],
+                'genre' => $validatedData['genre'],
+                'looking_for' => $validatedData['looking_for'],
+                'mariatal_status' => $validatedData['mariatal_status'],
+                'hair_color' => $validatedData['hair_color'],
+                'eyes_color' => $validatedData['eyes_color'],
+                'numero' => $validatedData['numero'],
+                'password' => Hash::make($validatedData['password']),
+                'origin_country' => $validatedData['origin_country'],
+                'role' => 'nous',
+                'age' => $age,
+            ];
+
+            // Inclure le champ email uniquement s'il est fourni
+            if (isset($validatedData['email'])) {
+                $userData['email'] = $validatedData['email'];
+            }
+
+            User::create($userData);
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->withErrors(['error' => 'Une erreur s\'est produite lors de l\'enregistrement. Veuillez réessayer.']);
+        }
+
+        return redirect()->route('login')->with('success', 'Inscription réussie! Vous pouvez maintenant vous connecter.');
+    }
 
 
     public function edit(Request $request)
