@@ -76,7 +76,11 @@
           </div>
         </div>
         @else
+        @if(auth()->user())
         <a href="https://wa.me/{{ $user->numero }}" target="_blank"><button class="btn btn-danger">Discuter avec {{$user->name}}</button></a>
+                          @else
+                          <a href="{{ route('login') }}"><button class="btn btn-danger">Discuter avec {{$user->name}}</button></a>
+                          @endif
         @endif
       </div>
       <div class="container">

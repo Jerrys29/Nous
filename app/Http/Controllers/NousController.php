@@ -31,75 +31,12 @@ class NousController extends Controller
         $publicites = Publicite::where('statut', 1)->get(); // Récupérer les publicités avec un statut égal à 1 depuis la base de données
         return view('Nous.index', compact('messages', 'publicites'));
     }
-    
-    
+
+
 
     public function inscription()
     {
         return view('Nous.register');
-    }
-
-    public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'email' => 'nullable|email|unique:users,email',
-            'pseudo' => 'required|string',
-            'town' => 'required|string',
-            'birthdate' => [
-                'required',
-                'date',
-                'before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
-            ],
-            'birthplace' => 'required|string',
-            'genre' => 'required|string',
-            'looking_for' => 'required|string',
-            'mariatal_status' => 'required|string',
-            'hair_color' => 'required|string',
-            'eyes_color' => 'required|string',
-            'numero' => [
-                'required',
-                'string',
-                Rule::unique('users', 'numero')
-            ],
-            'password' => 'required|string',
-            'origin_country' => 'required|string',
-        ]);
-
-        $birthdate = new DateTime($validatedData['birthdate']);
-        $today = new DateTime('now');
-        $age = $birthdate->diff($today)->y;
-
-        try {
-            $userData = [
-                'name' => $validatedData['name'],
-                'pseudo' => $validatedData['pseudo'],
-                'town' => $validatedData['town'],
-                'birthdate' => $validatedData['birthdate'],
-                'birthplace' => $validatedData['birthplace'],
-                'genre' => $validatedData['genre'],
-                'looking_for' => $validatedData['looking_for'],
-                'mariatal_status' => $validatedData['mariatal_status'],
-                'hair_color' => $validatedData['hair_color'],
-                'eyes_color' => $validatedData['eyes_color'],
-                'numero' => $validatedData['numero'],
-                'password' => Hash::make($validatedData['password']),
-                'origin_country' => $validatedData['origin_country'],
-                'role' => 'nous',
-                'age' => $age,
-            ];
-
-            // Inclure le champ email uniquement s'il est fourni
-            if (isset($validatedData['email'])) {
-                $userData['email'] = $validatedData['email'];
-            }
-
-            User::create($userData);
-        } catch (\Exception $e) {
-            return redirect()->back()->withInput()->withErrors(['error' => 'Une erreur s\'est produite lors de l\'enregistrement. Veuillez réessayer.']);
-        }
-
-        return redirect()->route('login')->with('success', 'Inscription réussie! Vous pouvez maintenant vous connecter.');
     }
 
 
@@ -150,31 +87,55 @@ class NousController extends Controller
     }
     public function view()
     {
+
         $results = null; // Initialiser la variable $results à null par défaut
-    
+        $loggedInUser = auth()->user();
+
         if (auth()->check()) {
-            $loggedInUser = auth()->user();
-    
+
             $users = User::where('role', 'nous')
                 ->where('active', 0)
+                ->where('looking_for', $loggedInUser->genre)
                 ->where('id', '!=', $loggedInUser->id)
-                ->paginate(3); // Utiliser paginate() pour paginer les résultats
-    
+                ->paginate(12); // Utiliser paginate() pour paginer les résultats
+
+            if ($loggedInUser->genre) {
+                $users = User::where('role', 'nous')
+                    ->where('active', 0)
+                    ->where('looking_for', 'lesdeux')
+                    ->where('id', '!=', $loggedInUser->id)
+                    ->paginate(12); // Utiliser paginate() pour paginer les résultats
+
+            }
             if ($users->isEmpty()) {
                 $fallbackUsers = User::where('role', 'nous')
                     ->where('looking_for', $loggedInUser->genre)
                     ->where('id', '!=', $loggedInUser->id)
                     ->paginate(6); // Utiliser paginate() pour paginer les résultats
-    
-                return view('Nous.profils', compact('fallbackUsers', 'results')); // Passer également la variable $results à la vue
+
+                $allusers = User::where('role', 'nous')
+                    ->where('active', 0)
+                    ->where('id', '!=', $loggedInUser->id)
+                    ->paginate(12);
+
+                return view('Nous.profils', compact('fallbackUsers', 'results', 'users', 'allusers')); // Passer également la variable $results à la vue
             }
-    
-            return view('Nous.profils', compact('users', 'results')); // Passer également la variable $results à la vue
+            $allusers = User::where('role', 'nous')
+                ->where('active', 0)
+                ->where('id', '!=', $loggedInUser->id)
+                ->paginate(12);
+
+            return view('Nous.profils', compact('users', 'results', 'allusers')); // Passer également la variable $results à la vue
         } else {
-            return redirect()->route('login')->with('error', 'Vous devez être connecté pour accéder à cette page.');
+
+            $users = User::where('role', 'nous')
+                ->where('active', 0)
+                ->paginate(12);
+
+            return view('Nous.profils', compact('users', 'results')); // Passer également la variable $results à la vue
         }
     }
-    
+
 
     public function detail($userId)
     {
@@ -282,20 +243,22 @@ class NousController extends Controller
     public function likeProfile($profile_id)
     {
         $user = auth()->user();
-    
-        $like = new Like([
-            'liked_by' => $user->id,
-            'like_to' => $profile_id,
-            'message' => $user->name . ' a aimé votre profil.',
+        if ($user) {
+            $like = new Like([
+                'liked_by' => $user->id,
+                'like_to' => $profile_id,
+                'message' => $user->name . ' a aimé votre profil.'
+            ]);
 
-        ]);
-    
-        $like->save();
-        $profileOwner = User::find($profile_id);
-        
-        return redirect()->back();
+            $like->save();
+            $profileOwner = User::find($profile_id);
+
+            return redirect()->back();
+        } else {
+            return view('Nous.login');
+        }
     }
-    
+
 
     public function unlikeProfile($profileId)
     {
@@ -322,44 +285,41 @@ class NousController extends Controller
             ]);
             // Renvoyer une réponse JSON pour indiquer que le paiement a été réussi
             return response()->json(['paiementReussi' => true], 200)
-                        ->header('Location', route('profils')); // Redirection vers la route 'profils'
-                      
+                ->header('Location', route('profils')); // Redirection vers la route 'profils'
+
 
         }
         // Renvoyer une réponse JSON en cas d'échec du paiement
         return response()->json(['paiementReussi' => false], 400);
     }
-    
+
 
     public function avis(Request $request)
-{
-    // Validation des données du formulaire
-    $validatedData = $request->validate([
-        'name' => 'required|string',
-        'phone' => 'required|string',
-        'comment' => 'required|string',
-    ]);
+    {
+        // Validation des données du formulaire
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'phone' => 'required|string',
+            'comment' => 'required|string',
+        ]);
 
-    // Supprimer les espaces dans le numéro de téléphone
-    $phone = str_replace(' ', '', $validatedData['phone']);
+        // Supprimer les espaces dans le numéro de téléphone
+        $phone = str_replace(' ', '', $validatedData['phone']);
 
-    // Créer un nouvel avis en utilisant le modèle Avis
-    $avis = Avis::create([
-        'name' => $validatedData['name'],
-        'phone' => $phone,
-        'comment' => $validatedData['comment'],
-    ]);
+        // Créer un nouvel avis en utilisant le modèle Avis
+        $avis = Avis::create([
+            'name' => $validatedData['name'],
+            'phone' => $phone,
+            'comment' => $validatedData['comment'],
+        ]);
 
-    // Rediriger l'utilisateur vers une autre page ou afficher un message de succès
-    return redirect()->route('avis')->with('success', 'Votre avis a été soumis avec succès ! Merci pour votre contribution.');
-
-
+        // Rediriger l'utilisateur vers une autre page ou afficher un message de succès
+        return redirect()->route('avis')->with('success', 'Votre avis a été soumis avec succès ! Merci pour votre contribution.');
     }
 
     public function avisshow()
     {
         return view('Avis.vis');
-        
     }
 
     public function storephoto1(Request $request)
@@ -375,7 +335,7 @@ class NousController extends Controller
 
         return redirect()->back()->with('success', 'Images sauvegardées avec succès.');
     }
-    
+
     public function storephoto2(Request $request)
     {
         $user = User::find($request->user_id);
@@ -467,46 +427,46 @@ class NousController extends Controller
     {
         $query = $request->input('query');
         $loggedInUser = auth()->user();
-    
+
         // Si l'utilisateur est authentifié, recherchez les utilisateurs correspondants
         if ($loggedInUser) {
             $users = User::where('role', 'nous')
                 ->where('active', 0)
                 ->where('id', '!=', $loggedInUser->id)
                 ->get();
-    
+
             // Si aucun utilisateur correspondant n'est trouvé, recherchez les utilisateurs de secours
             if ($users->isEmpty()) {
                 $fallbackUsers = User::where('role', 'nous')
                     ->where('looking_for', $loggedInUser->genre)
                     ->where('id', '!=', $loggedInUser->id)
                     ->get();
-    
+
                 return view('Nous.profils', ['users' => $fallbackUsers]);
             }
-    
+
             // Recherchez les utilisateurs correspondant à la requête de recherche
             $results = User::where(function ($queryBuilder) use ($query) {
                 $queryBuilder->where('name', 'like', "%$query%")
-                             ->orWhere('pseudo', 'like', "%$query%")
-                             ->orWhere('town', 'like', "%$query%")
-                             ->orWhere('birthplace', 'like', "%$query%")
-                             ->orWhere('genre', 'like', "%$query%")
-                             ->orWhere('looking_for', 'like', "%$query%")
-                             ->orWhere('mariatal_status', 'like', "%$query%")
-                             ->orWhere('hair_color', 'like', "%$query%")
-                             ->orWhere('eyes_color', 'like', "%$query%")
-                             ->orWhere('origin_country', 'like', "%$query%")
-                             ->orWhere('age', 'like', "%$query%")
-                             ->orWhere('about', 'like', "%$query%")
-                             ->orWhere('interests', 'like', "%$query%");
+                    ->orWhere('pseudo', 'like', "%$query%")
+                    ->orWhere('town', 'like', "%$query%")
+                    ->orWhere('birthplace', 'like', "%$query%")
+                    ->orWhere('genre', 'like', "%$query%")
+                    ->orWhere('looking_for', 'like', "%$query%")
+                    ->orWhere('mariatal_status', 'like', "%$query%")
+                    ->orWhere('hair_color', 'like', "%$query%")
+                    ->orWhere('eyes_color', 'like', "%$query%")
+                    ->orWhere('origin_country', 'like', "%$query%")
+                    ->orWhere('age', 'like', "%$query%")
+                    ->orWhere('about', 'like', "%$query%")
+                    ->orWhere('interests', 'like', "%$query%");
             })->get();
-            
-    
+
+
             // Passez les résultats à votre vue
             return view('Nous.profils', ['results' => $results, 'users' => $users, 'query' => $query]);
         }
-    
+
         // Si l'utilisateur n'est pas authentifié, redirigez-le vers la page de connexion
         return redirect()->route('login')->with('error', 'Vous devez être connecté pour effectuer une recherche.');
     }
@@ -515,10 +475,8 @@ class NousController extends Controller
     {
         // Récupérer les notifications de l'utilisateur connecté depuis la base de données
         $notifications = Like::where('like_to', auth()->user()->id)->get();
-    
+
         // Retourner la vue avec les notifications récupérées
         return view('Nous.notifications', ['notifications' => $notifications]);
     }
-
 }
-    
