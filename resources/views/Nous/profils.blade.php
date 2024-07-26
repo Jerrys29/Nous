@@ -13,40 +13,40 @@
             <button type="submit" class="search-button">Rechercher</button>
           </form>
           <div class="row">
-            @if(!is_null($results) && !$results->isEmpty())
+            @if(!is_null($users) && !$users->isEmpty())
             <h2>Résultats de la recherche pour "{{ $query }}" :</h2>
-            @foreach($results as $result)
+            @foreach($users as $user)
             <div class="col-lg-4 mb-3">
-              <a href="{{ url('/profil/' . $result->id) }}" style="text-decoration: none; color: inherit; cursor: auto;">
+              <a href="{{ url('/profil/' . $user->id) }}" style="text-decoration: none; color: inherit; cursor: auto;">
                 <div class="card">
-                  <img src="{{ asset('storage/' . $result->photo1) }}" class="card-img card-img-top img-fluid" alt="Profile Image {{ $result->id }}" style="object-fit: cover; height: 100%;">
+                  <img src="{{ asset('storage/' . $user->photo1) }}" class="card-img card-img-top img-fluid" alt="Profile Image {{ $user->id }}" style="object-fit: cover; height: 100%;">
                   <div class="card-body">
                     <div class="row">
                       <div class="col-8">
-                        <h5 class="card-title">{{ $result->name }}</h5>
+                        <h5 class="card-title">{{ $user->name }}</h5>
                       </div>
                       <div class="col-4">
-                        <h5 class="card-title">{{ $result->age }} ans</h5>
+                        <h5 class="card-title">{{ $user->age }} ans</h5>
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-6">
                         <div class="like-container">
-                          @if (auth()->user() && auth()->user()->hasLikedProfile($result->id))
-                          <a href="{{ route('unlike-profile', ['profile_id' => $result->id]) }}" onclick="event.preventDefault(); document.getElementById('unlike-form-{{ $result->id }}').submit();">
+                          @if (auth()->user() && auth()->user()->hasLikedProfile($user->id))
+                          <a href="{{ route('unlike-profile', ['profile_id' => $user->id]) }}" onclick="event.preventDefault(); document.getElementById('unlike-form-{{ $user->id }}').submit();">
                             <svg class="like-svg" width="20" height="20" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
                               <path fill="#BE1931" d="M2.067 11.319C2.067 2.521 14.251-.74 18 9.445C21.749-.741 33.933 2.52 33.933 11.319C33.933 20.879 18 33 18 33S2.067 20.879 2.067 11.319" />
                             </svg>
                           </a>
-                          <form id="unlike-form-{{ $result->id }}" action="{{ route('unlike-profile', ['profile_id' => $result->id]) }}" method="POST" style="display: none;">
+                          <form id="unlike-form-{{ $user->id }}" action="{{ route('unlike-profile', ['profile_id' => $user->id]) }}" method="POST" style="display: none;">
                             @csrf
                           </form>
                           @else
-                          <a href="{{ route('like-profile', ['profile_id' => $result->id]) }}" onclick="event.preventDefault(); document.getElementById('like-form-{{ $result->id }}').submit();">
+                          <a href="{{ route('like-profile', ['profile_id' => $user->id]) }}" onclick="event.preventDefault(); document.getElementById('like-form-{{ $user->id }}').submit();">
                             <i class="bi bi-heart like-button" style="width:50px; height: 50px;"></i>
                           </a>
                           @endif
-                          <form id="like-form-{{ $result->id }}" action="{{ route('like-profile', ['profile_id' => $result->id]) }}" method="POST" style="display: none;">
+                          <form id="like-form-{{ $user->id }}" action="{{ route('like-profile', ['profile_id' => $user->id]) }}" method="POST" style="display: none;">
                             @csrf
                           </form>
 
@@ -109,13 +109,13 @@
                             </div>
                           </div>
                           @else
-                          <a href="https://wa.me/{{ $result->numero }}" target="_blank"><i class="bi bi-whatsapp whatsapp-icon"></i></a>
+                          <a href="https://wa.me/{{ $user->numero }}" target="_blank"><i class="bi bi-whatsapp whatsapp-icon"></i></a>
                           @endif
                         </div>
                       </div>
                       <div class="col-6">
                         <div class="text-right">
-                          <a href="{{ url('/profil/' . $result->id) }}" class="btn btn-danger btn-sm">Voir le profil</a>
+                          <a href="{{ url('/profil/' . $user->id) }}" class="btn btn-danger btn-sm">Voir le profil</a>
                         </div>
                       </div>
                     </div>

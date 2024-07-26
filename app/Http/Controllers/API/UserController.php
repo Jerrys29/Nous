@@ -89,6 +89,7 @@ class UserController extends Controller
             'password' => Hash::make($validatedData['password']),
             'origin_country' => $validatedData['origin_country'],
             'age' => $age,
+            'role' => 'nous',
         ]);
 
         return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
@@ -153,64 +154,50 @@ class UserController extends Controller
     public function view(Request $request)
     {
         $loggedInUser = auth()->user();
-
+    
         // Initialisation des résultats à null par défaut
         $results = null;
-
-        if (auth()->check()) {
-            // Utilisateur connecté, appliquer les filtres et pagination
-            $usersQuery = User::where('role', 'nous')
-                ->where('active', 0)
-                ->where('id', '!=', $loggedInUser->id);
-
-            if ($loggedInUser->genre) {
-                // Filtrer également par genre si spécifié
-                $usersQuery->where('looking_for', $loggedInUser->genre);
-            }
-
-            $users = $usersQuery->paginate(12);
-
-            if ($users->isEmpty()) {
-                // Si aucun résultat avec les filtres spécifiés, retourner une autre pagination avec un fallback
-                $fallbackUsers = User::where('role', 'nous')
-                    ->where('looking_for', $loggedInUser->genre)
-                    ->where('id', '!=', $loggedInUser->id)
-                    ->paginate(6);
-
-                $allusers = User::where('role', 'nous')
-                    ->where('active', 0)
-                    ->where('id', '!=', $loggedInUser->id)
-                    ->paginate(12);
-
-                return response()->json([
-                    'fallbackUsers' => $fallbackUsers,
-                    'allusers' => $allusers,
-                    'message' => 'Aucun résultat trouvé avec les filtres spécifiés.'
-                ]);
-            }
-
-            $allusers = User::where('role', 'nous')
+    
+        // Construire la requête de base
+        $usersQuery = User::where('role', 'nous')
+            ->where('active', 0)
+            ->where('id', '!=', $loggedInUser->id);
+    
+        // Ajouter les conditions de filtrage basées sur 'looking_for'
+        if ($loggedInUser->looking_for == 'lesdeux') {
+            $usersQuery->where(function ($query) {
+                $query->where('genre', 'homme')
+                      ->orWhere('genre', 'femme');
+            });
+        } else {
+            $usersQuery->where('genre', $loggedInUser->looking_for);
+        }
+    
+        // Ajouter la condition pour le genre de l'utilisateur
+        $usersQuery->where('looking_for', $loggedInUser->genre);
+    
+        // Exécuter la requête avec pagination
+        $users = $usersQuery->get();
+    
+        if ($users->isEmpty()) {
+            // Utilisateurs de secours si aucune correspondance trouvée
+            $fallbackUsers = User::where('role', 'nous')
                 ->where('active', 0)
                 ->where('id', '!=', $loggedInUser->id)
-                ->paginate(12);
-
+                ->get();
+    
             return response()->json([
-                'users' => $users,
-                'allusers' => $allusers,
-                'message' => 'Liste des profils récupérée avec succès.'
-            ]);
-        } else {
-            // Utilisateur non connecté, retourner tous les utilisateurs avec pagination
-            $users = User::where('role', 'nous')
-                ->where('active', 0)
-                ->paginate(12);
-
-            return response()->json([
-                'users' => $users,
-                'message' => 'Liste des profils récupérée avec succès.'
+                'fallbackUsers' => $fallbackUsers,
+                'message' => 'Aucun résultat trouvé avec les filtres spécifiés.'
             ]);
         }
+    
+        return response()->json([
+            'users' => $users,
+            'message' => 'Liste des profils récupérée avec succès.'
+        ]);
     }
+    
 
     public function detail($userId)
     {

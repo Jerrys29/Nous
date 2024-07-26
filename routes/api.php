@@ -18,6 +18,9 @@ use App\Http\Controllers\ChatController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::middleware('auth:sanctum')->post('/uploadimage', [UserController::class, 'uploadImage'])->name('api.uploadimage');
+Route::middleware('auth:sanctum')->get('/checkphotos', [UserController::class, 'checkPhotos'])->name('api.checkphotos');
+Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'view'])->name('api.user');
 
 // Auth routes
 Route::post('/register', [UserController::class, 'store'])->name('api.inscription.store');
@@ -25,10 +28,8 @@ Route::post('/login', [UserController::class, 'login'])->name('api.login');
 Route::post('/logout', [UserController::class, 'logout'])->name('api.logout');
 
 // User profile routes
-Route::get('/user', [UserController::class, 'view'])->name('api.user')->middleware('auth:sanctum');
 Route::get('/profile/{userId}', [UserController::class, 'detail'])->name('api.profile')->middleware('auth:sanctum');
 Route::put('/profile/update', [UserController::class, 'update'])->name('api.profile.update')->middleware('auth:sanctum');
-Route::post('/profile/photos/update', [UserController::class, 'updatePhotos'])->name('api.profile.photos.update')->middleware('auth:sanctum');
 
 // Update profile details routes
 Route::put('/update-name/{id}', [UserController::class, 'updatename'])->name('api.update-name')->middleware('auth:sanctum');
