@@ -40,6 +40,68 @@ class NousController extends Controller
     }
 
 
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'email' => 'nullable|email|unique:users,email',
+            'pseudo' => 'required|string',
+            'town' => 'required|string',
+            'birthdate' => [
+                'required',
+                'date',
+                'before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
+            ],
+            'birthplace' => 'required|string',
+            'genre' => 'required|string',
+            'looking_for' => 'required|string',
+            'mariatal_status' => 'required|string',
+            'hair_color' => 'required|string',
+            'eyes_color' => 'required|string',
+            'numero' => [
+                'required',
+                'string',
+                Rule::unique('users', 'numero')
+            ],
+            'password' => 'required|string',
+            'origin_country' => 'required|string',
+        ]);
+
+        $birthdate = new DateTime($validatedData['birthdate']);
+        $today = new DateTime('now');
+        $age = $birthdate->diff($today)->y;
+
+        try {
+            $userData = [
+                'name' => $validatedData['name'],
+                'pseudo' => $validatedData['pseudo'],
+                'town' => $validatedData['town'],
+                'birthdate' => $validatedData['birthdate'],
+                'birthplace' => $validatedData['birthplace'],
+                'genre' => $validatedData['genre'],
+                'looking_for' => $validatedData['looking_for'],
+                'mariatal_status' => $validatedData['mariatal_status'],
+                'hair_color' => $validatedData['hair_color'],
+                'eyes_color' => $validatedData['eyes_color'],
+                'numero' => $validatedData['numero'],
+                'password' => Hash::make($validatedData['password']),
+                'origin_country' => $validatedData['origin_country'],
+                'role' => 'nous',
+                'age' => $age,
+            ];
+
+            // Inclure le champ email uniquement s'il est fourni
+            if (isset($validatedData['email'])) {
+                $userData['email'] = $validatedData['email'];
+            }
+
+            User::create($userData);
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->withErrors(['error' => 'Une erreur s\'est produite lors de l\'enregistrement. Veuillez réessayer.']);
+        }
+
+        return redirect()->route('login')->with('success', 'Inscription réussie! Vous pouvez maintenant vous connecter.');
+    }
 
 
     public function edit(Request $request)
@@ -85,49 +147,97 @@ class NousController extends Controller
 
         return redirect('/');
     }
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $loggedInUser = auth()->user();
+
+        // Si l'utilisateur est authentifié, recherchez les utilisateurs correspondants
+        if ($loggedInUser) {
+            $users = User::where('role', 'nous')
+                ->where('active', 0)
+                ->where('id', '!=', $loggedInUser->id)
+                ->paginate(12);
+
+            // Si aucun utilisateur correspondant n'est trouvé, recherchez les utilisateurs de secours
+            if ($users->isEmpty()) {
+                $fallbackUsers = User::where('role', 'nous')
+                    ->where('looking_for', $loggedInUser->genre)
+                    ->where('id', '!=', $loggedInUser->id)
+                    ->paginate(6);
+
+                return view('Nous.profils', ['users' => $fallbackUsers]);
+            }
+
+            // Recherchez les utilisateurs correspondant à la requête de recherche
+            $results = User::where(function ($queryBuilder) use ($query) {
+                $queryBuilder->where('name', 'like', "%$query%")
+                    ->orWhere('pseudo', 'like', "%$query%")
+                    ->orWhere('town', 'like', "%$query%")
+                    ->orWhere('birthplace', 'like', "%$query%")
+                    ->orWhere('genre', 'like', "%$query%")
+                    ->orWhere('looking_for', 'like', "%$query%")
+                    ->orWhere('mariatal_status', 'like', "%$query%")
+                    ->orWhere('hair_color', 'like', "%$query%")
+                    ->orWhere('eyes_color', 'like', "%$query%")
+                    ->orWhere('origin_country', 'like', "%$query%")
+                    ->orWhere('age', 'like', "%$query%")
+                    ->orWhere('about', 'like', "%$query%")
+                    ->orWhere('interests', 'like', "%$query%");
+            })->paginate(12);
+
+
+            // Passez les résultats à votre vue
+            return view('Nous.profils', ['results' => $results, 'users' => $users, 'query' => $query]);
+        }
+
+        // Si l'utilisateur n'est pas authentifié, redirigez-le vers la page de connexion
+        return redirect()->route('login')->with('error', 'Vous devez être connecté pour effectuer une recherche.');
+    }
+
     public function view()
     {
-
         $results = null; // Initialiser la variable $results à null par défaut
         $loggedInUser = auth()->user();
 
         if (auth()->check()) {
-
-            $users = User::where('role', 'nous')
+            // Appliquer les filtres de base
+            $usersQuery = User::where('role', 'nous')
                 ->where('active', 0)
-                ->where('looking_for', $loggedInUser->genre)
-                ->where('id', '!=', $loggedInUser->id)
-                ->paginate(12); // Utiliser paginate() pour paginer les résultats
+                ->where('id', '!=', $loggedInUser->id);
 
+            // Filtrer par genre de l'utilisateur connecté
             if ($loggedInUser->genre) {
-                $users = User::where('role', 'nous')
-                    ->where('active', 0)
-                    ->where('looking_for', 'lesdeux')
-                    ->where('id', '!=', $loggedInUser->id)
-                    ->paginate(12); // Utiliser paginate() pour paginer les résultats
-
+                $usersQuery->where(function ($query) use ($loggedInUser) {
+                    $query->where('looking_for', $loggedInUser->genre)
+                        ->orWhere('looking_for', 'lesdeux');
+                });
             }
+
+            $users = $usersQuery->paginate(12);
+
             if ($users->isEmpty()) {
                 $fallbackUsers = User::where('role', 'nous')
                     ->where('looking_for', $loggedInUser->genre)
                     ->where('id', '!=', $loggedInUser->id)
                     ->paginate(6); // Utiliser paginate() pour paginer les résultats
 
-                $allusers = User::where('role', 'nous')
+                $allUsers = User::where('role', 'nous')
                     ->where('active', 0)
                     ->where('id', '!=', $loggedInUser->id)
                     ->paginate(12);
 
-                return view('Nous.profils', compact('fallbackUsers', 'results', 'users', 'allusers')); // Passer également la variable $results à la vue
+                return view('Nous.profils', compact('fallbackUsers', 'results', 'users', 'allUsers')); // Passer également la variable $results à la vue
             }
-            $allusers = User::where('role', 'nous')
+
+            $allUsers = User::where('role', 'nous')
                 ->where('active', 0)
                 ->where('id', '!=', $loggedInUser->id)
                 ->paginate(12);
 
-            return view('Nous.profils', compact('users', 'results', 'allusers')); // Passer également la variable $results à la vue
+            return view('Nous.profils', compact('users', 'results', 'allUsers')); // Passer également la variable $results à la vue
         } else {
-
+            // Utilisateur non connecté, retourner tous les utilisateurs avec pagination
             $users = User::where('role', 'nous')
                 ->where('active', 0)
                 ->paginate(12);
@@ -423,53 +533,9 @@ class NousController extends Controller
         return redirect()->back()->with('success', 'Informations mises à jour avec succès.');
     }
 
-    public function search(Request $request)
-    {
-        $query = $request->input('query');
-        $loggedInUser = auth()->user();
-
-        // Si l'utilisateur est authentifié, recherchez les utilisateurs correspondants
-        if ($loggedInUser) {
-            $users = User::where('role', 'nous')
-                ->where('active', 0)
-                ->where('id', '!=', $loggedInUser->id)
-                ->get();
-
-            // Si aucun utilisateur correspondant n'est trouvé, recherchez les utilisateurs de secours
-            if ($users->isEmpty()) {
-                $fallbackUsers = User::where('role', 'nous')
-                    ->where('looking_for', $loggedInUser->genre)
-                    ->where('id', '!=', $loggedInUser->id)
-                    ->get();
-
-                return view('Nous.profils', ['users' => $fallbackUsers]);
-            }
-
-            // Recherchez les utilisateurs correspondant à la requête de recherche
-            $results = User::where(function ($queryBuilder) use ($query) {
-                $queryBuilder->where('name', 'like', "%$query%")
-                    ->orWhere('pseudo', 'like', "%$query%")
-                    ->orWhere('town', 'like', "%$query%")
-                    ->orWhere('birthplace', 'like', "%$query%")
-                    ->orWhere('genre', 'like', "%$query%")
-                    ->orWhere('looking_for', 'like', "%$query%")
-                    ->orWhere('mariatal_status', 'like', "%$query%")
-                    ->orWhere('hair_color', 'like', "%$query%")
-                    ->orWhere('eyes_color', 'like', "%$query%")
-                    ->orWhere('origin_country', 'like', "%$query%")
-                    ->orWhere('age', 'like', "%$query%")
-                    ->orWhere('about', 'like', "%$query%")
-                    ->orWhere('interests', 'like', "%$query%");
-            })->get();
 
 
-            // Passez les résultats à votre vue
-            return view('Nous.profils', ['results' => $results, 'users' => $users, 'query' => $query]);
-        }
 
-        // Si l'utilisateur n'est pas authentifié, redirigez-le vers la page de connexion
-        return redirect()->route('login')->with('error', 'Vous devez être connecté pour effectuer une recherche.');
-    }
 
     public function showNotifications()
     {

@@ -17,7 +17,7 @@ return [
 
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
-    'allowed_methods' => ['*'],
+    'allowed_origins' => ['https://www.nous-meet.com', 'http://localhost', 'http://127.0.0.1:8000'],
 
     'allowed_origins' => ['*'],
 
