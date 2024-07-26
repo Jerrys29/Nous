@@ -13,48 +13,49 @@ class KaraokeController extends Controller
 {
     public function register(Request $request)
     {
-        // Validez les données du formulaire
-        $request->validate([
-            'name' => 'required|string',
-            'password' => 'required|string',
-            'numero' => [
-                'required',
-                'string',
-                Rule::unique('users', 'numero'), // Vérifie si le numéro est unique dans la table users
-            ],
-            'pseudo' => 'required|string',
-            'birthdate' => 'required|date',
-            'birthplace' => 'required|string',
-            'town' => 'required|string',
-        ]);
-    
-        // Nettoyez le numéro en supprimant les espaces en trop
-        $cleanedNumero = preg_replace('/\s+/', '', $request->input('numero'));
-    
-        if (User::where('numero', $cleanedNumero)->exists()) {
-            $errorMessage = 'Impossible d\'utiliser ce numéro pour vous inscrire. Veuillez utiliser un autre numéro.';
-            return redirect()->route('inscription')->withErrors(['customError' => $errorMessage]);
-        }
-    
-        // Utilisez la fonction Hash::make pour hacher le mot de passe avant de l'enregistrer dans la base de données
-        $hashedPassword = Hash::make($request->input('password'));
-    
-        // Créez un nouvel utilisateur avec le rôle 'karaoke' et les données du formulaire
-        $user = User::create([
-            'name' => $request->input('name'),
-            'password' => $hashedPassword,
-            'numero' => $cleanedNumero, // Utilisez le numéro nettoyé
-            'pseudo' => $request->input('pseudo'),
-            'birthdate' => $request->input('birthdate'),
-            'birthplace' => $request->input('birthplace'),
-            'town' => $request->input('town'),
-            'role' => 'karaoke',
-        ]);
-    
-        // Redirigez ou effectuez d'autres actions après l'enregistrement
-    
-        return redirect()->route('connection')->with('success', 'Félicitation !! Votre compte sera activé dans les plus brefs délais. Revenez dans 24h.');
+    // Validez les données du formulaire
+    $request->validate([
+        'name' => 'required|string',
+        'password' => 'required|string',
+        'numero' => [
+            'required',
+            'string',
+            Rule::unique('users', 'numero'),
+        ],
+        'pseudo' => 'required|string',
+        'birthdate' => 'required|date',
+        'birthplace' => 'required|string',
+        'town' => 'required|string',
+    ]);
+
+    // Nettoyez le numéro en supprimant les espaces en trop
+    $cleanedNumero = preg_replace('/\s+/', '', $request->input('numero'));
+
+    if (User::where('numero', $cleanedNumero)->exists()) {
+        $errorMessage = 'Impossible d\'utiliser ce numéro pour vous inscrire. Veuillez utiliser un autre numéro.';
+        return redirect()->route('inscription')->withErrors(['customError' => $errorMessage]);
     }
+
+    // Utilisez la fonction Hash::make pour hacher le mot de passe avant de l'enregistrer dans la base de données
+    $hashedPassword = Hash::make($request->input('password'));
+
+    // Créez un nouvel utilisateur avec le rôle 'karaoke' et les données du formulaire
+    $user = User::create([
+        'name' => $request->input('name'),
+        'password' => $hashedPassword,
+        'numero' => $cleanedNumero,
+        'pseudo' => $request->input('pseudo'),
+        'birthdate' => $request->input('birthdate'),
+        'birthplace' => $request->input('birthplace'),
+        'town' => $request->input('town'),
+        'role' => 'karaoke',
+    ]);
+
+    // Redirigez vers la page de téléchargement de photo
+    return redirect()->route('upload.photo', ['userId' => $user->id])->with('success', 'Ajoutez deux photos pour finaliser votre inscription.');
+
+    }
+
     
 
     public function show()
@@ -310,7 +311,30 @@ class KaraokeController extends Controller
             return view('Karaoke/modal', ['user' => $newUser, 'userPhoneNumber' => $userPhoneNumber]);
         }
         
-            
+       
 
      
+    public function showPhotoUploadForm($userId)
+    {
+        $user = User::findOrFail($userId);
+        return view('Karaoke.uploadphotos', ['user' => $user]);
+    }
+    
+    public function storePhotos(Request $request)
+    {
+        $user = User::find($request->user_id);
+    
+        for ($i = 1; $i <= 2; $i++) {
+            $photoKey = 'photo' . $i;
+            if ($request->hasFile($photoKey)) {
+                $imagePath = $request->file($photoKey)->store('photos', 'public');
+                $user->{$photoKey} = $imagePath;
+            }
+        }
+    
+        $user->save();
+    
+        return redirect()->route('connection')->with('success', 'Félicitation !! Votre compte sera activé dans les plus brefs délais. Revenez dans 24h.');
+    }
+    
 }
