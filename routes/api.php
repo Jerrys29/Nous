@@ -4,10 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\ChatController;
-use App\Http\Controllers\KaraokeController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\NousController;
-
+use App\Http\Controllers\API\KaraokeController;
+use App\Http\Controllers\API\AdminController;
+use App\Http\Controllers\API\NousController;
 use App\Http\Controllers\API\ForgetPasswordController;
 
 /*
@@ -76,65 +75,68 @@ Route::get('/detail/{namesender}/{numero}', [ChatController::class, 'viewDetail'
 // Search route
 Route::get('/search', [UserController::class, 'search'])->name('api.search')->middleware('auth:sanctum');
 
+// Karaoke routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('kprofil', 'App\Http\Controllers\KaraokeController@showprofil')->name('api.kprofil');
 
+    Route::post('/update-profile', 'App\Http\Controllers\KaraokeController@updateProfile')->name('api.update-profile');
+    Route::get('/index', 'App\Http\Controllers\KaraokeController@showAllKaraokeProfiles')->name('api.karaokeusers');
 
-////Karaokee
+    Route::post('InscriKaraoke', 'App\Http\Controllers\KaraokeController@register')->name('api.filleinscrip');
+    Route::post('/karaoke/update-name/{id}', 'App\Http\Controllers\KaraokeController@updateName')->name('api.update_name');
+    Route::post('/karaoke/update-numero/{id}', 'App\Http\Controllers\KaraokeController@updateNumero')->name('api.update_numero');
+    Route::post('/karaoke/update-pseudo/{id}', 'App\Http\Controllers\KaraokeController@updatPseudo')->name('api.update_pseudo');
+    Route::post('/visiteurs/{id}', 'App\Http\Controllers\KaraokeController@Visiteurs')->name('api.paiementV');
+    Route::post('/karaoke/update-town/{id}', 'App\Http\Controllers\KaraokeController@updatetown')->name('api.update-town');
 
+    Route::get('/Karaokeprofils/{userId}', 'App\Http\Controllers\KaraokeController@showKaraokeProfile')->name('api.Karaokeprofils');
 
-// Espace Karaoke
-Route::get('/kprofil', [KaraokeController::class, 'showprofil'])->name('api.kprofil');
-Route::post('/update-profile', [KaraokeController::class, 'updateProfile'])->name('api.update-profile');
-Route::get('/index', [KaraokeController::class, 'showAllKaraokeProfiles'])->name('api.karaokeusers');
-Route::post('/inscription', [KaraokeController::class, 'register'])->name('api.filleinscrip');
-Route::get('/connection', [KaraokeController::class, 'show'])->name('api.connection');
-Route::get('/check-phone-number/{phoneNumber}', [KaraokeController::class, 'checkPhoneNumber']);
-Route::post('/connection', [KaraokeController::class, 'loginUser'])->name('api.logins');
-Route::post('/karaoke/update-name/{id}', [KaraokeController::class, 'updateName'])->name('api.update_name');
-Route::post('/karaoke/update-numero/{id}', [KaraokeController::class, 'updateNumero'])->name('api.update_numero');
-Route::post('/karaoke/update-pseudo/{id}', [KaraokeController::class, 'updatePseudo'])->name('api.update_pseudo');
-Route::post('/visiteurs/{id}', [KaraokeController::class, 'Visiteurs'])->name('api.paiementV');
-Route::post('/karaoke/update-town/{id}', [KaraokeController::class, 'updateTown'])->name('api.update-town');
-Route::get('/Karaokeprofils/{userId}', [KaraokeController::class, 'showKaraokeProfile'])->name('api.Karaokeprofils');
-Route::post('/payment', [KaraokeController::class, 'processPayment'])->name('api.payment.form');
-Route::post('/deconnexion', [KaraokeController::class, 'Deco'])->name('api.deconnexion');
-Route::get('/deconnexion', [AdminController::class, 'Deco'])->name('api.Deco');
-Route::get('/upload-photos/{userId}', [KaraokeController::class, 'showPhotoUploadForm'])->name('api.upload.photo');
-Route::post('/store-photos', [KaraokeController::class, 'storePhotos'])->name('api.storePhotos');
+    Route::post('block/user/{id}/{redirect}', 'App\Http\Controllers\AdminController@blockUser')->name('api.block.user');
+    Route::post('/unblock/user/{id}/{redirect}', 'App\Http\Controllers\AdminController@unblockUser')->name('api.unblock.user');
+    Route::post('blockNousUser/user/{id}/{redirect}', 'App\Http\Controllers\AdminController@blockNousUser')->name('api.blockNous.User');
+    Route::post('/unblockNousUser/user/{id}/{redirect}', 'App\Http\Controllers\AdminController@unblockNousUser')->name('api.unblockNous.User');
+    Route::post('/delete/user/{id}/{redirect}', 'App\Http\Controllers\AdminController@deleteUser')->name('api.delete.user');
 
-// Admin routes
-Route::get('/visiteur/{id}', [KaraokeController::class, 'visiteur'])->name('api.visiteur');
-Route::get('/KaraokeUsers', [AdminController::class, 'showAllKaraokeUsers'])->name('api.KaraokeUsers');
-Route::get('/NousUsers', [AdminController::class, 'showAllNousUsers'])->name('api.NousUsers');
-Route::get('/LokKaraokeUsers', [AdminController::class, 'showLokKaraokeUsers'])->name('api.LokKaraokeUsers');
-Route::get('/LokNousUsers', [AdminController::class, 'showLokNousUsers'])->name('api.LokNousUsers');
-Route::get('/avisadmin', [AdminController::class, 'showavis'])->name('api.avisadmin');
-Route::post('/block/user/{id}/{redirect}', [AdminController::class, 'blockUser'])->name('api.block.user');
-Route::post('/unblock/user/{id}/{redirect}', [AdminController::class, 'unblockUser'])->name('api.unblock.user');
-Route::post('/blockNousUser/user/{id}/{redirect}', [AdminController::class, 'blockNousUser'])->name('api.blockNous.User');
-Route::post('/unblockNousUser/user/{id}/{redirect}', [AdminController::class, 'unblockNousUser'])->name('api.unblockNous.User');
-Route::post('/delete/user/{id}/{redirect}', [AdminController::class, 'deleteUser'])->name('api.delete.user');
-Route::get('/utilisateurs', [AdminController::class, 'showAllUsers'])->name('api.utilisateurs');
-Route::get('/publicites/list', [AdminController::class, 'index'])->name('api.publicites');
-Route::get('/publicites/{id}/view', [AdminController::class, 'detailspub'])->name('api.publicites.details');
-Route::post('/publicites/create', [AdminController::class, 'storepub'])->name('api.publicites.create');
-Route::get('/publicites/create', [AdminController::class, 'createpub'])->name('api.publicite.create.view');
-Route::get('/publicites/{id}/edit', [AdminController::class, 'editpub'])->name('api.publicites.edit');
-Route::post('/publicites/{id}/activate', [AdminController::class, 'toggleStatuspub'])->name('api.publicites.toggle');
-Route::post('/publicites/{id}/update', [AdminController::class, 'updatepub'])->name('api.publicites.update');
-Route::get('/publicite/details', [AdminController::class, 'showpub'])->name('api.detailspub');
-Route::get('/publicites/search', [AdminController::class, 'search'])->name('api.searchpub');
+    Route::post('/payment', 'App\Http\Controllers\KaraokeController@processPayment')->name('api.payment.form');
+    Route::post('/deconnexion', 'App\Http\Controllers\KaraokeController@Deco')->name('api.deconnexion');
+    Route::get('/deconnexion', 'App\Http\Controllers\AdminController@Deco')->name('api.Deco');
 
+    Route::post('avis', 'App\Http\Controllers\NousController@avis')->name('api.avis.save');
+    Route::get('avis', 'App\Http\Controllers\NousController@avisshow')->name('api.avis');
 
-// Forget password routes
+    Route::get('publicites/list', 'App\Http\Controllers\AdminController@index')->name('api.publicites');
+    Route::get('publicites/{id}/view', 'App\Http\Controllers\AdminController@detailspub')->name('api.publicites.details');
+    Route::post('publicites/create', 'App\Http\Controllers\AdminController@storepub')->name('api.publicites.create');
+    Route::get('publicites/create', 'App\Http\Controllers\AdminController@createpub')->name('api.publicite.create.view');
+    Route::get('publicites/{id}/edit', 'App\Http\Controllers\AdminController@editpub')->name('api.publicites.edit');
+    Route::post('publicites/{id}/activate', 'App\Http\Controllers\AdminController@toggleStatuspub')->name('api.publicites.toggle');
+    Route::post('publicites/{id}/update', 'App\Http\Controllers\AdminController@updatepub')->name('api.publicites.update');
+    Route::get('publicite/details', 'App\Http\Controllers\AdminController@showpub')->name('api.detailspub');
+    Route::get('publicites/search', 'App\Http\Controllers\AdminController@search')->name('api.searchpub');
 
-Route::get('/number', [ForgetPasswordController::class, 'forgetpassword'])->name('api.mdp');
-Route::get('/checknumber', [ForgetPasswordController::class, 'checknumber'])->name('api.check');
-Route::get('/quiz/{numero}', [ForgetPasswordController::class, 'showQuiz'])->name('api.quiz.show');
-Route::post('/verify-information', [ForgetPasswordController::class, 'verifyInformation'])->name('api.verify.information');
-Route::get('/password/reset/{id}', [ForgetPasswordController::class, 'showResetForm'])->name('api.password.reset');
-Route::post('/password/reset', [ForgetPasswordController::class, 'resetPassword'])->name('api.password.update');
+    Route::get('/number', 'App\Http\Controllers\ForgetPasswordController@forgetpassword')->name('api.mdp');
+    Route::get('/checknumber', 'App\Http\Controllers\ForgetPasswordController@checknumber')->name('api.check');
+    Route::get('/quiz/{numero}', 'App\Http\Controllers\ForgetPasswordController@showQuiz')->name('api.quiz.show');
+    Route::post('/verify-information',  'App\Http\Controllers\ForgetPasswordController@verifyInformation')->name('api.verify.information');
+    Route::get('/password/reset/{id}',  'App\Http\Controllers\ForgetPasswordController@showResetForm')->name('api.password.reset');
+    Route::post('/password/reset', 'App\Http\Controllers\ForgetPasswordController@resetPassword')->name('api.password.update');
 
+    Route::get('/upload-photos/{userId}', 'App\Http\Controllers\KaraokeController@showPhotoUploadForm')->name('api.upload.photo');
+    Route::post('/store-photos', 'App\Http\Controllers\KaraokeController@storePhotos')->name('api.storePhotos');
+});
 
-// Avis routes
-Route::get('/avis', [NousController::class, 'avisshow'])->name('api.avis');
-Route::post('/avis', [NousController::class, 'avis'])->name('api.avis.save');
+// Authentification publique
+Route::post('/connection', 'App\Http\Controllers\KaraokeController@loginUser')->name('api.logins');
+Route::get('/check-phone-number/{phoneNumber}', 'App\Http\Controllers\KaraokeController@checkPhoneNumber');
+Route::post('InscriKaraoke', 'App\Http\Controllers\KaraokeController@register')->name('api.filleinscrip');
+
+// Routes d'administration
+Route::get('admin', function () {
+    return response()->json(['message' => 'Admin login view']);
+});
+Route::get('KaraokeUsers', 'App\Http\Controllers\AdminController@showAllKaraokeUsers')->name('api.KaraokeUsers');
+Route::get('NousUsers', 'App\Http\Controllers\AdminController@showAllNousUsers')->name('api.NousUsers');
+Route::get('LokKaraokeUsers', 'App\Http\Controllers\AdminController@showLokKaraokeUsers')->name('api.LokKaraokeUsers');
+Route::get('LokNousUsers', 'App\Http\Controllers\AdminController@showLokNousUsers')->name('api.LokNousUsers');
+Route::get('avisadmin', 'App\Http\Controllers\AdminController@showavis')->name('api.avisadmin');
+Route::get('utilisateurs', 'App\Http\Controllers\AdminController@showAllUsers')->name('api.utilisateurs');

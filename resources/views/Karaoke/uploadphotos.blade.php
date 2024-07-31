@@ -226,7 +226,7 @@
                     }
                 });
 
-                submitButton.disabled = filledPhotoCount < 2;
+                submitButton.disabled = filledPhotoCount < 1;
             }
 
             fileInputs.forEach(input => {

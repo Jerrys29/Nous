@@ -77,6 +77,8 @@
 
                     <div class="col-lg-6">
                         <h2>{{ $user->pseudo }}</h2>
+                        <p class="card-text">{{ $age }} ans</p>
+
                         <div class="user-images">
                             <img src="{{ asset('storage/' . $user->photo1) }}" alt=" Photo de profil ">
                             <img src="{{ asset('storage/' . $user->photo2) }}" alt="Photo 2">

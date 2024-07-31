@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\Paiements;
 use Illuminate\Support\Facades\Hash; // Assurez-vous d'importer la classe Hash
 use Illuminate\Validation\Rule; // Assurez-vous d'importer la classe Rule pour la validation
+use Carbon\Carbon; // Importer Carbon
+
 
 class KaraokeController extends Controller
 {
@@ -116,23 +118,20 @@ class KaraokeController extends Controller
 
     public function showprofil()
     { 
-        // Récupérer l'utilisateur connecté
         $user = Auth::user();
+        $age = Carbon::parse($user->birthdate)->age; // Calcul de l'âge
 
-        return view('Karaoke/profilperso',compact('user'));
+        return view('Karaoke/profilperso', compact('user', 'age'));
     }
 
 
     public function showUserProfile() {
-        // Récupérer l'utilisateur connecté:
         $user = Auth::user();
-    
-        // Vérifier si l'utilisateur est connecté
+
         if ($user->role == 'karaoke' && $user->activity == 1) {
-            // L'utilisateur est connecté, vous pouvez maintenant utiliser $user pour accéder à ses propriétés
-            return view('profilperso',  compact('user'));
+            $age = Carbon::parse($user->birthdate)->age; // Calcul de l'âge
+            return view('profilperso', compact('user', 'age'));
         } else {
-            // Rediriger ou afficher un message d'erreur si l'utilisateur n'est pas connecté
             return redirect('/connection')->with('error', 'Vous devez être connecté pour accéder à cette page.');
         }
     }
@@ -206,16 +205,22 @@ class KaraokeController extends Controller
     }
 
     public function showAllKaraokeProfiles()
-    {
-        // Récupérer tous les utilisateurs ayant le rôle "karaoke" et dont le compte est activé
-        // avec au moins un profil
-        $users = User::where('role', 'karaoke')
-                    ->where('active', 1)
-                    ->get();
-        
-        // Passer les données à la vue
-        return view('Karaoke.index', compact('users'));
+{
+    // Récupérer tous les utilisateurs ayant le rôle "karaoke" et dont le compte est activé
+    // avec au moins un profil
+    $users = User::where('role', 'karaoke')
+                ->where('active', 1)
+                ->get();
+
+    // Calculer l'âge pour chaque utilisateur
+    foreach ($users as $user) {
+        $user->age = Carbon::parse($user->birthdate)->age;
     }
+
+    // Passer les données à la vue
+    return view('Karaoke.index', ['users' => $users]);
+}
+
     
     
     
@@ -224,9 +229,8 @@ class KaraokeController extends Controller
         public function showKaraokeProfile($userId)
         {
             $user = User::findOrFail($userId);
-        
-            // Afficher la vue même si toutes les colonnes de photos sont null
-            return view('Karaoke/profilevue', ['user' => $user]);
+            $age = Carbon::parse($user->birthdate)->age; // Calcul de l'âge
+            return view('Karaoke/profilevue', compact('user', 'age'));
         }
         
 

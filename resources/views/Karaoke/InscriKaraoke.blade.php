@@ -8,7 +8,7 @@
     <!-- jQuery (Assurez-vous d'inclure jQuery avant le fichier JS Bootstrap) -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-    <!-- Bootstrap CSS  -->
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
     <!-- Bootstrap JS (Assurez-vous d'inclure le fichier JS Bootstrap après jQuery) -->
@@ -47,24 +47,23 @@
                         
                         <div class="form-step" id="step-1">
                             <h1>INSCRIVEZ-VOUS MAINTENANT</h1>
-                            <div id="error-message" class="error-message">Vous devez avoir au moins 18 ans pour vous inscrire.</div>
+                            <div id="error-message" class="error-message" style="display: none; color: red;">Vous devez avoir au moins 18 ans pour vous inscrire.</div>
 
                             <div class="form-group form-input">
                                 <input type="text" name="name" id="first_name" class="input-text" placeholder="Nom & Prénom" required>
                             </div>
                             @if(session('error'))
                                 <div id="alert-message" class="alert alert-success">
-                                    {{ error('error') }}
+                                    {{ session('error') }}
                                 </div>
                             @endif
 
-    
                             <div class="form-group form-input">
                                 <input type="tel" name="numero" id="phone_number" class="input-text" placeholder="Numéro de téléphone whatsapp" required>
                             </div>
                            
                             <div class="form-group form-input">
-                            <input type="password" name="password" id="mdp" class="input-text" placeholder="Mot de passe" required>
+                                <input type="password" name="password" id="mdp" class="input-text" placeholder="Mot de passe" required>
                             </div>
                 
                             <div class="form-group">
@@ -82,70 +81,25 @@
         
                             <div class="form-group">
                                 <input type="date" name="birthdate" class="birthdate" id="birthdate" placeholder="Date de Naissance" required>
+                                <div id="birthdate-error" class="error-message" style="display: none; color: red;">Vous devez avoir au moins 18 ans pour vous inscrire.</div>
                             </div><br>
                             
                             <div class="form-group">
                                 <input type="text" name="birthplace" class="birthplace" id="birthplace" placeholder="Lieu de Naissance" required>
                             </div><br>
-                            
-
-                            <!-- <div class="form-group">
-                                <select name="origin_country" class="origin_country" id="origin_country" placeholder="Pays d'Origine" required>
-                                    <option value="" disabled selected hidden>Pays d'Origine</option>
-                                    <option value="Benin">Bénin</option>
-                                    <option value="BurkinaFaso">Burkina Faso</option>
-                                    <option value="CapeVert">Cap Vert</option>
-                                    <option value="Gambia">Gambie</option>
-                                    <option value="Ghana">Ghana</option>
-                                    <option value="Guinea">Guinée</option>
-                                    <option value="GuineaBissau">Guinée-Bissau</option>
-                                    <option value="Mali">Mali</option>
-                                    <option value="Niger">Niger</option>
-                                    <option value="Nigeria">Nigeria</option>
-                                    <option value="Senegal">Sénégal</option>
-                                    <option value="Togo">Togo</option>
-                                </select>
-                                <span class="select-btn">
-                                    <i class="zmdi zmdi-chevron-down"></i>
-                                </span>
-                            </div> -->
-                            <!-- <div class="form-group">
-                                <select name="origin_country" class="form-control" id="origin_country" placeholder="Pays d'Origine" class="form-control" required>
-                                    <option value="" disabled selected hidden>Pays d'Origine</option>
-                                    <option value="Benin">Bénin</option>
-                                    <option value="Togo">Togo</option>
-                                    <option value="Ivoire">Côte d'Ivoire</option>
-                                    <option value="BurkinaFaso">Burkina Faso</option>
-                                    <option value="CapeVert">Cap Vert</option>
-                                    <option value="Gambia">Gambie</option>
-                                    <option value="Ghana">Ghana</option>
-                                    <option value="Guinea">Guinée</option>
-                                    <option value="GuineaBissau">Guinée-Bissau</option>
-                                    <option value="Mali">Mali</option>
-                                    <option value="Niger">Niger</option>
-                                    <option value="Nigeria">Nigeria</option>
-                                    <option value="Senegal">Sénégal</option>
-
-                                </select>
-                                <span class="select-btn">
-                                    <i class="zmdi zmdi-chevron-down"></i>
-                                </span>
-
-                            </div> -->
 
                             <div class="form-group">
                                 <input type="text" name="town" class="input-text" id="town" placeholder="Ville" required>
                             </div><br>
                             <div class="form-group" id="error-message-step-2"></div>
 
-                            <div class="form-group onsubmit="showCongratulationsPopup();>
+                            <div class="form-group">
                                 <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Précédent</button>
                                 
-                                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                <button type="submit" class="btn btn-primary" onclick="return validateAndSubmit()">Enregistrer</button>
                             </div>
                         </div>
     
-                    
                     </form>
                     <a href="{{('/connection')}}"> <h4 class="w-100 text-center">&mdash; ou Se connecter &mdash;</h4></a>
 
@@ -160,6 +114,9 @@
 
     <script>
         function nextStep(currentStep, nextStep) {
+            if (currentStep === 1 && !validateDateOfBirth()) {
+                return;
+            }
             $('#step-' + currentStep).hide();
             $('#step-' + nextStep).show();
         }
@@ -169,40 +126,60 @@
             $('#step-' + (step - 1)).show();
         }
 
-        function validateAndSubmit() {
-    // Récupérez les champs d'entrée de l'étape 2
-    var inputs = $('#step-2 input[required], #step-2 select[required]');
+        function validateDateOfBirth() {
+            var birthdateInput = document.getElementById('birthdate');
+            var birthdateError = document.getElementById('birthdate-error');
+            
+            var birthdate = new Date(birthdateInput.value);
+            var today = new Date();
+            var age = today.getFullYear() - birthdate.getFullYear();
+            var monthDifference = today.getMonth() - birthdate.getMonth();
 
-    // Vérifiez si tous les champs sont remplis
-    var fieldsAreFilled = true;
-    inputs.each(function () {
-        if ($(this).val() === '') {
-            fieldsAreFilled = false;
-            // Affichez un message d'erreur pour le champ actuel
-            var fieldName = $(this).attr('placeholder') || $(this).attr('name');
-            $('#error-message-step-2').html('<div class="alert alert-danger">Veuillez remplir tous les champs.</div>');
-            return false; // Sortez de la boucle si un champ est vide
+            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthdate.getDate())) {
+                age--;
+            }
+
+            if (age < 18) {
+                birthdateError.style.display = 'block';
+                return false;
+            } else {
+                birthdateError.style.display = 'none';
+                return true;
+            }
         }
-    });
 
-    // Si des champs sont vides, ne continuez pas
-    if (!fieldsAreFilled) {
-        return;
-    }
+        function validateAndSubmit() {
+            // Récupérez les champs d'entrée de l'étape 2
+            var inputs = $('#step-2 input[required], #step-2 select[required]');
 
-    // Cachez tout message d'erreur précédent et procédez à l'enregistrement
-    $('#error-message-step-2').text('');  // Utilisez la méthode text ici
-    // Continuez avec la logique d'enregistrement ou l'action de formulaire ici
-    showCongratulationsPopup();
-}
- //Mon code JavaScript pour masquer le message après 15 secondes
- setTimeout(function(){
-        document.getElementById('alert-message').style.display = 'none';
-    }, 9000);
+            // Vérifiez si tous les champs sont remplis
+            var fieldsAreFilled = true;
+            inputs.each(function () {
+                if ($(this).val() === '') {
+                    fieldsAreFilled = false;
+                    // Affichez un message d'erreur pour le champ actuel
+                    var fieldName = $(this).attr('placeholder') || $(this).attr('name');
+                    $('#error-message-step-2').html('<div class="alert alert-danger">Veuillez remplir tous les champs.</div>');
+                    return false; // Sortez de la boucle si un champ est vide
+                }
+            });
 
-    </script>
+            // Si des champs sont vides, ne continuez pas
+            if (!fieldsAreFilled) {
+                return false;
+            }
 
-    <script>
+            // Vérifiez la date de naissance
+            if (!validateDateOfBirth()) {
+                return false;
+            }
+
+            // Cachez tout message d'erreur précédent et procédez à l'enregistrement
+            $('#error-message-step-2').text('');  // Utilisez la méthode text ici
+            showCongratulationsPopup();
+            return true;
+        }
+
         function showCongratulationsPopup() {
             Swal.fire({
                 title: 'Félicitations !!',
@@ -211,56 +188,44 @@
                 confirmButtonText: 'OK'
             });
         }
-    </script>
-    
-    <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                document.getElementById('preload-link').addEventListener('click', function() {
-                    var img = new Image();
-                    img.src = 'public/assets/img/back2.jpg'; // Remplacez "chemin_vers_votre_image.jpg" par le chemin de votre image
-                    // Vous pouvez également définir une fonction à exécuter une fois l'image préchargée, par exemple :
-                    img.onload = function() {
-                        console.log("Image préchargée !");
-                    };
-                });
-            });
-            </script>
-            {{-- restriction d'age  --}}
-             <script>
-                document.getElementById('signup-form').addEventListener('submit', function(event) {
-                  const birthdate = new Date(document.getElementById('birthdate').value);
-                  const today = new Date();
-                  const age = today.getFullYear() - birthdate.getFullYear();
-                  const monthDifference = today.getMonth() - birthdate.getMonth();
-                  if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthdate.getDate())) {
-                    age--;
-                  }
-            
-                  if (age < 18) {
-                    event.preventDefault();
-                    document.getElementById('error-message').style.display = 'block';
-                  }
-                });
-              </script>
-              <script>
-                var inactivityTimeout = 30 * 60 * 1000;
-        
-                var timeout;
-        
-                function resetTimer() {
-                    clearTimeout(timeout);
-                    timeout = setTimeout(function() {
-                      window.location.href = "{{ route('connection') }}";
-                    }, inactivityTimeout);
-                }
-        
-                document.addEventListener('mousemove', resetTimer);
-                document.addEventListener('keypress', resetTimer);
-                document.addEventListener('scroll', resetTimer);
-        
-                resetTimer(); // Initialise le minuteur lors du chargement de la page
-            </script>
 
+        // Masquer le message d'alerte après 15 secondes
+        setTimeout(function(){
+            document.getElementById('alert-message').style.display = 'none';
+        }, 15000);
+
+        // Script pour précharger l'image
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('preload-link').addEventListener('click', function() {
+                var img = new Image();
+                img.src = 'public/assets/img/back2.jpg'; // Remplacez "chemin_vers_votre_image.jpg" par le chemin de votre image
+                // Vous pouvez également définir une fonction à exécuter une fois l'image préchargée, par exemple :
+                img.onload = function() {
+                    console.log("Image préchargée !");
+                };
+            });
+        });
+
+        // Restriction d'âge
+        document.getElementById('booking-form').addEventListener('submit', function(event) {
+            if (!validateDateOfBirth()) {
+                event.preventDefault();
+            }
+        });
+
+        // Script pour la redirection en cas d'inactivité
+        var inactivityTimeout = 30 * 60 * 1000;
+        var timeout;
+        function resetTimer() {
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                window.location.href = "{{ route('connection') }}";
+            }, inactivityTimeout);
+        }
+        document.addEventListener('mousemove', resetTimer);
+        document.addEventListener('keypress', resetTimer);
+        document.addEventListener('scroll', resetTimer);
+        resetTimer(); // Initialise le minuteur lors du chargement de la page
+    </script>
 </body>
 </html>
-
