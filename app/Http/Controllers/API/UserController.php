@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\API;
+
 use App\Http\Controllers\Controller;
 use App\Models\Discussion;
 use App\Models\Like;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Models\Publicite;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -119,31 +121,53 @@ class UserController extends Controller
         return response()->json(['message' => 'Login endpoint'], 200);
     }
 
-
+ 
     public function login(Request $request)
     {
+        $request->validate([
+            'numero' => 'required',
+            'password' => 'required',
+        ]);
         $identifier = $request->input('numero');
+        $password = $request->input('password');
+        Log::info('Tentative de connexion avec : ', ['numero' => $identifier]);
         $field = filter_var($identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'numero';
-
         $credentials = [
             $field => $identifier,
-            'password' => $request->input('password'),
+            'password' => $password,
         ];
-
-        if (Auth::once($credentials)) {
-            $user = Auth::user();
+        $user = User::where($field, $identifier)->first();
+        if (!$user) {
+            Log::warning('Utilisateur non trouvé avec : ' . $identifier);
             return response()->json([
-                'user' => $user,
-                'message' => 'Authentification réussie'
-            ]);
+                'status' => false,
+                'message' => 'Utilisateur non trouvé.'
+            ], 404);
         }
-
-        return response()->json([
-            'error' => 'Identifiants incorrects',
-            'message' => 'Les informations d\'identification sont incorrectes.'
-        ], 401);
-    }
-
+        if (Auth::attempt($credentials)) {
+            Log::info('Utilisateur authentifié avec succès : ' . Auth::id());
+            // Supprimer les anciens tokens pour cet utilisateur (optionnel)
+            $user->tokens()->delete();
+            // Créer un nouveau token
+            $token = $user->createToken('AuthToken')->plainTextToken;
+            // Log the generated token
+            Log::info('Token généré pour l\'utilisateur ID : ' . $user->id . ' - Token : ' . $token);
+            return response()->json([
+                'status' => true,
+                'user' => $user,
+                'token' => $token,
+                'message' => 'Authentification réussie'
+            ], 200);
+        } else {
+            Log::warning('Échec de l\'authentification pour l\'utilisateur ID : ' . $user->id);
+            return response()->json([
+                'status' => false,
+                'message' => 'Les informations d\'identification sont incorrectes.'
+            ], 401);
+        }
+        
+}
+    
     public function logout()
     {
         Auth::logout();
@@ -153,58 +177,99 @@ class UserController extends Controller
 
     public function view(Request $request)
     {
-        $loggedInUser = auth()->user();
+        try {
+            // Récupérer l'utilisateur authentifié
+            $loggedInUser = auth()->user();
     
-        // Initialisation des résultats à null par défaut
-        $results = null;
+            // Vérifier si l'utilisateur est authentifié
+            if (!$loggedInUser) {
+                return response()->json(['message' => 'Utilisateur non authentifié.'], 401);
+            }
     
-        // Construire la requête de base
-        $usersQuery = User::where('role', 'nous')
-            ->where('active', 0)
-            ->where('id', '!=', $loggedInUser->id);
+            // Vérifier que les champs genre et looking_for de l'utilisateur connecté sont définis
+            if (is_null($loggedInUser->genre) || is_null($loggedInUser->looking_for)) {
+                return response()->json(['message' => 'Les champs genre ou looking_for ne sont pas définis pour l\'utilisateur connecté.'], 400);
+            }
     
-        // Ajouter les conditions de filtrage basées sur 'looking_for'
-        if ($loggedInUser->looking_for == 'lesdeux') {
-            $usersQuery->where(function ($query) {
-                $query->where('genre', 'homme')
-                      ->orWhere('genre', 'femme');
-            });
-        } else {
-            $usersQuery->where('genre', $loggedInUser->looking_for);
-        }
-    
-        // Ajouter la condition pour le genre de l'utilisateur
-        $usersQuery->where('looking_for', $loggedInUser->genre);
-    
-        // Exécuter la requête avec pagination
-        $users = $usersQuery->get();
-    
-        if ($users->isEmpty()) {
-            // Utilisateurs de secours si aucune correspondance trouvée
-            $fallbackUsers = User::where('role', 'nous')
+            // Construire la requête de base
+            $usersQuery = User::where('role', 'nous')
                 ->where('active', 0)
-                ->where('id', '!=', $loggedInUser->id)
-                ->get();
+                ->where('id', '!=', $loggedInUser->id);
+    
+            // Ajouter les conditions de filtrage basées sur 'looking_for'
+            if ($loggedInUser->looking_for == 'lesdeux') {
+                $usersQuery->where(function ($query) {
+                    $query->where('genre', 'homme')
+                        ->orWhere('genre', 'femme');
+                });
+            } else {
+                $usersQuery->where('genre', $loggedInUser->looking_for);
+            }
+    
+            // Ajouter la condition pour le genre de l'utilisateur
+            $usersQuery->where('looking_for', $loggedInUser->genre);
+    
+            // Exécuter la requête avec pagination
+            $users = $usersQuery->paginate(12);
+    
+            if ($users->isEmpty()) {
+                // Utilisateurs de secours si aucune correspondance trouvée
+                $fallbackUsers = User::where('role', 'nous')
+                    ->where('active', 0)
+                    ->where('id', '!=', $loggedInUser->id)
+                    ->where(function ($query) {
+                        $query->whereNotNull('photo1')
+                            ->orWhereNotNull('photo2')
+                            ->orWhereNotNull('photo3')
+                            ->orWhereNotNull('photo4')
+                            ->orWhereNotNull('photo5');
+                    })
+                    ->paginate(12);
+    
+                // Ajouter les liens de photos complets
+                $fallbackUsers->each(function ($user) {
+                    $photoFields = ['photo1', 'photo2', 'photo3', 'photo4', 'photo5'];
+                    foreach ($photoFields as $photoField) {
+                        if (!is_null($user->$photoField)) {
+                            $user->$photoField = url('storage/' . $user->$photoField);
+                        }
+                    }
+                });
+    
+                return response()->json([
+                    'fallbackUsers' => $fallbackUsers,
+                    'message' => 'Aucun résultat trouvé avec les filtres spécifiés.'
+                ]);
+            }
+    
+            // Ajouter les liens de photos complets
+            $users->each(function ($user) {
+                $photoFields = ['photo1', 'photo2', 'photo3', 'photo4', 'photo5'];
+                foreach ($photoFields as $photoField) {
+                    if (!is_null($user->$photoField)) {
+                        $user->$photoField = url('storage/' . $user->$photoField);
+                    }
+                }
+            });
     
             return response()->json([
-                'fallbackUsers' => $fallbackUsers,
-                'message' => 'Aucun résultat trouvé avec les filtres spécifiés.'
+                'users' => $users,
+                'message' => 'Liste des profils récupérée avec succès.'
             ]);
+        } catch (\Exception $e) {
+            // Gestion des erreurs
+            return response()->json([
+                'error' => 'Une erreur s\'est produite : ' . $e->getMessage()
+            ], 500);
         }
-    
-        return response()->json([
-            'users' => $users,
-            'message' => 'Liste des profils récupérée avec succès.'
-        ]);
     }
-    
 
     public function detail($userId)
     {
         $user = User::findOrFail($userId);
         return response()->json(['user' => $user], 200);
     }
-    
+
     public function update(Request $request)
     {
         $user = User::findOrFail($request->user_id);
@@ -223,96 +288,102 @@ class UserController extends Controller
         $user->eyes_color = $request->eyes_color;
         $user->about = $request->about;
         $user->interests = $request->interests;
-    
+
         $user->save();
-    
+
         return response()->json(['message' => 'Informations personnelles mises à jour avec succès.', 'user' => $user], 200);
     }
-    
 
-    public function updatePhotos(Request $request)
+    public function uploadImage(Request $request)
     {
-        $user = User::findOrFail($request->user_id);
-
-        if ($request->has('delete_photo1')) {
-            if ($user->photo1) {
-                Storage::delete($user->photo1);
-                $user->photo1 = null;
-            } else {
-                return response()->json([
-                    'error' => 'La photo 1 n\'existe pas.'
-                ], 404);
-            }
-        }
-        if ($request->has('delete_photo2')) {
-            if ($user->photo2) {
-                Storage::delete($user->photo2);
-                $user->photo2 = null;
-            } else {
-                return response()->json([
-                    'error' => 'La photo 2 n\'existe pas.'
-                ], 404);
-            }
-        }
-        if ($request->has('delete_photo3')) {
-            if ($user->photo3) {
-                Storage::delete($user->photo3);
-                $user->photo3 = null;
-            } else {
-                return response()->json([
-                    'error' => 'La photo 3 n\'existe pas.'
-                ], 404);
-            }
-        }
-        if ($request->has('delete_photo4')) {
-            if ($user->photo4) {
-                Storage::delete($user->photo4);
-                $user->photo4 = null;
-            } else {
-                return response()->json([
-                    'error' => 'La photo 4 n\'existe pas.'
-                ], 404);
-            }
-        }
-        if ($request->has('delete_photo5')) {
-            if ($user->photo5) {
-                Storage::delete($user->photo5);
-                $user->photo5 = null;
-            } else {
-                return response()->json([
-                    'error' => 'La photo 5 n\'existe pas.'
-                ], 404);
-            }
-        }
-
-        // Gestion de l'upload des nouvelles photos
-        if ($request->hasFile('photo1')) {
-            $imagePath = $request->file('photo1')->store('photos', 'public');
-            $user->photo1 = $imagePath;
-        }
-        if ($request->hasFile('photo2')) {
-            $imagePath = $request->file('photo2')->store('photos', 'public');
-            $user->photo2 = $imagePath;
-        }
-        if ($request->hasFile('photo3')) {
-            $imagePath = $request->file('photo3')->store('photos', 'public');
-            $user->photo3 = $imagePath;
-        }
-        if ($request->hasFile('photo4')) {
-            $imagePath = $request->file('photo4')->store('photos', 'public');
-            $user->photo4 = $imagePath;
-        }
-        if ($request->hasFile('photo5')) {
-            $imagePath = $request->file('photo5')->store('photos', 'public');
-            $user->photo5 = $imagePath;
-        }
-
-        $user->save();
-
-        return response()->json([
-            'message' => 'Photos mises à jour avec succès.'
+        // Valider la requête
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+        // Récupérer l'utilisateur connecté
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Utilisateur non authentifié.'
+            ], 401);
+        }
+        // Gérer le téléchargement de l'image
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imagePath = $image->store('photos', 'public');
+
+            // Tableau pour les champs de photos
+            $photoFields = ['photo1', 'photo2', 'photo3', 'photo4', 'photo5'];
+
+            // Chercher le premier champ photo disponible
+            $updated = false;
+            foreach ($photoFields as $photoField) {
+                if (is_null($user->$photoField)) {
+                    // Mettre à jour le champ trouvé
+                    $user->$photoField = $imagePath;
+                    $updated = true;
+                    break;
+                }
+            }
+            if ($updated) {
+                // Enregistrer les modifications
+                $user->save();
+
+                return response()->json([
+                    'status' => true,
+                    'user' => $user,
+                    'message' => 'Image téléchargée avec succès.',
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tous les champs de photos sont déjà remplis.',
+                ], 400);
+            }
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Aucun fichier téléchargé.',
+            ], 400);
+        }
     }
+    
+    public function checkPhotos(Request $request)
+    {
+        // Récupérer l'utilisateur connecté
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Utilisateur non authentifié.'
+            ], 401);
+        }
+
+        // Vérifier les champs de photos
+        $photoFields = ['photo1', 'photo2', 'photo3', 'photo4', 'photo5'];
+        $hasPhoto = false;
+
+        foreach ($photoFields as $photoField) {
+            if (!is_null($user->$photoField)) {
+                $hasPhoto = true;
+                break;
+            }
+        }
+
+        if ($hasPhoto) {
+            return response()->json([
+                'status' => true,
+                'message' => 'L\'utilisateur a au moins une photo.'
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Aucune photo trouvée pour cet utilisateur.'
+            ], 404);
+        }
+    }
+
 
     public function likeProfile($profile_id)
     {
@@ -360,7 +431,7 @@ class UserController extends Controller
         ]);
     }
 
-   public function mettreAJourPaiement(Request $request)
+    public function mettreAJourPaiement(Request $request)
     {
         $user = Auth::user();
 
