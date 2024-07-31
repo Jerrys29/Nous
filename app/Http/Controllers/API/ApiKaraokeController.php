@@ -1,20 +1,19 @@
 <?php
+namespace App\Http\Controllers\API;
 
-namespace App\Http\Controllers\Api;
-
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Paiements;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
-class KaraokeController extends Controller
+class ApiKaraokeController extends Controller
 {
     public function register(Request $request)
     {
-        // Validez les données du formulaire
         $request->validate([
             'name' => 'required|string',
             'password' => 'required|string',
@@ -29,17 +28,14 @@ class KaraokeController extends Controller
             'town' => 'required|string',
         ]);
 
-        // Nettoyez le numéro en supprimant les espaces en trop
         $cleanedNumero = preg_replace('/\s+/', '', $request->input('numero'));
 
         if (User::where('numero', $cleanedNumero)->exists()) {
             return response()->json(['error' => 'Impossible d\'utiliser ce numéro pour vous inscrire. Veuillez utiliser un autre numéro.'], 400);
         }
 
-        // Utilisez la fonction Hash::make pour hacher le mot de passe avant de l'enregistrer dans la base de données
         $hashedPassword = Hash::make($request->input('password'));
 
-        // Créez un nouvel utilisateur avec le rôle 'karaoke' et les données du formulaire
         $user = User::create([
             'name' => $request->input('name'),
             'password' => $hashedPassword,
@@ -51,19 +47,24 @@ class KaraokeController extends Controller
             'role' => 'karaoke',
         ]);
 
-        return response()->json(['success' => 'Ajoutez deux photos pour finaliser votre inscription.', 'user' => $user], 201);
+        return response()->json(['success' => 'Inscription réussie', 'userId' => $user->id], 201);
     }
 
-    public function show(Request $request)
+    public function show()
     {
-        $user = $request->user();
-        return response()->json(['user' => $user]);
+        $user = Auth::user();
+        return response()->json(['user' => $user], 200);
+    }
+
+    public function showRegistration()
+    {
+        return response()->json(['message' => 'Formulaire d\'inscription'], 200);
     }
 
     public function checkPhoneNumber($phoneNumber)
     {
         $exists = User::where('numero', $phoneNumber)->exists();
-        return response()->json(['exists' => $exists]);
+        return response()->json(['exists' => $exists], 200);
     }
 
     public function loginUser(Request $request)
@@ -75,9 +76,10 @@ class KaraokeController extends Controller
             $user = auth()->user();
 
             if ($user->active == 1) {
-                $token = $user->createToken('API Token')->plainTextToken; // Assurez-vous d'utiliser Sanctum ou Passport pour les tokens API
-                return response()->json(['token' => $token, 'user' => $user]);
+                $request->session()->regenerate();
+                return response()->json(['success' => 'Connexion réussie', 'role' => $user->role], 200);
             } else {
+                auth()->logout();
                 return response()->json(['error' => 'Votre compte n\'est pas actif. Veuillez revenir dans quelques heures.'], 403);
             }
         } else {
@@ -85,10 +87,23 @@ class KaraokeController extends Controller
         }
     }
 
-    public function showProfil(Request $request)
+    public function showprofil()
     {
-        $user = $request->user();
-        return response()->json(['user' => $user]);
+        $user = Auth::user();
+        $age = Carbon::parse($user->birthdate)->age;
+        return response()->json(['user' => $user, 'age' => $user->age], 200);
+    }
+
+    public function showUserProfile()
+    {
+        $user = Auth::user();
+
+        if ($user->role == 'karaoke' && $user->activity == 1) {
+            $age = Carbon::parse($user->birthdate)->age;
+            return response()->json(['user' => $user, 'age' => $age], 200);
+        } else {
+            return response()->json(['error' => 'Vous devez être connecté pour accéder à cette page.'], 403);
+        }
     }
 
     public function updateName(Request $request, $id)
@@ -105,7 +120,7 @@ class KaraokeController extends Controller
 
         $user->update($validatedData);
 
-        return response()->json(['success' => 'Nom mis à jour avec succès.']);
+        return response()->json(['success' => 'Nom mis à jour avec succès.'], 200);
     }
 
     public function updateNumero(Request $request, $id)
@@ -122,10 +137,10 @@ class KaraokeController extends Controller
 
         $user->update($validatedData);
 
-        return response()->json(['success' => 'Numéro mis à jour avec succès.']);
+        return response()->json(['success' => 'Numéro mis à jour avec succès.'], 200);
     }
 
-    public function updatetown(Request $request, $id)
+    public function updateTown(Request $request, $id)
     {
         $validatedData = $request->validate([
             'town' => 'required|string',
@@ -139,7 +154,7 @@ class KaraokeController extends Controller
 
         $user->update($validatedData);
 
-        return response()->json(['success' => 'Ville mise à jour avec succès.']);
+        return response()->json(['success' => 'Ville mise à jour avec succès.'], 200);
     }
 
     public function updatePseudo(Request $request, $id)
@@ -156,28 +171,33 @@ class KaraokeController extends Controller
 
         $user->update($validatedData);
 
-        return response()->json(['success' => 'Pseudo mis à jour avec succès.']);
+        return response()->json(['success' => 'Pseudo mis à jour avec succès.'], 200);
     }
 
     public function showAllKaraokeProfiles()
     {
         $users = User::where('role', 'karaoke')
-                    ->where('active', 1)
-                    ->get();
-        
-        return response()->json(['users' => $users]);
+                     ->where('active', 1)
+                     ->get();
+
+        foreach ($users as $user) {
+            $user->age = Carbon::parse($user->birthdate)->age;
+        }
+
+        return response()->json(['users' => $users], 200);
     }
 
     public function showKaraokeProfile($userId)
     {
         $user = User::findOrFail($userId);
-        return response()->json(['user' => $user]);
+        $age = Carbon::parse($user->birthdate)->age;
+        return response()->json(['user' => $user, 'age' => $age], 200);
     }
 
-    public function deco(Request $request)
+    public function Deco()
     {
         Auth::logout();
-        return response()->json(['success' => 'Déconnexion réussie.']);
+        return response()->json(['success' => 'Déconnexion réussie.'], 200);
     }
 
     public function processPayment(Request $request)
@@ -194,22 +214,19 @@ class KaraokeController extends Controller
             'phone' => $validatedData['phone'],
         ]);
 
-        return response()->json(['success' => 'Paiement traité avec succès.']);
+        return response()->json(['success' => 'Paiement traité avec succès.'], 200);
     }
 
     public function visiteur($userId)
     {
-        return response()->json(['userId' => $userId]);
+        return response()->json(['userId' => $userId], 200);
     }
 
-    public function visiteurs(Request $request, $userId)
+    public function Visiteurs(Request $request, $userId)
     {
         $request->validate([
             'name' => 'required|string',
-            'numero' => [
-                'required',
-                'string',
-            ],
+            'numero' => 'required|string',
         ]);
 
         $cleanedNumero = preg_replace('/\s+/', '', $request->input('numero'));
@@ -222,13 +239,13 @@ class KaraokeController extends Controller
             'role' => 'visiteur',
         ]);
 
-        return response()->json(['user' => $newUser, 'userPhoneNumber' => $user->numero]);
+        return response()->json(['newUser' => $newUser, 'userPhoneNumber' => $user->numero], 201);
     }
 
     public function showPhotoUploadForm($userId)
     {
         $user = User::findOrFail($userId);
-        return response()->json(['user' => $user]);
+        return response()->json(['user' => $user], 200);
     }
 
     public function storePhotos(Request $request)
@@ -245,6 +262,6 @@ class KaraokeController extends Controller
 
         $user->save();
 
-        return response()->json(['success' => 'Photos ajoutées avec succès.']);
+        return response()->json(['success' => 'Photos téléchargées avec succès.'], 200);
     }
 }
