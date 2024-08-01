@@ -185,12 +185,12 @@ Route::post('publicites/{id}/update','App\Http\Controllers\AdminController@updat
 Route::get('publicite/details','App\Http\Controllers\AdminController@showpub')->name('detailspub');
 Route::get('publicites/search','App\Http\Controllers\AdminController@search')->name('searchpub');
 
-Route::get('/mot-de-passe-oublie', 'App\Http\Controllers\ForgotPasswordController@showLinkRequestForm')->name('password.request');
-Route::post('/mot-de-passe-oublie', 'App\Http\Controllers\ForgotPasswordController@sendResetLinkEmail')->name('password.number');
-Route::get('/reinitialiser-mot-de-passe/{id}', 'App\Http\Controllers\ForgotPasswordController@showResetForm')->name('password.reset');
-Route::post('/reinitialiser-mot-de-passe/{id}', 'App\Http\Controllers\ForgotPasswordController@resetPassword')->name('password.update');
-Route::get('/sendsms', 'App\Http\Controllers\ForgotPasswordController@sendsms')->name('sendsms');
-Route::post('/verify-code', 'App\Http\Controllers\ForgotPasswordController@verifyCode')->name('verify.code');
+// Route::get('/mot-de-passe-oublie', 'App\Http\Controllers\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+// Route::post('/mot-de-passe-oublie', 'App\Http\Controllers\ForgotPasswordController@sendResetLinkEmail')->name('password.number');
+// Route::get('/reinitialiser-mot-de-passe/{id}', 'App\Http\Controllers\ForgotPasswordController@showResetForm')->name('password.reset');
+// Route::post('/reinitialiser-mot-de-passe/{id}', 'App\Http\Controllers\ForgotPasswordController@resetPassword')->name('password.update');
+// Route::get('/sendsms', 'App\Http\Controllers\ForgotPasswordController@sendsms')->name('sendsms');
+// Route::post('/verify-code', 'App\Http\Controllers\ForgotPasswordController@verifyCode')->name('verify.code');
 
 
 //karaokeforgetpassword
@@ -203,5 +203,12 @@ Route::post('/verify-information',  'App\Http\Controllers\ForgetPasswordControll
 
 Route::get('/password/reset/{id}',  'App\Http\Controllers\ForgetPasswordController@showResetForm')->name('password.reset');
 Route::post('/password/reset', 'App\Http\Controllers\ForgetPasswordController@resetPassword')->name('password.update');
+
+
+//karaoke photo d'inscription 
+Route::get('/upload-photos/{userId}', 'App\Http\Controllers\KaraokeController@showPhotoUploadForm')->name('upload.photo');
+
+Route::post('/store-photos', 'App\Http\Controllers\KaraokeController@storePhotos')->name('storePhotos');
+
 
    ?>

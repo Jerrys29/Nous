@@ -8,53 +8,56 @@ use App\Models\User;
 use App\Models\Paiements;
 use Illuminate\Support\Facades\Hash; // Assurez-vous d'importer la classe Hash
 use Illuminate\Validation\Rule; // Assurez-vous d'importer la classe Rule pour la validation
+use Carbon\Carbon; // Importer Carbon
+
 
 class KaraokeController extends Controller
 {
     public function register(Request $request)
     {
-        // Validez les données du formulaire
-        $request->validate([
-            'name' => 'required|string',
-            'password' => 'required|string',
-            'numero' => [
-                'required',
-                'string',
-                Rule::unique('users', 'numero'), // Vérifie si le numéro est unique dans la table users
-            ],
-            'pseudo' => 'required|string',
-            'birthdate' => 'required|date',
-            'birthplace' => 'required|string',
-            'town' => 'required|string',
-        ]);
-    
-        // Nettoyez le numéro en supprimant les espaces en trop
-        $cleanedNumero = preg_replace('/\s+/', '', $request->input('numero'));
-    
-        if (User::where('numero', $cleanedNumero)->exists()) {
-            $errorMessage = 'Impossible d\'utiliser ce numéro pour vous inscrire. Veuillez utiliser un autre numéro.';
-            return redirect()->route('inscription')->withErrors(['customError' => $errorMessage]);
-        }
-    
-        // Utilisez la fonction Hash::make pour hacher le mot de passe avant de l'enregistrer dans la base de données
-        $hashedPassword = Hash::make($request->input('password'));
-    
-        // Créez un nouvel utilisateur avec le rôle 'karaoke' et les données du formulaire
-        $user = User::create([
-            'name' => $request->input('name'),
-            'password' => $hashedPassword,
-            'numero' => $cleanedNumero, // Utilisez le numéro nettoyé
-            'pseudo' => $request->input('pseudo'),
-            'birthdate' => $request->input('birthdate'),
-            'birthplace' => $request->input('birthplace'),
-            'town' => $request->input('town'),
-            'role' => 'karaoke',
-        ]);
-    
-        // Redirigez ou effectuez d'autres actions après l'enregistrement
-    
-        return redirect()->route('connection')->with('success', 'Félicitation !! Votre compte sera activé dans les plus brefs délais. Revenez dans 24h.');
+    // Validez les données du formulaire
+    $request->validate([
+        'name' => 'required|string',
+        'password' => 'required|string',
+        'numero' => [
+            'required',
+            'string',
+            Rule::unique('users', 'numero'),
+        ],
+        'pseudo' => 'required|string',
+        'birthdate' => 'required|date',
+        'birthplace' => 'required|string',
+        'town' => 'required|string',
+    ]);
+
+    // Nettoyez le numéro en supprimant les espaces en trop
+    $cleanedNumero = preg_replace('/\s+/', '', $request->input('numero'));
+
+    if (User::where('numero', $cleanedNumero)->exists()) {
+        $errorMessage = 'Impossible d\'utiliser ce numéro pour vous inscrire. Veuillez utiliser un autre numéro.';
+        return redirect()->route('inscription')->withErrors(['customError' => $errorMessage]);
     }
+
+    // Utilisez la fonction Hash::make pour hacher le mot de passe avant de l'enregistrer dans la base de données
+    $hashedPassword = Hash::make($request->input('password'));
+
+    // Créez un nouvel utilisateur avec le rôle 'karaoke' et les données du formulaire
+    $user = User::create([
+        'name' => $request->input('name'),
+        'password' => $hashedPassword,
+        'numero' => $cleanedNumero,
+        'pseudo' => $request->input('pseudo'),
+        'birthdate' => $request->input('birthdate'),
+        'birthplace' => $request->input('birthplace'),
+        'town' => $request->input('town'),
+        'role' => 'karaoke',
+    ]);
+
+    // Redirigez vers la page de téléchargement de photo
+    return redirect()->route('upload.photo', ['userId' => $user->id])->with('success', 'Ajoutez deux photos pour finaliser votre inscription.');
+
+    }
+
     
 
     public function show()
@@ -115,23 +118,20 @@ class KaraokeController extends Controller
 
     public function showprofil()
     { 
-        // Récupérer l'utilisateur connecté
         $user = Auth::user();
+        $age = Carbon::parse($user->birthdate)->age; // Calcul de l'âge
 
-        return view('Karaoke/profilperso',compact('user'));
+        return view('Karaoke/profilperso', compact('user', 'age'));
     }
 
 
     public function showUserProfile() {
-        // Récupérer l'utilisateur connecté:
         $user = Auth::user();
-    
-        // Vérifier si l'utilisateur est connecté
+
         if ($user->role == 'karaoke' && $user->activity == 1) {
-            // L'utilisateur est connecté, vous pouvez maintenant utiliser $user pour accéder à ses propriétés
-            return view('profilperso',  compact('user'));
+            $age = Carbon::parse($user->birthdate)->age; // Calcul de l'âge
+            return view('profilperso', compact('user', 'age'));
         } else {
-            // Rediriger ou afficher un message d'erreur si l'utilisateur n'est pas connecté
             return redirect('/connection')->with('error', 'Vous devez être connecté pour accéder à cette page.');
         }
     }
@@ -205,16 +205,22 @@ class KaraokeController extends Controller
     }
 
     public function showAllKaraokeProfiles()
-    {
-        // Récupérer tous les utilisateurs ayant le rôle "karaoke" et dont le compte est activé
-        // avec au moins un profil
-        $users = User::where('role', 'karaoke')
-                    ->where('active', 1)
-                    ->get();
-        
-        // Passer les données à la vue
-        return view('Karaoke.index', compact('users'));
+{
+    // Récupérer tous les utilisateurs ayant le rôle "karaoke" et dont le compte est activé
+    // avec au moins un profil
+    $users = User::where('role', 'karaoke')
+                ->where('active', 1)
+                ->get();
+
+    // Calculer l'âge pour chaque utilisateur
+    foreach ($users as $user) {
+        $user->age = Carbon::parse($user->birthdate)->age;
     }
+
+    // Passer les données à la vue
+    return view('Karaoke.index', ['users' => $users]);
+}
+
     
     
     
@@ -223,9 +229,8 @@ class KaraokeController extends Controller
         public function showKaraokeProfile($userId)
         {
             $user = User::findOrFail($userId);
-        
-            // Afficher la vue même si toutes les colonnes de photos sont null
-            return view('Karaoke/profilevue', ['user' => $user]);
+            $age = Carbon::parse($user->birthdate)->age; // Calcul de l'âge
+            return view('Karaoke/profilevue', compact('user', 'age'));
         }
         
 
@@ -310,7 +315,30 @@ class KaraokeController extends Controller
             return view('Karaoke/modal', ['user' => $newUser, 'userPhoneNumber' => $userPhoneNumber]);
         }
         
-            
+       
 
      
+    public function showPhotoUploadForm($userId)
+    {
+        $user = User::findOrFail($userId);
+        return view('Karaoke.uploadphotos', ['user' => $user]);
+    }
+    
+    public function storePhotos(Request $request)
+    {
+        $user = User::find($request->user_id);
+    
+        for ($i = 1; $i <= 2; $i++) {
+            $photoKey = 'photo' . $i;
+            if ($request->hasFile($photoKey)) {
+                $imagePath = $request->file($photoKey)->store('photos', 'public');
+                $user->{$photoKey} = $imagePath;
+            }
+        }
+    
+        $user->save();
+    
+        return redirect()->route('connection')->with('success', 'Félicitation !! Votre compte sera activé dans les plus brefs délais. Revenez dans 24h.');
+    }
+    
 }

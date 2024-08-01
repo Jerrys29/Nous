@@ -28,6 +28,8 @@
                 </div>
                 <div class="card-body text-center">
                   <h5 class="card-title">{{ $user->pseudo }}</h5>
+                   <!-- Affichage de l'âge -->
+                   <p class="card-text">{{ $user->age }} ans</p>
                   <!-- Affiche la ville de l'utilisateur -->
                   <p class="card-text">{{ $user->town }}</p>
                   <div class="like-container">

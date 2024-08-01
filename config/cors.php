@@ -1,5 +1,4 @@
 <?php
-
 return [
 
     /*
@@ -17,13 +16,13 @@ return [
 
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
-    'allowed_origins' => ['https://www.nous-meet.com', 'http://localhost', 'http://127.0.0.1:8000'],
+    'allowed_methods' => ['*'], // Autoriser toutes les méthodes (GET, POST, PUT, DELETE, etc.)
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => ['*'], // Autoriser toutes les origines
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['*'],
+    'allowed_headers' => ['*'], // Autoriser tous les en-têtes
 
     'exposed_headers' => [],
 
@@ -32,3 +31,4 @@ return [
     'supports_credentials' => false,
 
 ];
+

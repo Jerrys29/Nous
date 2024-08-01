@@ -4,6 +4,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\API\ApiKaraokeController;
+use App\Http\Controllers\API\NousController;
+use App\Http\Controllers\API\ApiForgetPasswordController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -57,3 +61,34 @@ Route::post('/unlike-profile/{profile_id}', [UserController::class, 'unlikeProfi
 Route::get('/mettre-a-jour-paiement', [UserController::class, 'mettreAJourPaiement'])->middleware('auth:sanctum');
 // Search route
 Route::get('/search', [UserController::class, 'search'])->name('api.search')->middleware('auth:sanctum');
+
+// Karaoke routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('kprofil', [ApiKaraokeController::class, 'showprofil'])->name('api.kprofil');
+    Route::post('/update-profile', [ApiKaraokeController::class, 'updateProfile'])->name('api.update-profile');
+    Route::post('/karaoke/update-name/{id}', [ApiKaraokeController::class, 'updateName'])->name('api.update_name');
+    Route::post('/karaoke/update-numero/{id}', [ApiKaraokeController::class, 'updateNumero'])->name('api.update_numero');
+    Route::post('/karaoke/update-pseudo/{id}', [ApiKaraokeController::class, 'updatePseudo'])->name('api.update_pseudo');
+    Route::post('/karaoke/update-town/{id}', [ApiKaraokeController::class, 'updateTown'])->name('api.update-town');
+    Route::post('/payment', [ApiKaraokeController::class, 'processPayment'])->name('api.payment.form');
+    Route::post('/deconnexion', [ApiKaraokeController::class, 'Deco'])->name('api.deconnexion');
+    Route::get('/upload-photos/{userId}', [ApiKaraokeController::class, 'showPhotoUploadForm'])->name('api.upload.photo');
+    Route::post('/connection', [ApiKaraokeController::class, 'loginUser'])->name('api.logins');
+
+});
+
+Route::get('/index', [ApiKaraokeController::class, 'showAllKaraokeProfiles'])->name('api.karaokeusers');
+Route::post('InscriKaraoke', [ApiKaraokeController::class, 'register'])->name('api.filleinscrip');
+Route::post('/visiteurs/{id}', [ApiKaraokeController::class, 'Visiteurs'])->name('api.paiementV');
+Route::get('/Karaokeprofils/{userId}', [ApiKaraokeController::class, 'showKaraokeProfile'])->name('api.Karaokeprofils');
+Route::get('/number', [ApiForgetPasswordController::class, 'forgetpassword'])->name('api.mdp');
+Route::get('/checknumber', [ApiForgetPasswordController::class, 'checknumber'])->name('api.check');
+Route::get('/quiz/{numero}', [ApiForgetPasswordController::class, 'showQuiz'])->name('api.quiz.show');
+Route::post('/verify-information', [ApiForgetPasswordController::class, 'verifyInformation'])->name('api.verify.information');
+Route::get('/password/reset/{id}', [ApiForgetPasswordController::class, 'showResetForm'])->name('api.password.reset');
+Route::post('/password/reset', [ApiForgetPasswordController::class, 'resetPassword'])->name('api.password.update');
+Route::post('/store-photos', [ApiKaraokeController::class, 'storePhotos'])->name('api.storePhotos');
+
+// Authentification publique
+Route::get('/check-phone-number/{phoneNumber}', [ApiKaraokeController::class, 'checkPhoneNumber']);
+Route::post('InscriKaraoke', [ApiKaraokeController::class, 'register'])->name('api.filleinscrip');
