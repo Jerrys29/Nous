@@ -55,15 +55,5 @@ Route::post('/unlike-profile/{profile_id}', [UserController::class, 'unlikeProfi
 
 // Payment update route
 Route::get('/mettre-a-jour-paiement', [UserController::class, 'mettreAJourPaiement'])->middleware('auth:sanctum');
-
-// Chat routes
-Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('api.chat.send')->middleware('auth:sanctum');
-Route::post('/discussion', [ChatController::class, 'store'])->name('api.discussion.store')->middleware('auth:sanctum');
-Route::post('/envoi', [ChatController::class, 'send'])->name('api.discussion.send')->middleware('auth:sanctum');
-Route::get('/get-new-messages/{lastMessageId}', [ChatController::class, 'getNewMessages'])->name('api.getNewMessages')->middleware('auth:sanctum');
-Route::post('/envoyerMessage', [ChatController::class, 'envoyerMessage'])->name('api.envoyerMessage')->middleware('auth:sanctum');
-Route::get('/messages', [ChatController::class, 'view'])->name('api.messages')->middleware('auth:sanctum');
-Route::get('/detail/{namesender}/{numero}', [ChatController::class, 'viewDetail'])->name('api.detail')->middleware('auth:sanctum');
-
 // Search route
 Route::get('/search', [UserController::class, 'search'])->name('api.search')->middleware('auth:sanctum');
