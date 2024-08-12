@@ -8,100 +8,133 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Paiements;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
+
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use DateTime;
+
+use Illuminate\Support\Facades\DB;
 
 class ApiKaraokeController extends Controller
 {
     public function register(Request $request)
-    {
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'password' => 'required|string',
-            'numero' => [
-                'required',
-                'string',
-                Rule::unique('users', 'numero'),
-            ],
-            'pseudo' => 'required|string',
-            'birthdate' => 'required|date',
-            'birthplace' => 'required|string',
-            'town' => 'required|string',
-        ]);
+{
+    // Validation des données d'entrée
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string',
+        'password' => 'required|string|min:8',
+        'numero' => [
+            'required',
+            'string',
+            Rule::unique('users', 'numero'),
+        ],
+        'pseudo' => 'required|string',
+        'birthdate' => 'required|date|before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
+        'birthplace' => 'required|string',
+        'town' => 'required|string',
+    ]);
 
-        $cleanedNumero = preg_replace('/\s+/', '', $validatedData['numero']);
-
-        if (User::where('numero', $cleanedNumero)->exists()) {
-            return response()->json(['error' => 'Ce numéro est déjà utilisé.'], 400);
-        }
-
-        $hashedPassword = Hash::make($validatedData['password']);
-
-        $user = User::create([
-            'name' => $validatedData['name'],
-            'password' => $hashedPassword,
-            'numero' => $cleanedNumero,
-            'pseudo' => $validatedData['pseudo'],
-            'birthdate' => $validatedData['birthdate'],
-            'birthplace' => $validatedData['birthplace'],
-            'town' => $validatedData['town'],
-            'role' => 'karaoke',
-        ]);
-
-        $token = $user->createToken('Nous&Karaoke')->plainTextToken;
-
+    // Vérification des erreurs de validation
+    if ($validator->fails()) {
         return response()->json([
-            'success' => 'Inscription réussie',
-            'token' => $token
-        ], 201);
+            'error' => 'Validation échouée',
+            'messages' => $validator->errors()
+        ], 400);
     }
 
-    public function show()
-    {
-        return response()->json(['user' => Auth::user()], 200);
+    $validatedData = $validator->validated();
+
+    $cleanedNumero = preg_replace('/\s+/', '', $validatedData['numero']);
+
+    // Vérification si le numéro existe déjà
+    if (User::where('numero', $cleanedNumero)->exists()) {
+        return response()->json(['error' => 'Ce numéro est déjà utilisé.'], 400);
     }
 
-    public function showRegistration()
-    {
-        return response()->json(['message' => 'Formulaire d\'inscription'], 200);
-    }
+    // Hachage du mot de passe
+    $hashedPassword = Hash::make($validatedData['password']);
 
-    public function checkPhoneNumber($phoneNumber)
-    {
-        $exists = User::where('numero', $phoneNumber)->exists();
-        return response()->json(['exists' => $exists], 200);
-    }
+    // Création de l'utilisateur
+    $user = User::create([
+        'name' => $validatedData['name'],
+        'password' => $hashedPassword,
+        'numero' => $cleanedNumero,
+        'pseudo' => $validatedData['pseudo'],
+        'birthdate' => $validatedData['birthdate'],
+        'birthplace' => $validatedData['birthplace'],
+        'town' => $validatedData['town'],
+        'role' => 'karaoke',
+    ]);
 
-    public function loginUser(Request $request)
-    {
-        $validatedData = $request->validate([
-            'numero' => 'required|string',
-            'password' => 'required|string',
-        ]);
+    // Création du token d'authentification
+    $token = $user->createToken('Nous&Karaoke')->plainTextToken;
 
-        $credentials = [
-            'numero' => preg_replace('/\s+/', '', $validatedData['numero']),
-            'password' => $validatedData['password'],
-        ];
+    // Retourner une réponse JSON avec succès et les informations de l'utilisateur
+    return response()->json([
+        'success' => 'Inscription réussie',
+        'user' => $user,
+        'token' => $token
+    ], 201);
+}
 
-        if (auth()->attempt($credentials)) {
-            $user = auth()->user();
+public function loginUser(Request $request)
+{
+    // Validation des données d'entrée
+    $request->validate([
+        'numero' => 'required|string',
+        'password' => 'required|string',
+    ]);
 
-            if ($user->active == 1) {
-                $token = $user->createToken('Nous&Karaoke')->plainTextToken;
+    // Nettoyage du numéro pour éviter les espaces
+    $credentials = $request->only('numero', 'password');
+    $credentials['numero'] = preg_replace('/\s+/', '', $credentials['numero']);
+
+    // Tentative de connexion
+    if (auth()->attempt($credentials)) {
+        $user = auth()->user();
+
+        // Vérification si l'utilisateur est actif
+        if ($user->active == 1) {
+            // Gestion des rôles
+            if ($user->role == 'karaoke' || $user->role == 'admin') {
+                // Création du token d'authentification
+                $token = $user->createToken('AuthToken')->plainTextToken;
+
+                // Retourner une réponse JSON avec succès, informations utilisateur et token
                 return response()->json([
-                    'success' => 'Connexion réussie',
-                    'role' => $user->role,
-                    'token' => $token
+                    'status' => true,
+                    'user' => $user,
+                    'token' => $token,
+                    'message' => 'Authentification réussie'
                 ], 200);
             } else {
+                // Si le rôle ne correspond pas, échec de la connexion
                 auth()->logout();
-                return response()->json(['error' => 'Votre compte n\'est pas actif.'], 403);
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Erreur de connexion. Rôle non autorisé.'
+                ], 403);
             }
         } else {
-            return response()->json(['error' => 'Identifiants invalides'], 401);
+            // Si l'utilisateur n'est pas actif
+            auth()->logout();
+            return response()->json([
+                'status' => false,
+                'message' => 'Votre compte n\'est pas actif. Veuillez revenir dans quelques heures.'
+            ], 403);
         }
+    } else {
+        // Authentification échouée
+        return response()->json([
+            'status' => false,
+            'message' => 'Identifiants invalides'
+        ], 401);
     }
+}
+
 
     public function showprofil()
     {
@@ -223,24 +256,31 @@ class ApiKaraokeController extends Controller
 
     public function storePhotos(Request $request)
     {
+        // Validation des données d'entrée
         $validatedData = $request->validate([
             'user_id' => 'required|exists:users,id',
             'photo1' => 'nullable|image|max:2048',
-            'photo2' => 'nullable|image|max:2048',
         ]);
-
-        $user = User::find($validatedData['user_id']);
-
-        for ($i = 1; $i <= 2; $i++) {
-            $photoKey = 'photo' . $i;
-            if ($request->hasFile($photoKey)) {
-                $imagePath = $request->file($photoKey)->store('photos', 'public');
-                $user->{$photoKey} = $imagePath;
+    
+        try {
+            // Trouver l'utilisateur
+            $user = User::find($validatedData['user_id']);
+    
+            // Vérifier si un fichier photo a été fourni
+            if ($request->hasFile('photo')) {
+                // Stocker l'image
+                $imagePath = $request->file('photo')->store('photos', 'public');
+                $user->photo = $imagePath; // Assurez-vous que le champ photo existe dans votre modèle User
             }
+    
+            // Sauvegarder les modifications de l'utilisateur
+            $user->save();
+    
+            return response()->json(['success' => 'Photo téléchargée avec succès.'], 200);
+        } catch (\Exception $e) {
+            // Retourner un message d'erreur en cas d'exception
+            return response()->json(['error' => 'Erreur lors du téléchargement de la photo.', 'message' => $e->getMessage()], 500);
         }
-
-        $user->save();
-
-        return response()->json(['success' => 'Photos téléchargées avec succès.'], 200);
     }
+    
 }
