@@ -71,9 +71,8 @@ Route::get('/detail/{namesender}/{numero}', [ChatController::class, 'viewDetail'
 
 // Search route
 Route::get('/search', [UserController::class, 'search'])->name('api.search')->middleware('auth:sanctum');
-
 // Karaoke routes
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () { 
     Route::get('kprofil', [ApiKaraokeController::class, 'showprofil'])->name('api.kprofil');
     Route::post('/update-profile', [ApiKaraokeController::class, 'updateProfile'])->name('api.update-profile');
     Route::post('/karaoke/update-name/{id}', [ApiKaraokeController::class, 'updateName'])->name('api.update_name');
@@ -83,8 +82,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/payment', [ApiKaraokeController::class, 'processPayment'])->name('api.payment.form');
     Route::post('/deconnexion', [ApiKaraokeController::class, 'Deco'])->name('api.deconnexion');
     Route::get('/upload-photos/{userId}', [ApiKaraokeController::class, 'showPhotoUploadForm'])->name('api.upload.photo');
-    Route::post('/connection', [ApiKaraokeController::class, 'loginUser'])->name('api.logins');
-
 });
 
 Route::get('/index', [ApiKaraokeController::class, 'showAllKaraokeProfiles'])->name('api.karaokeusers');
@@ -102,3 +99,4 @@ Route::post('/store-photos', [ApiKaraokeController::class, 'storePhotos'])->name
 // Authentification publique
 Route::get('/check-phone-number/{phoneNumber}', [ApiKaraokeController::class, 'checkPhoneNumber']);
 Route::post('InscriKaraoke', [ApiKaraokeController::class, 'register'])->name('api.filleinscrip');
+Route::post('/connection', [ApiKaraokeController::class, 'loginUser'])->name('api.logins');

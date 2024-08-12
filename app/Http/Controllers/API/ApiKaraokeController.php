@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class ApiKaraokeController extends Controller
 {
     public function register(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required|string',
             'password' => 'required|string',
             'numero' => [
@@ -28,32 +29,36 @@ class ApiKaraokeController extends Controller
             'town' => 'required|string',
         ]);
 
-        $cleanedNumero = preg_replace('/\s+/', '', $request->input('numero'));
+        $cleanedNumero = preg_replace('/\s+/', '', $validatedData['numero']);
 
         if (User::where('numero', $cleanedNumero)->exists()) {
-            return response()->json(['error' => 'Impossible d\'utiliser ce numéro pour vous inscrire. Veuillez utiliser un autre numéro.'], 400);
+            return response()->json(['error' => 'Ce numéro est déjà utilisé.'], 400);
         }
 
-        $hashedPassword = Hash::make($request->input('password'));
+        $hashedPassword = Hash::make($validatedData['password']);
 
         $user = User::create([
-            'name' => $request->input('name'),
+            'name' => $validatedData['name'],
             'password' => $hashedPassword,
             'numero' => $cleanedNumero,
-            'pseudo' => $request->input('pseudo'),
-            'birthdate' => $request->input('birthdate'),
-            'birthplace' => $request->input('birthplace'),
-            'town' => $request->input('town'),
+            'pseudo' => $validatedData['pseudo'],
+            'birthdate' => $validatedData['birthdate'],
+            'birthplace' => $validatedData['birthplace'],
+            'town' => $validatedData['town'],
             'role' => 'karaoke',
         ]);
 
-        return response()->json(['success' => 'Inscription réussie', 'userId' => $user->id], 201);
+        $token = $user->createToken('Nous&Karaoke')->plainTextToken;
+
+        return response()->json([
+            'success' => 'Inscription réussie',
+            'token' => $token
+        ], 201);
     }
 
     public function show()
     {
-        $user = Auth::user();
-        return response()->json(['user' => $user], 200);
+        return response()->json(['user' => Auth::user()], 200);
     }
 
     public function showRegistration()
@@ -69,18 +74,29 @@ class ApiKaraokeController extends Controller
 
     public function loginUser(Request $request)
     {
-        $credentials = $request->only('numero', 'password');
-        $credentials['numero'] = preg_replace('/\s+/', '', $credentials['numero']);
+        $validatedData = $request->validate([
+            'numero' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        $credentials = [
+            'numero' => preg_replace('/\s+/', '', $validatedData['numero']),
+            'password' => $validatedData['password'],
+        ];
 
         if (auth()->attempt($credentials)) {
             $user = auth()->user();
 
             if ($user->active == 1) {
-                $request->session()->regenerate();
-                return response()->json(['success' => 'Connexion réussie', 'role' => $user->role], 200);
+                $token = $user->createToken('Nous&Karaoke')->plainTextToken;
+                return response()->json([
+                    'success' => 'Connexion réussie',
+                    'role' => $user->role,
+                    'token' => $token
+                ], 200);
             } else {
                 auth()->logout();
-                return response()->json(['error' => 'Votre compte n\'est pas actif. Veuillez revenir dans quelques heures.'], 403);
+                return response()->json(['error' => 'Votre compte n\'est pas actif.'], 403);
             }
         } else {
             return response()->json(['error' => 'Identifiants invalides'], 401);
@@ -91,87 +107,44 @@ class ApiKaraokeController extends Controller
     {
         $user = Auth::user();
         $age = Carbon::parse($user->birthdate)->age;
-        return response()->json(['user' => $user, 'age' => $user->age], 200);
+        return response()->json(['user' => $user, 'age' => $age], 200);
     }
 
-    public function showUserProfile()
+    public function updateProfileField(Request $request, $id, $field)
     {
-        $user = Auth::user();
+        $validatedData = $request->validate([
+            $field => 'required|string',
+        ]);
 
-        if ($user->role == 'karaoke' && $user->activity == 1) {
-            $age = Carbon::parse($user->birthdate)->age;
-            return response()->json(['user' => $user, 'age' => $age], 200);
-        } else {
-            return response()->json(['error' => 'Vous devez être connecté pour accéder à cette page.'], 403);
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['error' => 'Utilisateur non trouvé.'], 404);
         }
+
+        $user->update($validatedData);
+
+        return response()->json(['success' => ucfirst($field) . ' mis à jour avec succès.'], 200);
     }
 
     public function updateName(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-        ]);
-
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json(['error' => 'Utilisateur non trouvé.'], 404);
-        }
-
-        $user->update($validatedData);
-
-        return response()->json(['success' => 'Nom mis à jour avec succès.'], 200);
+        return $this->updateProfileField($request, $id, 'name');
     }
 
     public function updateNumero(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'numero' => 'required|string',
-        ]);
-
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json(['error' => 'Utilisateur non trouvé.'], 404);
-        }
-
-        $user->update($validatedData);
-
-        return response()->json(['success' => 'Numéro mis à jour avec succès.'], 200);
+        return $this->updateProfileField($request, $id, 'numero');
     }
 
     public function updateTown(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'town' => 'required|string',
-        ]);
-
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json(['error' => 'Utilisateur non trouvé.'], 404);
-        }
-
-        $user->update($validatedData);
-
-        return response()->json(['success' => 'Ville mise à jour avec succès.'], 200);
+        return $this->updateProfileField($request, $id, 'town');
     }
 
     public function updatePseudo(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'pseudo' => 'required|string',
-        ]);
-
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json(['error' => 'Utilisateur non trouvé.'], 404);
-        }
-
-        $user->update($validatedData);
-
-        return response()->json(['success' => 'Pseudo mis à jour avec succès.'], 200);
+        return $this->updateProfileField($request, $id, 'pseudo');
     }
 
     public function showAllKaraokeProfiles()
@@ -224,17 +197,17 @@ class ApiKaraokeController extends Controller
 
     public function Visiteurs(Request $request, $userId)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required|string',
             'numero' => 'required|string',
         ]);
 
-        $cleanedNumero = preg_replace('/\s+/', '', $request->input('numero'));
+        $cleanedNumero = preg_replace('/\s+/', '', $validatedData['numero']);
 
         $user = User::findOrFail($userId);
 
         $newUser = User::create([
-            'name' => $request->input('name'),
+            'name' => $validatedData['name'],
             'numero' => $cleanedNumero,
             'role' => 'visiteur',
         ]);
@@ -250,7 +223,13 @@ class ApiKaraokeController extends Controller
 
     public function storePhotos(Request $request)
     {
-        $user = User::find($request->user_id);
+        $validatedData = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'photo1' => 'nullable|image|max:2048',
+            'photo2' => 'nullable|image|max:2048',
+        ]);
+
+        $user = User::find($validatedData['user_id']);
 
         for ($i = 1; $i <= 2; $i++) {
             $photoKey = 'photo' . $i;
