@@ -50,17 +50,24 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware('auth:sanctum')->post('/updatephotos', [UserController::class, 'updatePhotos'])->name('api.updatePhotos');
 
+Route::get('/user/{id}', [UserController::class, 'show'])->name('api.user.show');
+Route::get('user/{id}/count-photos', [UserController::class, 'countUserPhotos']);
+
 // Notification routes
 Route::get('/notification', [UserController::class, 'showNotifications'])->name('api.notification')->middleware('auth:sanctum');
 
 // Like/Unlike profile routes
-Route::post('/like-profile/{profile_id}', [UserController::class, 'likeProfile'])->name('api.like-profile')->middleware('auth:sanctum');
+Route::post('/like-profile/{id}', [UserController::class, 'likeProfile'])->name('api.like-profile')->middleware('auth:sanctum');
 Route::post('/unlike-profile/{profile_id}', [UserController::class, 'unlikeProfile'])->name('api.unlike-profile')->middleware('auth:sanctum');
 
 // Payment update route
 Route::get('/mettre-a-jour-paiement', [UserController::class, 'mettreAJourPaiement'])->middleware('auth:sanctum');
 // Search route
 Route::get('/search', [UserController::class, 'search'])->name('api.search')->middleware('auth:sanctum');
+
+
+
+
 
 // Karaoke routes
 Route::middleware('auth:sanctum')->group(function () {
