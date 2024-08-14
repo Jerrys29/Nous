@@ -21,64 +21,73 @@ use Illuminate\Support\Facades\DB;
 class ApiKaraokeController extends Controller
 {
     public function register(Request $request)
-{
-    // Validation des données d'entrée
-    $validator = Validator::make($request->all(), [
-        'name' => 'required|string',
-        'password' => 'required|string|min:8',
-        'numero' => [
-            'required',
-            'string',
-            Rule::unique('users', 'numero'),
-        ],
-        'pseudo' => 'required|string',
-        'birthdate' => 'required|date|before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
-        'birthplace' => 'required|string',
-        'town' => 'required|string',
-    ]);
+    {
+        // Validation des données d'entrée
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'password' => 'required|string|min:8',
+            'numero' => [
+                'required',
+                'string',
+                Rule::unique('users', 'numero'),
+            ],
+            'pseudo' => 'required|string',
+            'birthdate' => 'required|date|before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
+            'birthplace' => 'required|string',
+            'town' => 'required|string',
+            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1300', // Validation pour l'image
+        ]);
 
-    // Vérification des erreurs de validation
-    if ($validator->fails()) {
+        // Vérification des erreurs de validation
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => 'Validation échouée',
+                'messages' => $validator->errors()
+            ], 400);
+        }
+
+        $validatedData = $validator->validated();
+
+        $cleanedNumero = preg_replace('/\s+/', '', $validatedData['numero']);
+
+        // Vérification si le numéro existe déjà
+        if (User::where('numero', $cleanedNumero)->exists()) {
+            return response()->json(['error' => 'Ce numéro est déjà utilisé.'], 400);
+        }
+
+        // Hachage du mot de passe
+        $hashedPassword = Hash::make($validatedData['password']);
+
+        // Création de l'utilisateur
+        $user = User::create([
+            'name' => $validatedData['name'],
+            'password' => $hashedPassword,
+            'numero' => $cleanedNumero,
+            'pseudo' => $validatedData['pseudo'],
+            'birthdate' => $validatedData['birthdate'],
+            'birthplace' => $validatedData['birthplace'],
+            'town' => $validatedData['town'],
+            'role' => 'karaoke',
+        ]);
+
+        // Gestion de l'image de profil si elle est présente
+        if ($request->hasFile('profile_photo')) {
+            $photo = $request->file('profile_photo');
+            $photoPath = $photo->store('profile_photos', 'public'); // Stockage de l'image
+            $user->photo1 = $photoPath; // Sauvegarde du chemin de l'image
+            $user->save(); // Mise à jour de l'utilisateur avec le chemin de l'image
+        }
+
+        // Création du token d'authentification
+        $token = $user->createToken('Nous&Karaoke')->plainTextToken;
+
+        // Retourner une réponse JSON avec succès et les informations de l'utilisateur
         return response()->json([
-            'error' => 'Validation échouée',
-            'messages' => $validator->errors()
-        ], 400);
+            'success' => 'Inscription réussie',
+            'user' => $user,
+            'token' => $token
+        ], 201);
     }
-
-    $validatedData = $validator->validated();
-
-    $cleanedNumero = preg_replace('/\s+/', '', $validatedData['numero']);
-
-    // Vérification si le numéro existe déjà
-    if (User::where('numero', $cleanedNumero)->exists()) {
-        return response()->json(['error' => 'Ce numéro est déjà utilisé.'], 400);
-    }
-
-    // Hachage du mot de passe
-    $hashedPassword = Hash::make($validatedData['password']);
-
-    // Création de l'utilisateur
-    $user = User::create([
-        'name' => $validatedData['name'],
-        'password' => $hashedPassword,
-        'numero' => $cleanedNumero,
-        'pseudo' => $validatedData['pseudo'],
-        'birthdate' => $validatedData['birthdate'],
-        'birthplace' => $validatedData['birthplace'],
-        'town' => $validatedData['town'],
-        'role' => 'karaoke',
-    ]);
-
-    // Création du token d'authentification
-    $token = $user->createToken('Nous&Karaoke')->plainTextToken;
-
-    // Retourner une réponse JSON avec succès et les informations de l'utilisateur
-    return response()->json([
-        'success' => 'Inscription réussie',
-        'user' => $user,
-        'token' => $token
-    ], 201);
-}
 
 public function loginUser(Request $request)
 {
