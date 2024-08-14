@@ -328,11 +328,15 @@ public function show($id)
                 $filledPhotosCount++;
             }
         }
-        
+
+        // Générer l'URL WhatsApp avec le numéro de téléphone de l'utilisateur
+        $whatsappUrl = "https://wa.me/{$user->numero}";
+
         return response()->json([
             'status' => true,
             'user' => $user,
             'filled_photos_count' => $filledPhotosCount,
+            'whatsapp_url' => $whatsappUrl,
             'message' => 'Détails du profil récupérés avec succès.'
         ]);
     } catch (ModelNotFoundException $e) {
@@ -348,6 +352,7 @@ public function show($id)
         ], 500);
     }
 }
+
 
 public function countUserPhotos($id)
 {
@@ -829,6 +834,8 @@ public function countUserPhotos($id)
             'message' => 'Profil désaimé avec succès.',
         ]);
     }
+
+    
     public function processPaiement(Request $request)
     {
         try {
@@ -847,7 +854,7 @@ public function countUserPhotos($id)
             // Intégrer l'API Kkiapay
             $kkiapayUrl = 'https://api.kkiapay.me/api/v1/transactions';
             $apikey = 'de9c4e671f1c676a8613e0a567252e182c8fc52c';
-            $callbackUrl = route('mettreAJourPaiement');
+            $callbackUrl = 'Homepage';
 
             $response = Http::withHeaders([
                 'Authorization' => "Bearer $apikey"
@@ -865,6 +872,7 @@ public function countUserPhotos($id)
             if ($response->successful() && $responseBody['status'] == 'success') {
                 // Mise à jour du statut de paiement de l'utilisateur
                 $user->paiement = 1; // Met à jour le champ 'paiement' pour indiquer le succès
+                $user->paiement_date = now();
                 $user->save();
 
                 return response()->json([
@@ -909,7 +917,33 @@ public function countUserPhotos($id)
         return response()->json(['paiementReussi' => true], 200);
     }
 
-
+    public function checkPaymentStatus()
+    {
+        // Vérifier si l'utilisateur est authentifié
+        $user = Auth::user();
+    
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Utilisateur non authentifié.'
+            ], 401);
+        }
+    
+        // Vérifier le statut de paiement
+        if ($user->paiement == 1) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Paiement confirmé.'
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Paiement non confirmé.'
+            ], 500);
+        }
+    }
+    
+    
 
     public function updateAbout(Request $request, $id)
     {
