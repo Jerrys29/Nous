@@ -12,9 +12,9 @@ use Carbon\Carbon; // Importer Carbon
 class KaraokeController extends Controller
 {
     public function register(Request $request)
-    {
-    // Validez les données du formulaire
-    $request->validate([
+{
+    // Validez les données du formulaire, y compris l'image
+    $validatedData = $request->validate([
         'name' => 'required|string',
         'password' => 'required|string',
         'numero' => [
@@ -26,6 +26,7 @@ class KaraokeController extends Controller
         'birthdate' => 'required|date',
         'birthplace' => 'required|string',
         'town' => 'required|string',
+        'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation pour l'image
     ]);
 
     // Nettoyez le numéro en supprimant les espaces en trop
@@ -51,10 +52,17 @@ class KaraokeController extends Controller
         'role' => 'karaoke',
     ]);
 
-    // Redirigez vers la page de téléchargement de photo
-    return redirect()->route('upload.photo', ['userId' => $user->id])->with('success', 'Ajoutez deux photos pour finaliser votre inscription.');
-
+    // Gérer l'image de profil si elle est présente
+    if ($request->hasFile('profile_photo')) {
+        $photo = $request->file('profile_photo');
+        $photoPath = $photo->store('profile_photos', 'public'); // Stockage de l'image
+        $user->photo1 = $photoPath; // Sauvegardez le chemin de l'image
+        $user->save(); // Mettez à jour l'utilisateur avec le chemin de l'image
     }
+
+    // Redirigez vers la page de connexion avec un message de succès
+    return redirect()->route('connection')->with('success', 'Félicitations !! Votre compte est créé et votre photo est enregistrée. Votre compte sera activé dans les plus brefs délais. Revenez dans 24h.');
+}
 
     
 

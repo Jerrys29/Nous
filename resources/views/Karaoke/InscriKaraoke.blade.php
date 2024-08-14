@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulaire d'Inscription</title>
 
-    <!-- jQuery (Assurez-vous d'inclure jQuery avant le fichier JS Bootstrap) -->
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
-    <!-- Bootstrap JS (Assurez-vous d'inclure le fichier JS Bootstrap après jQuery) -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div class="booking-form">
-                    <form action="{{ route('filleinscrip') }}" method="POST" id="booking-form">
+                    <form action="{{ route('filleinscrip') }}" method="POST" id="booking-form" enctype="multipart/form-data">
                         <!-- Première étape -->
                         @csrf
                         
@@ -91,6 +91,17 @@
                             <div class="form-group">
                                 <input type="text" name="town" class="input-text" id="town" placeholder="Ville" required>
                             </div><br>
+
+                            <!-- Ajout du champ photo de profil -->
+                            <div class="form-group">
+                                <label for="profile_photo">Photo de profil</label>
+                                <input type="file" name="profile_photo" id="profile_photo" class="form-control" accept="image/*" onchange="previewImage(event)">
+                                <div class="mt-2">
+                                    <img id="photo_preview" src="#" alt="Aperçu de la photo" style="display: none; width: 100%; max-width: 200px;">
+                                </div>
+                            </div><br>
+                           
+
                             <div class="form-group" id="error-message-step-2"></div>
 
                             <div class="form-group">
@@ -180,14 +191,14 @@
             return true;
         }
 
-        function showCongratulationsPopup() {
-            Swal.fire({
-                title: 'Félicitations !!',
-                text: 'Votre inscription a bien été enregistrée. Votre compte sera activé dans les plus brefs délais.',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });
-        }
+        // function showCongratulationsPopup() {
+        //     Swal.fire({
+        //         title: 'Félicitations !!',
+        //         text: 'Votre inscription a bien été enregistrée. Votre compte sera activé dans les plus brefs délais.',
+        //         icon: 'success',
+        //         confirmButtonText: 'OK'
+        //     });
+        // }
 
         // Masquer le message d'alerte après 15 secondes
         setTimeout(function(){
@@ -197,35 +208,40 @@
         // Script pour précharger l'image
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('preload-link').addEventListener('click', function() {
-                var img = new Image();
-                img.src = 'public/assets/img/back2.jpg'; // Remplacez "chemin_vers_votre_image.jpg" par le chemin de votre image
-                // Vous pouvez également définir une fonction à exécuter une fois l'image préchargée, par exemple :
-                img.onload = function() {
-                    console.log("Image préchargée !");
-                };
+                const imageUrl = 'assets/img/nous_logo.png';
+                const preloadImage = new Image();
+                preloadImage.src = imageUrl;
             });
         });
 
-        // Restriction d'âge
-        document.getElementById('booking-form').addEventListener('submit', function(event) {
-            if (!validateDateOfBirth()) {
-                event.preventDefault();
-            }
-        });
+        function previewImage(event) {
+            var file = event.target.files[0];
+            var preview = document.getElementById('photo_preview');
+            var fileSizeError = document.getElementById('file-size-error');
+            
+            if (file) {
+                if (file.size > 1.3 * 1024 * 1024) { // 1.3 Mo en octets
+                    fileSizeError.style.display = 'block';
+                    event.target.value = ''; // Réinitialiser le champ de fichier
+                    preview.style.display = 'none';
+                    return;
+                } else {
+                    fileSizeError.style.display = 'none';
+                }
 
-        // Script pour la redirection en cas d'inactivité
-        var inactivityTimeout = 30 * 60 * 1000;
-        var timeout;
-        function resetTimer() {
-            clearTimeout(timeout);
-            timeout = setTimeout(function() {
-                window.location.href = "{{ route('connection') }}";
-            }, inactivityTimeout);
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                preview.style.display = 'none';
+                fileSizeError.style.display = 'none';
+            }
         }
-        document.addEventListener('mousemove', resetTimer);
-        document.addEventListener('keypress', resetTimer);
-        document.addEventListener('scroll', resetTimer);
-        resetTimer(); // Initialise le minuteur lors du chargement de la page
+
     </script>
+
 </body>
 </html>
