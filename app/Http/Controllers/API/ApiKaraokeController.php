@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Paiements;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Http;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -145,12 +147,48 @@ public function loginUser(Request $request)
 }
 
 
-    public function showprofil()
-    {
+public function showprofil()
+{
+    try {
+        // Récupérer l'utilisateur authentifié
         $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Utilisateur non authentifié.'
+            ], 401);
+        }
+
+        // Calculer l'âge de l'utilisateur
         $age = Carbon::parse($user->birthdate)->age;
-        return response()->json(['user' => $user, 'age' => $age], 200);
+
+        // Vérifier les champs de photos
+        $photoFields = ['photo1', 'photo2', 'photo3', 'photo4', 'photo5'];
+        $hasPhoto = false;
+        $presentPhotos = [];
+
+        foreach ($photoFields as $photoField) {
+            if (!is_null($user->$photoField) && !empty($user->$photoField)) {
+                $hasPhoto = true;
+                $presentPhotos[] = url('storage/' . $user->$photoField);
+            }
+        }
+
+        return response()->json([
+            'status' => true,
+            'user' => $user,
+            'age' => $age,
+            'has_photo' => $hasPhoto,
+            'present_photos' => $presentPhotos,
+            'message' => $hasPhoto ? 'Profil récupéré avec succès.' : 'Aucune photo trouvée pour cet utilisateur.'
+        ], 200);
+    } catch (\Exception $e) {
+        // Gestion des erreurs
+        return response()->json([
+            'error' => 'Une erreur s\'est produite : ' . $e->getMessage()
+        ], 500);
     }
+}
 
     public function updateProfileField(Request $request, $id, $field)
     {
@@ -191,23 +229,82 @@ public function loginUser(Request $request)
 
     public function showAllKaraokeProfiles()
     {
-        $users = User::where('role', 'karaoke')
-                     ->where('active', 1)
-                     ->get();
-
-        foreach ($users as $user) {
-            $user->age = Carbon::parse($user->birthdate)->age;
+        try {
+            $users = User::where('role', 'karaoke')
+                         ->where('active', 1)
+                         ->get();
+    
+            foreach ($users as $user) {
+                $user->age = Carbon::parse($user->birthdate)->age;
+    
+                // Ajouter les liens de photos complets et compter les photos remplies
+                $photoFields = ['photo1', 'photo2', 'photo3', 'photo4', 'photo5'];
+                $filledPhotosCount = 0;
+                foreach ($photoFields as $photoField) {
+                    if (!is_null($user->$photoField)) {
+                        $user->$photoField = url('storage/' . $user->$photoField);
+                        $filledPhotosCount++;
+                    }
+                }
+                $user->filled_photos_count = $filledPhotosCount;
+    
+                // Générer l'URL WhatsApp avec le numéro de téléphone de l'utilisateur
+                $user->whatsapp_url = "https://wa.me/{$user->numero}";
+            }
+    
+            return response()->json(['users' => $users], 200);
+        } catch (\Exception $e) {
+            // Gestion des autres erreurs
+            return response()->json([
+                'error' => 'Une erreur s\'est produite : ' . $e->getMessage()
+            ], 500);
         }
-
-        return response()->json(['users' => $users], 200);
     }
+    
 
     public function showKaraokeProfile($userId)
     {
-        $user = User::findOrFail($userId);
-        $age = Carbon::parse($user->birthdate)->age;
-        return response()->json(['user' => $user, 'age' => $age], 200);
+        try {
+            $user = User::findOrFail($userId);
+            $age = Carbon::parse($user->birthdate)->age;
+    
+            // Ajouter les liens de photos complets et compter les photos remplies
+            $photoFields = ['photo1', 'photo2', 'photo3', 'photo4', 'photo5'];
+            $filledPhotosCount = 0;
+            $presentPhotos = [];
+            foreach ($photoFields as $photoField) {
+                if (!is_null($user->$photoField) && !empty($user->$photoField)) {
+                    $filledPhotosCount++;
+                    $presentPhotos[] = url('storage/' . $user->$photoField);
+                }
+            }
+            $user->filled_photos_count = $filledPhotosCount;
+            $user->present_photos = $presentPhotos;
+    
+            // Générer l'URL WhatsApp avec le numéro de téléphone de l'utilisateur
+            $user->whatsapp_url = "https://wa.me/{$user->numero}";
+    
+            return response()->json([
+                'user' => $user,
+                'age' => $age,
+                'filled_photos_count' => $filledPhotosCount,
+                'present_photos' => $presentPhotos,
+                'whatsapp_url' => $user->whatsapp_url
+            ], 200);
+        } catch (ModelNotFoundException $e) {
+            // Gestion des erreurs pour utilisateur non trouvé
+            return response()->json([
+                'status' => false,
+                'message' => 'Utilisateur non trouvé.'
+            ], 404);
+        } catch (\Exception $e) {
+            // Gestion des autres erreurs
+            return response()->json([
+                'error' => 'Une erreur s\'est produite : ' . $e->getMessage()
+            ], 500);
+        }
     }
+
 
     public function Deco()
     {
