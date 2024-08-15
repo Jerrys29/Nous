@@ -7,12 +7,13 @@ use App\Models\Discussion;
 use App\Models\Like;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Avis;
 use DateTime;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Models\Publicite;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -180,7 +181,7 @@ class UserController extends Controller
         try {
             // Récupérer l'utilisateur authentifié
             $loggedInUser = auth()->user();
-    
+            
             // Vérifier si l'utilisateur est authentifié
             if (!$loggedInUser) {
                 return response()->json(['message' => 'Utilisateur non authentifié.'], 401);
@@ -209,9 +210,21 @@ class UserController extends Controller
             // Ajouter la condition pour le genre de l'utilisateur
             $usersQuery->where('looking_for', $loggedInUser->genre);
     
-            // Exécuter la requête avec pagination
-            $users = $usersQuery->paginate(12);
+            // Exécuter la requête
+            $users = $usersQuery->get();
     
+            // Ajouter les liens de photos complets et compter le nombre de photos pour chaque utilisateur
+            $users->each(function ($user) {
+                $photoFields = ['photo1', 'photo2', 'photo3', 'photo4', 'photo5'];
+                $photoCount = 0;
+                foreach ($photoFields as $photoField) {
+                    if (!is_null($user->$photoField)) {
+                        $user->$photoField = url('storage/' . $user->$photoField);
+                    }
+                }
+            });
+    
+            // Si aucun utilisateur correspondant n'est trouvé
             if ($users->isEmpty()) {
                 // Utilisateurs de secours si aucune correspondance trouvée
                 $fallbackUsers = User::where('role', 'nous')
@@ -224,11 +237,12 @@ class UserController extends Controller
                             ->orWhereNotNull('photo4')
                             ->orWhereNotNull('photo5');
                     })
-                    ->paginate(12);
+                    ->get();
     
-                // Ajouter les liens de photos complets
+                // Ajouter les liens de photos complets et compter le nombre de photos pour chaque utilisateur
                 $fallbackUsers->each(function ($user) {
                     $photoFields = ['photo1', 'photo2', 'photo3', 'photo4', 'photo5'];
+                    $photoCount = 0;
                     foreach ($photoFields as $photoField) {
                         if (!is_null($user->$photoField)) {
                             $user->$photoField = url('storage/' . $user->$photoField);
@@ -237,22 +251,14 @@ class UserController extends Controller
                 });
     
                 return response()->json([
-                    'fallbackUsers' => $fallbackUsers,
-                    'message' => 'Aucun résultat trouvé avec les filtres spécifiés.'
+                    'status' => true,
+                    'users' => $fallbackUsers,
+                    'message' => 'Aucun résultat trouvé avec les filtres spécifiés. Utilisateurs de secours fournis.'
                 ]);
             }
     
-            // Ajouter les liens de photos complets
-            $users->each(function ($user) {
-                $photoFields = ['photo1', 'photo2', 'photo3', 'photo4', 'photo5'];
-                foreach ($photoFields as $photoField) {
-                    if (!is_null($user->$photoField)) {
-                        $user->$photoField = url('storage/' . $user->$photoField);
-                    }
-                }
-            });
-    
             return response()->json([
+                'status' => true,
                 'users' => $users,
                 'message' => 'Liste des profils récupérée avec succès.'
             ]);
@@ -263,6 +269,132 @@ class UserController extends Controller
             ], 500);
         }
     }
+    
+    
+    
+    public function all(Request $request)
+{
+    try {
+        // Récupérer tous les utilisateurs avec le rôle 'nous'
+        $users = User::where('role', 'nous')
+                ->where('photo1','!=',NULL)
+                ->get();
+
+        // Vérifier si des utilisateurs sont trouvés
+        if ($users->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Aucun utilisateur trouvé avec le rôle spécifié.'
+            ], 404);
+        }
+
+        // Construire l'URL complète pour chaque photo
+        $users = $users->map(function ($user) {
+            $photoFields = ['photo1', 'photo2', 'photo3', 'photo4', 'photo5'];
+            foreach ($photoFields as $photoField) {
+                if (!is_null($user->$photoField)) {
+                    $user->$photoField = url('storage/' . $user->$photoField);
+                }
+            }
+            return $user;
+        });
+
+        return response()->json([
+            'status' => true,
+            'users' => $users,
+            'message' => 'Liste des utilisateurs récupérée avec succès.'
+        ], 200);
+    } catch (\Exception $e) {
+        // Gestion des erreurs
+        return response()->json([
+            'error' => 'Une erreur s\'est produite : ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+public function show($id)
+{
+    try {
+        // Récupérer l'utilisateur par ID
+        $user = User::find($id);
+
+        // Ajouter les liens de photos complets et compter les photos remplies
+        $photoFields = ['photo1', 'photo2', 'photo3', 'photo4', 'photo5'];
+        $filledPhotosCount = 0;
+
+        foreach ($photoFields as $photoField) {
+            if (!is_null($user->$photoField)) {
+                $user->$photoField = url('storage/' . $user->$photoField);
+                $filledPhotosCount++;
+            }
+        }
+
+        // Générer l'URL WhatsApp avec le numéro de téléphone de l'utilisateur
+        $whatsappUrl = "https://wa.me/{$user->numero}";
+
+        return response()->json([
+            'status' => true,
+            'user' => $user,
+            'filled_photos_count' => $filledPhotosCount,
+            'whatsapp_url' => $whatsappUrl,
+            'message' => 'Détails du profil récupérés avec succès.'
+        ]);
+    } catch (ModelNotFoundException $e) {
+        // Gestion des erreurs pour utilisateur non trouvé
+        return response()->json([
+            'status' => false,
+            'message' => 'Utilisateur non trouvé.'
+        ], 404);
+    } catch (\Exception $e) {
+        // Gestion des autres erreurs
+        return response()->json([
+            'error' => 'Une erreur s\'est produite : ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+
+public function countUserPhotos($id)
+{
+    try {
+        // Récupérer l'utilisateur par ID
+        $user = User::findOrFail($id);
+
+        // Initialiser le compteur et le tableau des photos présentes
+        $photoFields = ['photo1', 'photo2', 'photo3', 'photo4', 'photo5'];
+        $filledPhotosCount = 0;
+        $presentPhotos = [];
+
+        // Parcourir les champs de photo et les ajouter au tableau si elles sont présentes
+        foreach ($photoFields as $photoField) {
+            if (!is_null($user->$photoField) && !empty($user->$photoField)) {
+                $filledPhotosCount++;
+                $presentPhotos[] = url('storage/' . $user->$photoField);
+            }
+        }
+
+        // Retourner la réponse JSON avec le nombre de photos remplies et les URLs des photos présentes
+        return response()->json([
+            'status' => true,
+            'filled_photos_count' => $filledPhotosCount,
+            'present_photos' => $presentPhotos,
+            'message' => 'Nombre de photos remplies récupéré avec succès.'
+        ], 200);
+    } catch (ModelNotFoundException $e) {
+        // Gestion des erreurs pour utilisateur non trouvé
+        return response()->json([
+            'status' => false,
+            'message' => 'Utilisateur non trouvé.'
+        ], 404);
+    } catch (\Exception $e) {
+        // Gestion des autres erreurs
+        return response()->json([
+            'error' => 'Une erreur s\'est produite : ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+
 
     public function detail($userId)
     {
@@ -384,33 +516,305 @@ class UserController extends Controller
         }
     }
 
-
-    public function likeProfile($profile_id)
+    public function updatePhotos(Request $request)
     {
-        $user = auth()->user();
-
-        if (!$user) {
-            return response()->json([
-                'error' => 'Non authentifié',
-                'message' => 'Vous devez être connecté pour aimer un profil.'
-            ], 401);
-        }
-
-        $like = new Like([
-            'liked_by' => $user->id,
-            'like_to' => $profile_id,
-            'message' => $user->name . ' a aimé votre profil.'
+        // Valider les entrées
+        $request->validate([
+            'photo1' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'photo2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'photo3' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'photo4' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'photo5' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $like->save();
-        $profileOwner = User::find($profile_id);
+        // Récupérer l'utilisateur authentifié
+        $user = $request->user();
+
+        // Mettre à jour les photos
+        $photoFields = ['photo1', 'photo2', 'photo3', 'photo4', 'photo5'];
+        foreach ($photoFields as $photoField) {
+            if ($request->hasFile($photoField)) {
+                // Supprimer l'ancienne photo si elle existe
+                if (!is_null($user->$photoField)) {
+                    Storage::delete('public/' . $user->$photoField);
+                }
+
+                // Enregistrer la nouvelle photo
+                $path = $request->file($photoField)->store('photos', 'public');
+                $user->$photoField = $path;
+            }
+        }
+        // Sauvegarder les changements
+        $user->save();
 
         return response()->json([
-            'message' => 'Profil aimé avec succès.',
-            'like' => $like, // Vous pouvez retourner les détails du like si nécessaire
-            'profileOwner' => $profileOwner // Retournez également les détails du propriétaire du profil si nécessaire
-        ]);
+            'status' => true,
+            'message' => 'Photos mises à jour avec succès.',
+            'user' => $user
+        ], 200);
     }
+
+    public function updateName(Request $request)
+    {
+        // Valider la requête
+        $validatedData = $request->validate(['name' => 'required|string|max:255']);
+        // Récupérer l'utilisateur authentifié
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non authentifié.'], 401);
+        }    
+        // Mettre à jour le nom de l'utilisateur
+        $user->name = $request->name;
+        $user->save();
+    
+        // Vérifier si la sauvegarde a réussi
+        if ($user->wasChanged('name')) {
+            return response()->json(['status' => true, 'message' => 'Name updated successfully', 'user' => $user], 200);
+        } else {
+            return response()->json(['status' => false, 'message' => 'Name not updated'], 500);
+        }
+    }
+
+    public function updateEmail(Request $request)
+    {
+        // Valider la requête
+        $validatedData = $request->validate([
+            'email' => 'required|string|email|max:255|unique:users'
+        ]);
+        
+        // Récupérer l'utilisateur authentifié
+        $user = $request->user();
+        if (!$user) {
+            Log::info('Utilisateur non authentifié');
+            return response()->json(['message' => 'Utilisateur non authentifié.'], 401);
+        }
+        
+        Log::info('Utilisateur authentifié : ', ['user' => $user]);
+    
+        // Mettre à jour l'email de l'utilisateur
+        $user->email = $request->email;
+        $user->save();
+    
+        // Vérifier si la sauvegarde a réussi
+        if ($user->wasChanged('email')) {
+            Log::info('Email mis à jour avec succès : ', ['email' => $user->email]);
+            return response()->json(['status' => true, 'message' => 'Email updated successfully', 'user' => $user], 200);
+        } else {
+            Log::warning('L\'email n\'a pas été mis à jour : ', ['email' => $user->email]);
+            return response()->json(['status' => false, 'message' => 'Email not updated'], 500);
+        }
+    }
+    
+    public function updateLookingFor(Request $request)
+    {
+        // Valider la requête
+        $request->validate(['looking_for' => 'required|string|max:255']);
+        
+        // Récupérer l'utilisateur authentifié
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non authentifié.'], 401);
+        }
+    
+        // Mettre à jour la préférence de l'utilisateur
+        $user->looking_for = $request->looking_for;
+        $user->save();
+    
+        // Vérifier si la sauvegarde a réussi
+        if ($user->wasChanged('looking_for')) {
+            return response()->json(['status' => true, 'message' => 'Looking for updated successfully', 'user' => $user], 200);
+        } else {
+            return response()->json(['status' => false, 'message' => 'Looking for not updated'], 500);
+        }
+    }
+    
+    public function updatePassword(Request $request)
+    {
+        // Valider la requête
+        $request->validate(['password' => 'required|string|min:8|confirmed']);
+        
+        // Récupérer l'utilisateur authentifié
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non authentifié.'], 401);
+        }
+    
+        // Mettre à jour le mot de passe de l'utilisateur
+        $user->password = bcrypt($request->password);
+        $user->save();
+    
+        // Vérifier si la sauvegarde a réussi
+        if ($user->wasChanged('password')) {
+            return response()->json(['status' => true, 'message' => 'Password updated successfully', 'user' => $user], 200);
+        } else {
+            return response()->json(['status' => false, 'message' => 'Password not updated'], 500);
+        }
+    }
+    public function updateTown(Request $request)
+    {
+        // Valider la requête
+        $request->validate(['town' => 'required|string|max:255']);
+        
+        // Récupérer l'utilisateur authentifié
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non authentifié.'], 401);
+        }
+    
+        // Mettre à jour la ville de l'utilisateur
+        $user->town = $request->town;
+        $user->save();
+    
+        // Vérifier si la sauvegarde a réussi
+        if ($user->wasChanged('town')) {
+            return response()->json(['status' => true, 'message' => 'Town updated successfully', 'user' => $user], 200);
+        } else {
+            return response()->json(['status' => false, 'message' => 'Town not updated'], 500);
+        }
+    }
+    public function updateNumero(Request $request)
+    {
+        // Valider la requête
+        $request->validate(['numero' => 'required|string|max:255']);
+        
+        // Récupérer l'utilisateur authentifié
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non authentifié.'], 401);
+        }
+    
+        // Mettre à jour le numéro de l'utilisateur
+        $user->numero = $request->numero;
+        $user->save();
+    
+        // Vérifier si la sauvegarde a réussi
+        if ($user->wasChanged('numero')) {
+            return response()->json(['status' => true, 'message' => 'Numero updated successfully', 'user' => $user], 200);
+        } else {
+            return response()->json(['status' => false, 'message' => 'Numero not updated'], 500);
+        }
+    }
+    public function updatePseudo(Request $request)
+    {
+        // Valider la requête
+        $request->validate(['pseudo' => 'required|string|max:255|unique:users']);
+        
+        // Récupérer l'utilisateur authentifié
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non authentifié.'], 401);
+        }
+    
+        // Mettre à jour le pseudo de l'utilisateur
+        $user->pseudo = $request->pseudo;
+        $user->save();
+    
+        // Vérifier si la sauvegarde a réussi
+        if ($user->wasChanged('pseudo')) {
+            return response()->json(['status' => true, 'message' => 'Pseudo updated successfully', 'user' => $user], 200);
+        } else {
+            return response()->json(['status' => false, 'message' => 'Pseudo not updated'], 500);
+        }
+    }
+    public function updateGenre(Request $request)
+    {
+        // Valider la requête
+        $request->validate(['genre' => 'required|string|max:255']);
+        
+        // Récupérer l'utilisateur authentifié
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non authentifié.'], 401);
+        }
+    
+        // Mettre à jour le genre de l'utilisateur
+        $user->genre = $request->genre;
+        $user->save();
+    
+        // Vérifier si la sauvegarde a réussi
+        if ($user->wasChanged('genre')) {
+            return response()->json(['status' => true, 'message' => 'Genre updated successfully', 'user' => $user], 200);
+        } else {
+            return response()->json(['status' => false, 'message' => 'Genre not updated'], 500);
+        }
+    }
+    public function updateMariatalStatus(Request $request)
+    {
+        // Valider la requête
+        $request->validate(['mariatal_status' => 'required|string|max:255']);
+        
+        // Récupérer l'utilisateur authentifié
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non authentifié.'], 401);
+        }
+    
+        // Mettre à jour le statut marital de l'utilisateur
+        $user->mariatal_status = $request->mariatal_status;
+        $user->save();
+    
+        // Vérifier si la sauvegarde a réussi
+        if ($user->wasChanged('mariatal_status')) {
+            return response()->json(['status' => true, 'message' => 'Mariatal status updated successfully', 'user' => $user], 200);
+        } else {
+            return response()->json(['status' => false, 'message' => 'Mariatal status not updated'], 500);
+        }
+    }
+                            
+
+    public function likeProfile(Request $request, $id)
+    {
+        try {
+            // Vérifier si l'utilisateur est authentifié
+            $user = Auth::user();
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Utilisateur non authentifié. Veuillez vous connecter pour aimer un profil.'
+                ], 401);
+            }
+    
+            // Vérifier si l'utilisateur a déjà aimé ce profil
+            $existingLike = Like::where('liked_by', $user->id)
+                                ->where('like_to', $id)
+                                ->first();
+    
+            if ($existingLike) {
+                // Si l'utilisateur a déjà aimé, supprimer le like (unlike)
+                $existingLike->delete();
+    
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Vous avez retiré votre like de ce profil.',
+                    'already_liked' => false, // Indique que le like a été retiré
+                ], 200);
+            } else {
+                // Si l'utilisateur n'a pas encore aimé, créer un nouvel enregistrement de like
+                $like = new Like([
+                    'liked_by' => $user->id,
+                    'like_to' => $id,
+                    'message' => $user->name . ' a aimé votre profil.'
+                ]);
+    
+                $like->save();
+    
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Profil aimé avec succès.',
+                    'already_liked' => true, // Indique que le like a été ajouté
+                    'like' => $like,
+                ], 200);
+            }
+    
+        } catch (\Exception $e) {
+            // Gestion des erreurs
+            return response()->json([
+                'status' => false,
+                'error' => 'Une erreur s\'est produite : ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
 
     public function unlikeProfile($profileId)
     {
@@ -430,6 +834,67 @@ class UserController extends Controller
             'message' => 'Profil désaimé avec succès.',
         ]);
     }
+
+    
+    public function processPaiement(Request $request)
+    {
+        try {
+            // Vérifier si l'utilisateur est authentifié
+            $user = Auth::user();
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Utilisateur non authentifié. Veuillez vous connecter pour effectuer un paiement.'
+                ], 401);
+            }
+
+            // Définir le montant du paiement
+            $amount = 981; // par exemple 981 FCFA
+
+            // Intégrer l'API Kkiapay
+            $kkiapayUrl = 'https://api.kkiapay.me/api/v1/transactions';
+            $apikey = 'de9c4e671f1c676a8613e0a567252e182c8fc52c';
+            $callbackUrl = 'Homepage';
+
+            $response = Http::withHeaders([
+                'Authorization' => "Bearer $apikey"
+            ])->post($kkiapayUrl, [
+                'amount' => $amount,
+                'apikey' => $apikey,
+                'callback_url' => $callbackUrl,
+                'customer_name' => $user->name,
+                'customer_email' => $user->email,
+                'customer_phone' => $user->numero,
+            ]);
+
+            // Analyser la réponse
+            $responseBody = $response->json();
+            if ($response->successful() && $responseBody['status'] == 'success') {
+                // Mise à jour du statut de paiement de l'utilisateur
+                $user->paiement = 1; // Met à jour le champ 'paiement' pour indiquer le succès
+                $user->paiement_date = now();
+                $user->save();
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Paiement réussi et abonnement mis à jour.'
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Le paiement a échoué, veuillez réessayer.'
+                ], 400);
+            }
+
+        } catch (\Exception $e) {
+            // Gestion des erreurs
+            return response()->json([
+                'status' => false,
+                'error' => 'Une erreur s\'est produite : ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
 
     public function mettreAJourPaiement(Request $request)
     {
@@ -452,280 +917,35 @@ class UserController extends Controller
         return response()->json(['paiementReussi' => true], 200);
     }
 
-
-    public function avis(Request $request)
+    public function checkPaymentStatus()
     {
-        // Validation des données du formulaire
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'phone' => 'required|string',
-            'comment' => 'required|string',
-        ]);
-
-        // Supprimer les espaces dans le numéro de téléphone
-        $phone = str_replace(' ', '', $validatedData['phone']);
-
-        // Créer un nouvel avis en utilisant le modèle Avis
-        $avis = Avis::create([
-            'name' => $validatedData['name'],
-            'phone' => $phone,
-            'comment' => $validatedData['comment'],
-        ]);
-
-        // Retourner une réponse JSON pour indiquer que l'avis a été soumis avec succès
-        return response()->json([
-            'success' => true,
-            'message' => 'Votre avis a été soumis avec succès ! Merci pour votre contribution.',
-            'avis' => $avis, // Vous pouvez retourner les détails de l'avis si nécessaire
-        ]);
-    }
-
-    public function avisshow()
-    {
-        return response()->json([
-            'error' => 'Ressource non disponible',
-            'message' => 'Cette route n\'est pas accessible via l\'API.'
-        ], 404);
-    }
-
-    public function storephoto1(Request $request)
-    {
-        $user = User::find($request->user_id);
-
+        // Vérifier si l'utilisateur est authentifié
+        $user = Auth::user();
+    
         if (!$user) {
             return response()->json([
-                'error' => 'Utilisateur non trouvé',
-                'message' => 'L\'utilisateur avec cet ID n\'existe pas.'
-            ], 404);
+                'status' => false,
+                'message' => 'Utilisateur non authentifié.'
+            ], 401);
         }
-
-        if ($request->hasFile('photo1')) {
-            // Supprimer l'ancienne photo si elle existe
-            if ($user->photo1) {
-                Storage::delete($user->photo1);
-            }
-
-            // Enregistrer la nouvelle photo
-            $imagePath = $request->file('photo1')->store('photos', 'public');
-            $user->photo1 = $imagePath;
-            $user->save();
-
+    
+        // Vérifier le statut de paiement
+        if ($user->paiement == 1) {
             return response()->json([
-                'success' => true,
-                'message' => 'Photo 1 enregistrée avec succès.',
-                'photo_url' => asset('storage/' . $imagePath)  // Retourner l'URL complète de l'image si nécessaire
-            ]);
-        }
-
-        return response()->json([
-            'error' => 'Aucune image envoyée',
-            'message' => 'Veuillez fournir une image pour mettre à jour la photo 1.'
-        ], 400);
-    }
-
-    public function storephoto2(Request $request)
-    {
-        $user = User::find($request->user_id);
-
-        if (!$user) {
+                'status' => true,
+                'message' => 'Paiement confirmé.'
+            ], 200);
+        } else {
             return response()->json([
-                'error' => 'Utilisateur non trouvé',
-                'message' => 'L\'utilisateur avec cet ID n\'existe pas.'
-            ], 404);
+                'status' => false,
+                'message' => 'Paiement non confirmé.'
+            ], 500);
         }
-
-        if ($request->hasFile('photo2')) {
-            // Supprimer l'ancienne photo si elle existe
-            if ($user->photo2) {
-                Storage::delete($user->photo2);
-            }
-
-            // Enregistrer la nouvelle photo
-            $imagePath = $request->file('photo2')->store('photos', 'public');
-            $user->photo2 = $imagePath;
-            $user->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Photo 1 enregistrée avec succès.',
-                'photo_url' => asset('storage/' . $imagePath)  // Retourner l'URL complète de l'image si nécessaire
-            ]);
-        }
-
-        return response()->json([
-            'error' => 'Aucune image envoyée',
-            'message' => 'Veuillez fournir une image pour mettre à jour la photo 1.'
-        ], 400);
     }
-    public function storephoto3(Request $request)
-    {
-        $user = User::find($request->user_id);
+    
+    
 
-        if (!$user) {
-            return response()->json([
-                'error' => 'Utilisateur non trouvé',
-                'message' => 'L\'utilisateur avec cet ID n\'existe pas.'
-            ], 404);
-        }
-
-        if ($request->hasFile('photo3')) {
-            // Supprimer l'ancienne photo si elle existe
-            if ($user->photo3) {
-                Storage::delete($user->photo3);
-            }
-
-            // Enregistrer la nouvelle photo
-            $imagePath = $request->file('photo3')->store('photos', 'public');
-            $user->photo3 = $imagePath;
-            $user->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Photo 1 enregistrée avec succès.',
-                'photo_url' => asset('storage/' . $imagePath)  // Retourner l'URL complète de l'image si nécessaire
-            ]);
-        }
-
-        return response()->json([
-            'error' => 'Aucune image envoyée',
-            'message' => 'Veuillez fournir une image pour mettre à jour la photo 1.'
-        ], 400);
-    }
-    public function storephoto4(Request $request)
-    {
-        $user = User::find($request->user_id);
-
-        if (!$user) {
-            return response()->json([
-                'error' => 'Utilisateur non trouvé',
-                'message' => 'L\'utilisateur avec cet ID n\'existe pas.'
-            ], 404);
-        }
-
-        if ($request->hasFile('photo4')) {
-            // Supprimer l'ancienne photo si elle existe
-            if ($user->photo4) {
-                Storage::delete($user->photo4);
-            }
-
-            // Enregistrer la nouvelle photo
-            $imagePath = $request->file('photo4')->store('photos', 'public');
-            $user->photo4 = $imagePath;
-            $user->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Photo 1 enregistrée avec succès.',
-                'photo_url' => asset('storage/' . $imagePath)  // Retourner l'URL complète de l'image si nécessaire
-            ]);
-        }
-
-        return response()->json([
-            'error' => 'Aucune image envoyée',
-            'message' => 'Veuillez fournir une image pour mettre à jour la photo 1.'
-        ], 400);
-    }
-
-    public function storephoto5(Request $request)
-    {
-        $user = User::find($request->user_id);
-
-        if (!$user) {
-            return response()->json([
-                'error' => 'Utilisateur non trouvé',
-                'message' => 'L\'utilisateur avec cet ID n\'existe pas.'
-            ], 404);
-        }
-
-        if ($request->hasFile('photo5')) {
-            // Supprimer l'ancienne photo si elle existe
-            if ($user->photo5) {
-                Storage::delete($user->photo5);
-            }
-
-            // Enregistrer la nouvelle photo
-            $imagePath = $request->file('photo5')->store('photos', 'public');
-            $user->photo5 = $imagePath;
-            $user->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Photo 1 enregistrée avec succès.',
-                'photo_url' => asset('storage/' . $imagePath)  // Retourner l'URL complète de l'image si nécessaire
-            ]);
-        }
-
-        return response()->json([
-            'error' => 'Aucune image envoyée',
-            'message' => 'Veuillez fournir une image pour mettre à jour la photo 1.'
-        ], 400);
-    }
-    public function updatename(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-
-        $user = User::findOrFail($id);
-        $user->name = $request->input('name');
-        $user->save();
-
-        return response()->json(['message' => 'Name updated successfully'], 200);
-    }
-
-    public function updatenumero(Request $request, $id)
-    {
-        $request->validate([
-            'numero' => 'required|string|max:255',
-        ]);
-
-        $user = User::findOrFail($id);
-        $user->numero = $request->input('numero');
-        $user->save();
-
-        return response()->json(['message' => 'Numero updated successfully'], 200);
-    }
-
-    public function updatepassword(Request $request, $id)
-    {
-        $request->validate([
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        $user = User::findOrFail($id);
-        $user->password = Hash::make($request->input('password'));
-        $user->save();
-
-        return response()->json(['message' => 'Password updated successfully'], 200);
-    }
-
-    public function updatepseudo(Request $request, $id)
-    {
-        $request->validate([
-            'pseudo' => 'required|string|max:255',
-        ]);
-
-        $user = User::findOrFail($id);
-        $user->pseudo = $request->input('pseudo');
-        $user->save();
-
-        return response()->json(['message' => 'Pseudo updated successfully'], 200);
-    }
-
-    public function updateage(Request $request, $id)
-    {
-        $request->validate([
-            'age' => 'required|integer|min:0',
-        ]);
-
-        $user = User::findOrFail($id);
-        $user->age = $request->input('age');
-        $user->save();
-
-        return response()->json(['message' => 'Age updated successfully'], 200);
-    }
-
-    public function updateabout(Request $request, $id)
+    public function updateAbout(Request $request, $id)
     {
         $request->validate([
             'about' => 'nullable|string|max:1000',
@@ -805,4 +1025,33 @@ class UserController extends Controller
             'notifications' => $notifications
         ]);
     }
+
+    public function getAuthenticatedUser()
+    {
+        try {
+            // Récupérer l'utilisateur authentifié
+            $user = Auth::user();
+    
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Utilisateur non authentifié.'
+                ], 401);
+            }
+    
+            return response()->json([
+                'status' => true,
+                'user' => $user,
+                'message' => 'Informations utilisateur récupérées avec succès.'
+            ], 200);
+        } catch (\Exception $e) {
+            // Gestion des autres erreurs
+            return response()->json([
+                'status' => false,
+                'error' => 'Une erreur s\'est produite : ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
+
 }

@@ -54,28 +54,33 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware('auth:sanctum')->post('/updatephotos', [UserController::class, 'updatePhotos'])->name('api.updatePhotos');
 
+Route::get('/user/{id}', [UserController::class, 'show'])->name('api.user.show');
+Route::get('user/{id}/count-photos', [UserController::class, 'countUserPhotos']);
+
 // Notification routes
 Route::get('/notification', [UserController::class, 'showNotifications'])->name('api.notification')->middleware('auth:sanctum');
 
 // Like/Unlike profile routes
-Route::post('/like-profile/{profile_id}', [UserController::class, 'likeProfile'])->name('api.like-profile')->middleware('auth:sanctum');
+Route::post('/like-profile/{id}', [UserController::class, 'likeProfile'])->name('api.like-profile')->middleware('auth:sanctum');
 Route::post('/unlike-profile/{profile_id}', [UserController::class, 'unlikeProfile'])->name('api.unlike-profile')->middleware('auth:sanctum');
 
 // Payment update route
-Route::get('/mettre-a-jour-paiement', [UserController::class, 'mettreAJourPaiement'])->middleware('auth:sanctum');
-
-// Chat routes
-Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('api.chat.send')->middleware('auth:sanctum');
-Route::post('/discussion', [ChatController::class, 'store'])->name('api.discussion.store')->middleware('auth:sanctum');
-Route::post('/envoi', [ChatController::class, 'send'])->name('api.discussion.send')->middleware('auth:sanctum');
-Route::get('/get-new-messages/{lastMessageId}', [ChatController::class, 'getNewMessages'])->name('api.getNewMessages')->middleware('auth:sanctum');
-Route::post('/envoyerMessage', [ChatController::class, 'envoyerMessage'])->name('api.envoyerMessage')->middleware('auth:sanctum');
-Route::get('/messages', [ChatController::class, 'view'])->name('api.messages')->middleware('auth:sanctum');
-Route::get('/detail/{namesender}/{numero}', [ChatController::class, 'viewDetail'])->name('api.detail')->middleware('auth:sanctum');
-
+Route::middleware('auth:sanctum')->post('/processpaiement', [UserController::class, 'processPaiement'])->name('api.processpaiement');
+Route::post('/mettre-a-jour-paiement', [UserController::class, 'mettreAJourPaiement'])->middleware('auth:sanctum');
+Route::get('/check-payment-status', [UserController::class, 'checkPaymentStatus'])->middleware('auth:sanctum');
+Route::get('/userinfos', [UserController::class, 'getAuthenticatedUser'])->middleware('auth:sanctum');
 // Search route
 Route::get('/search', [UserController::class, 'search'])->name('api.search')->middleware('auth:sanctum');
-// Routes API avec préfixe 'api'
+
+
+
+
+
+
+
+
+
+
 
     // Routes authentifiées
     Route::middleware('auth:sanctum')->group(function () { 

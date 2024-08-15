@@ -32,7 +32,6 @@ Route::put('/profile/update', 'App\Http\Controllers\NousController@update')->nam
 Route::post('/profile/photos/update', 'App\Http\Controllers\NousController@updatePhotos')->name('profile.photos.update');
 
 Route::put('/update-name/{id}', 'App\Http\Controllers\NousController@updatename')->name('update-name');
-
 Route::put('/update-numero/{id}', 'App\Http\Controllers\NousController@updatenumero')->name('update-numero');
 Route::put('/update-password/{id}', 'App\Http\Controllers\NousController@updatepassword')->name('update-password');
 Route::put('/update-pseudo/{id}', 'App\Http\Controllers\NousController@updatepseudo')->name('update-pseudo');
