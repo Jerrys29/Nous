@@ -91,6 +91,12 @@ Route::get('/search', [UserController::class, 'search'])->name('api.search')->mi
     Route::get('/Karaokeprofils/{userId}', [ApiKaraokeController::class, 'showKaraokeProfile'])->name('api.Karaokeprofils');
 
 
+ 
+ 
+ 
+ 
+ 
+ 
     // Routes publiques
     Route::post('/payment', [ApiKaraokeController::class, 'processPayment'])->name('api.payment.form');
     Route::get('/index', [ApiKaraokeController::class, 'showAllKaraokeProfiles'])->name('api.karaokeusers');
