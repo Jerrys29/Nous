@@ -86,9 +86,10 @@ Route::get('/search', [UserController::class, 'search'])->name('api.search')->mi
         Route::post('/karaoke/update-pseudo/{id}', [ApiKaraokeController::class, 'updatePseudo'])->name('api.update_pseudo');
         Route::post('/karaoke/update-town/{id}', [ApiKaraokeController::class, 'updateTown'])->name('api.update-town');
         Route::post('/deconnexion', [ApiKaraokeController::class, 'Deco'])->name('api.deconnexion');
-        Route::get('/Karaokeprofils/{userId}', [ApiKaraokeController::class, 'showKaraokeProfile'])->name('api.Karaokeprofils');
         Route::get('/upload-photos/{userId}', [ApiKaraokeController::class, 'showPhotoUploadForm'])->name('api.upload.photo');
     });
+    Route::get('/Karaokeprofils/{userId}', [ApiKaraokeController::class, 'showKaraokeProfile'])->name('api.Karaokeprofils');
+
 
     // Routes publiques
     Route::post('/payment', [ApiKaraokeController::class, 'processPayment'])->name('api.payment.form');
