@@ -1026,5 +1026,32 @@ public function countUserPhotos($id)
         ]);
     }
 
+    public function getAuthenticatedUser()
+    {
+        try {
+            // Récupérer l'utilisateur authentifié
+            $user = Auth::user();
+    
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Utilisateur non authentifié.'
+                ], 401);
+            }
+    
+            return response()->json([
+                'status' => true,
+                'user' => $user,
+                'message' => 'Informations utilisateur récupérées avec succès.'
+            ], 200);
+        } catch (\Exception $e) {
+            // Gestion des autres erreurs
+            return response()->json([
+                'status' => false,
+                'error' => 'Une erreur s\'est produite : ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
 
 }

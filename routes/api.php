@@ -68,7 +68,7 @@ Route::post('/unlike-profile/{profile_id}', [UserController::class, 'unlikeProfi
 Route::middleware('auth:sanctum')->post('/processpaiement', [UserController::class, 'processPaiement'])->name('api.processpaiement');
 Route::post('/mettre-a-jour-paiement', [UserController::class, 'mettreAJourPaiement'])->middleware('auth:sanctum');
 Route::get('/check-payment-status', [UserController::class, 'checkPaymentStatus'])->middleware('auth:sanctum');
-
+Route::get('/userinfos', [UserController::class, 'getAuthenticatedUser'])->middleware('auth:sanctum');
 // Search route
 Route::get('/search', [UserController::class, 'search'])->name('api.search')->middleware('auth:sanctum');
 
