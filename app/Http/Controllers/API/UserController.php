@@ -1038,10 +1038,20 @@ public function countUserPhotos($id)
                     'message' => 'Utilisateur non authentifié.'
                 ], 401);
             }
-    
+           
+                    $photo1 = url('storage/' . $user->photo1);
+                    $photo2 = url('storage/' . $user->photo2);
+                    $photo3 = url('storage/' . $user->photo3);
+                    $photo4 = url('storage/' . $user->photo4);
+                    $photo5 = url('storage/' . $user->photo5);
             return response()->json([
                 'status' => true,
                 'user' => $user,
+                'photo1'=>$user->$photo1,
+                'photo2'=>$user->$photo2,
+                'photo3'=>$user->$photo3,
+                'photo4'=>$user->$photo4,
+                'photo5'=>$user->$photo5,
                 'message' => 'Informations utilisateur récupérées avec succès.'
             ], 200);
         } catch (\Exception $e) {
@@ -1053,5 +1063,4 @@ public function countUserPhotos($id)
         }
     }
     
-
 }
