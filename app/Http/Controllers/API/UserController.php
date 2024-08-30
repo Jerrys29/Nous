@@ -1015,16 +1015,6 @@ public function countUserPhotos($id)
         ], 401);
     }
 
-    public function showNotifications()
-    {
-        // Récupérer les notifications de l'utilisateur connecté depuis la base de données
-        $notifications = Like::where('like_to', auth()->user()->id)->get();
-
-        // Retourner une réponse JSON avec les notifications récupérées
-        return response()->json([
-            'notifications' => $notifications
-        ]);
-    }
 
     public function getAuthenticatedUser()
     {
@@ -1047,11 +1037,11 @@ public function countUserPhotos($id)
             return response()->json([
                 'status' => true,
                 'user' => $user,
-                'photo1'=>$user->$photo1,
-                'photo2'=>$user->$photo2,
-                'photo3'=>$user->$photo3,
-                'photo4'=>$user->$photo4,
-                'photo5'=>$user->$photo5,
+                'photo1'=>$photo1,
+                'photo2'=>$photo2,
+                'photo3'=>$photo3,
+                'photo4'=>$photo4,
+                'photo5'=>$photo5,
                 'message' => 'Informations utilisateur récupérées avec succès.'
             ], 200);
         } catch (\Exception $e) {
@@ -1062,5 +1052,44 @@ public function countUserPhotos($id)
             ], 500);
         }
     }
+    public function showNotifications()
+    {
+        try {
+            // Vérifier si l'utilisateur est authentifié
+            if (!auth()->check()) {
+                return response()->json(['message' => 'Utilisateur non authentifié.'], 401);
+            }
     
+            // Récupérer l'utilisateur connecté
+            $user = auth()->user();
+
+            // Récupérer les notifications de l'utilisateur connecté depuis la base de données
+            $notifications = Like::where('like_to', $user->id)->get();
+            
+            // Préparer la réponse avec les notifications
+            $formattedNotifications = $notifications->map(function ($notification) {
+                return [
+                    'id' => $notification->id,
+                    'like_from' => $notification->liked_by,
+                    'message' => $notification->message, // Le message est déjà dans la base de données
+                    'created_at' => $notification->created_at->format('Y-m-d H:i:s'),
+                ];
+            });
+    
+            return response()->json([
+                'status' => true,
+                'notifications' => $formattedNotifications,
+                'message' => 'Notifications récupérées avec succès.'
+            ]);
+        } catch (\Exception $e) {
+            // Gestion des erreurs
+            return response()->json([
+                'status' => false,
+                'error' => 'Une erreur s\'est produite : ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    
+
 }

@@ -222,20 +222,20 @@ class NousController extends Controller
                     ->where('id', '!=', $loggedInUser->id)
                     ->paginate(6); // Utiliser paginate() pour paginer les résultats
 
-                $allUsers = User::where('role', 'nous')
+                $allusers = User::where('role', 'nous')
                     ->where('active', 0)
                     ->where('id', '!=', $loggedInUser->id)
                     ->paginate(12);
 
-                return view('Nous.profils', compact('fallbackUsers', 'results', 'users', 'allUsers')); // Passer également la variable $results à la vue
+                return view('Nous.profils', compact('fallbackUsers', 'results', 'users', 'allusers')); // Passer également la variable $results à la vue
             }
 
-            $allUsers = User::where('role', 'nous')
+            $allusers = User::where('role', 'nous')
                 ->where('active', 0)
                 ->where('id', '!=', $loggedInUser->id)
                 ->paginate(12);
 
-            return view('Nous.profils', compact('users', 'results', 'allUsers')); // Passer également la variable $results à la vue
+            return view('Nous.profils', compact('users', 'results', 'allusers')); // Passer également la variable $results à la vue
         } else {
             // Utilisateur non connecté, retourner tous les utilisateurs avec pagination
             $users = User::where('role', 'nous')
@@ -536,13 +536,23 @@ class NousController extends Controller
 
 
 
-
     public function showNotifications()
     {
+        // Vérifier si l'utilisateur est authentifié
+        if (!auth()->check()) {
+            return response()->json(['message' => 'Utilisateur non authentifié.'], 401);
+        }
+    
+        // Récupérer l'utilisateur connecté
+        $user = auth()->user();
+        dd($user); // Vérifiez que l'utilisateur est récupéré correctement
+    
         // Récupérer les notifications de l'utilisateur connecté depuis la base de données
-        $notifications = Like::where('like_to', auth()->user()->id)->get();
-
+        $notifications = Like::where('like_to', $user->id)->get();
+        dd($notifications); // Vérifiez les notifications récupérées
+    
         // Retourner la vue avec les notifications récupérées
         return view('Nous.notifications', ['notifications' => $notifications]);
     }
+    
 }
